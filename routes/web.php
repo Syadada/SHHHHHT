@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BagiPakaiDtsenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -95,6 +96,14 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         // Daftar Tiket Support (Ala DomaiNesia) & Detail Progress Tiket Sisi Admin
         Route::get('/tiket', [HistoryController::class, 'tiketIndex'])->name('tiket.index');
         Route::get('/tiket/{id}', [HistoryController::class, 'tiketShow'])->whereNumber('id')->name('tiket.show');
+
+        // Layanan Bagi Pakai DTSEN (SOP: 555/07-SOP/DISKOMINFO SP/2026 - Permintaan Layanan Buat/Edit/Hapus)
+        Route::get('/bagi-pakai-dtsen', [BagiPakaiDtsenController::class, 'index'])->name('bagi-pakai-dtsen.index');
+        Route::get('/bagi-pakai-dtsen/create', [BagiPakaiDtsenController::class, 'create'])->name('bagi-pakai-dtsen.create');
+        Route::post('/bagi-pakai-dtsen', [BagiPakaiDtsenController::class, 'store'])->name('bagi-pakai-dtsen.store');
+        Route::get('/bagi-pakai-dtsen/{id}/edit', [BagiPakaiDtsenController::class, 'edit'])->whereNumber('id')->name('bagi-pakai-dtsen.edit');
+        Route::put('/bagi-pakai-dtsen/{id}', [BagiPakaiDtsenController::class, 'update'])->whereNumber('id')->name('bagi-pakai-dtsen.update');
+        Route::delete('/bagi-pakai-dtsen/{id}', [BagiPakaiDtsenController::class, 'destroy'])->whereNumber('id')->name('bagi-pakai-dtsen.destroy');
 
         Route::post('/tiket/{id}/step-ok', [HistoryController::class, 'stepOk'])->name('tiket.step-ok');
         Route::post('/tiket/{id}/update-steps', [HistoryController::class, 'updateSteps'])->name('tiket.update-steps');

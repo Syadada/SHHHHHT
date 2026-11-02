@@ -77,6 +77,7 @@ class GovernanceDatabaseSeeder extends Seeder
             ['slug' => 'export-data', 'name' => 'Ekspor CSV Laporan & Audit', 'module' => 'SISTEM', 'deskripsi' => 'Mengunduh laporan rekapitulasi tiket dan jejak log audit'],
             ['slug' => 'manage-users', 'name' => 'Manajemen Akun Pengguna', 'module' => 'USERS', 'deskripsi' => 'Mengelola akun perangkat daerah dan log perangkat login'],
             ['slug' => 'manage-access', 'name' => 'Kelola Hak Akses Administrator', 'module' => 'SISTEM', 'deskripsi' => 'Mengelola hak akses dan penugasan peran admin via modul Filament Access Control'],
+            ['slug' => 'bagi_pakai_dtsen', 'name' => 'Layanan Bagi Pakai DTSEN', 'module' => 'TIKET', 'deskripsi' => 'Daftar, buat, edit, dan hapus permintaan layanan dari OPD pengguna layanan (SOP: 555/07-SOP/DISKOMINFO SP/2026)'],
         ];
 
         $privilegeModels = [];
@@ -89,6 +90,10 @@ class GovernanceDatabaseSeeder extends Seeder
 
         // Tautkan Hak Akses ke Roles
         $roleSuperAdmin->privileges()->sync(collect($privilegeModels)->pluck('id'));
+        $roleOpd->privileges()->sync([
+            $privilegeModels['create-tiket']->id,
+            $privilegeModels['bagi_pakai_dtsen']->id,
+        ]);
         $roleAdminUserManager->privileges()->sync([
             $privilegeModels['manage-users']->id,
             $privilegeModels['export-data']->id,
@@ -97,11 +102,13 @@ class GovernanceDatabaseSeeder extends Seeder
             $privilegeModels['manipulate-steps']->id,
             $privilegeModels['verify-se']->id,
             $privilegeModels['security-verification']->id,
+            $privilegeModels['bagi_pakai_dtsen']->id,
         ]);
         $roleEselon2->privileges()->sync([
             $privilegeModels['manipulate-steps']->id,
             $privilegeModels['verify-se']->id,
             $privilegeModels['export-data']->id,
+            $privilegeModels['bagi_pakai_dtsen']->id,
         ]);
         $roleOpd->privileges()->sync([
             $privilegeModels['create-tiket']->id,

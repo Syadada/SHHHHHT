@@ -82,6 +82,34 @@
                     </li>
 
                     @php
+                        $isBagiPakaiActive = request()->routeIs('admin.bagi-pakai-dtsen.*');
+                    @endphp
+                    <!-- 3. Bagi Pakai DTSEN (SOP: 555/07-SOP/DISKOMINFO SP/2026 - Case OPD gak bisa bikin tiket) -->
+                    <li class="app-nav-dropdown {{ $isBagiPakaiActive ? 'active open' : '' }}">
+                        <button type="button" class="app-nav-dropdown-toggle" onclick="toggleNavDropdown(this)" title="Layanan Bagi Pakai DTSEN (SOP: 555/07-SOP/DISKOMINFO SP/2026)">
+                            <div class="app-nav-item-left">
+                                <i class="fi fi-rr-share app-nav-icon"></i>
+                                <span>Bagi Pakai DTSEN</span>
+                            </div>
+                            <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
+                        </button>
+                        <ul class="app-nav-submenu">
+                            <li>
+                                <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.bagi-pakai-dtsen.index') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-list-check"></i>
+                                    <span>Daftar Permintaan</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.bagi-pakai-dtsen.create') }}" class="app-nav-subitem {{ request()->routeIs('admin.bagi-pakai-dtsen.create') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-plus"></i>
+                                    <span>Buat Permintaan Baru</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    @php
                         $isUserActive = request()->routeIs('admin.users.*') || request()->routeIs('admin.logs.*') || request()->routeIs('admin.profile');
                     @endphp
                     <!-- 3. User (Dropdown Flyout WordPress Style) -->

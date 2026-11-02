@@ -105,6 +105,14 @@ class User extends Authenticatable
         return $this->role === 'superadmin' || $this->username === 'admin' || $this->hasPrivilege('manage-access');
     }
 
+    /**
+     * Hak akses modul Layanan Bagi Pakai DTSEN (SOP: 555/07-SOP/DISKOMINFO SP/2026)
+     */
+    public function canManageBagiPakaiDtsen(): bool
+    {
+        return $this->role === 'superadmin' || $this->username === 'admin' || $this->hasPrivilege('bagi_pakai_dtsen');
+    }
+
     public function riwayatBagiDatas()
     {
         return $this->hasMany(RiwayatBagiDataDtsen::class, 'user_id');
