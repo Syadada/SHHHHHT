@@ -89,6 +89,7 @@ if defined SYS_PATH if defined USER_PATH set "PATH=%LOCALAPPDATA%\Microsoft\Wind
 if exist "%PROJECT_DIR%php\php.exe" (
     set "PHP_EXE=%PROJECT_DIR%php\php.exe"
     set "COMPOSER_PHAR=%PROJECT_DIR%php\composer.phar"
+    set "PATH=%PROJECT_DIR%php;!PATH!"
     echo [OK] Menggunakan Local Portable PHP: %PROJECT_DIR%php\php.exe
     goto :configure_php_ini
 )
@@ -98,6 +99,7 @@ for /d %%d in ("C:\laragon\bin\php\php*" "D:\laragon\bin\php\php*") do (
     if not defined PHP_EXE (
         if exist "%%~d\php.exe" (
             set "PHP_EXE=%%~d\php.exe"
+            set "PATH=%%~d;!PATH!"
             echo [OK] Menggunakan PHP dari Laragon: %%~d\php.exe
             goto :configure_php_ini
         )
@@ -110,6 +112,7 @@ for %%d in ("C:\xampp\php" "D:\xampp\php") do (
         if exist "%%~d\php.exe" (
             set "PHP_EXE=%%~d\php.exe"
             set "COMPOSER_PHAR=%%~d\composer.phar"
+            set "PATH=%%~d;!PATH!"
             echo [OK] Menggunakan PHP dari XAMPP: %%~d\php.exe
             goto :configure_php_ini
         )
@@ -158,25 +161,39 @@ if not exist "%PROJECT_DIR%vendor\autoload.php" (
     echo.
     echo [3/8] Folder vendor belum ada. Mengunduh seluruh dependensi Composer otomatis...
     if exist "%COMPOSER_PHAR%" (
-        echo [INFO] Menjalankan Composer phar lokal...
+        echo [INFO] Menjalankan Composer phar lokal (%COMPOSER_PHAR%)...
         "%PHP_EXE%" "%COMPOSER_PHAR%" install --no-interaction --prefer-dist --ignore-platform-reqs
+    ) else if exist "%PROJECT_DIR%php\composer.phar" (
+        echo [INFO] Menjalankan composer.phar folder php...
+        "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
     ) else if exist "%PROJECT_DIR%composer.phar" (
         echo [INFO] Menjalankan composer.phar direktori root...
         "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
     ) else (
-        where composer >nul 2>&1
-        if %errorlevel% equ 0 (
-            echo [INFO] Menjalankan Composer dari System PATH...
-            composer install --no-interaction --prefer-dist --ignore-platform-reqs
+        echo [INFO] Mengunduh composer.phar mandiri resmi dari getcomposer.org...
+        powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%php\composer.phar')"
+        if exist "%PROJECT_DIR%php\composer.phar" (
+            "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
         ) else (
-            echo [INFO] Mengunduh composer.phar resmi dari getcomposer.org...
-            powershell -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%composer.phar')"
+            powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%composer.phar')"
             if exist "%PROJECT_DIR%composer.phar" (
                 "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
+            ) else (
+                where composer >nul 2>&1
+                if !errorlevel! equ 0 (
+                    echo [INFO] Menjalankan Composer dari System PATH...
+                    composer install --no-interaction --prefer-dist --ignore-platform-reqs
+                )
             )
         )
     )
-    echo [OK] Seluruh dependensi Composer vendor berhasil terpasang!
+    if exist "%PROJECT_DIR%vendor\autoload.php" (
+        echo [OK] Seluruh dependensi Composer vendor berhasil terpasang!
+    ) else (
+        echo [ERROR] Gagal memasang dependensi vendor! Pastikan koneksi internet aktif dan ekstensi openssl aktif di php.ini.
+        pause
+        exit /b 1
+    )
 ) else (
     echo [OK] Folder vendor dependensi sudah terpasang lengkap.
 )
