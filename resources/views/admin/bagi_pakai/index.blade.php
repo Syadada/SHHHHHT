@@ -245,16 +245,16 @@
                                     </span>
                                 </div>
                                 @if($item->status === 'PERLU_PERBAIKAN')
-                                    <span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block;">
-                                        ⚠️ Perlu Perbaikan
+                                    <span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fi fi-rr-exclamation"></i> Perlu Perbaikan
                                     </span>
                                 @elseif($item->step1_done)
-                                    <span style="background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block;">
-                                        ✓ Sesuai SE
+                                    <span style="background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fi fi-rr-check"></i> Sesuai SE
                                     </span>
                                 @else
-                                    <span style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block;">
-                                        ⏳ Menunggu Cek
+                                    <span style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fi fi-rr-time-quarter-to"></i> Menunggu Cek
                                     </span>
                                 @endif
                             </td>
@@ -271,7 +271,9 @@
                                 </div>
                                 <div style="font-size: 11px; margin-top: 4px; font-weight: 600; color: {{ $item->step5_done ? '#1e8e3e' : '#444746' }};">
                                     @if($item->step5_done)
-                                        <span style="color: #1e8e3e;">✓ Selesai 100%</span>
+                                        <span style="color: #1e8e3e; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i class="fi fi-rr-check"></i> Selesai 100%
+                                        </span>
                                     @else
                                         Progress {{ $activeStepNum }}/5
                                     @endif
@@ -323,3 +325,4 @@
 
 </div>
 @endsection
+
