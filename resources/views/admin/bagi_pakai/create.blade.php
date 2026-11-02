@@ -333,46 +333,16 @@
             </div>
         </div>
 
-        <!-- 4. VARIABEL DTSEN YANG DIMINTA (MINIMAL 5 FORM) -->
+        <!-- 4. VARIABEL DTSEN YANG DIMINTA -->
         <div class="form-section-card">
-            <div class="section-head-box-tight" style="margin-bottom: 14px;">
-                <h2 class="section-head-title">
-                            4. Variabel DTSEN yang Diminta 
-                        </h2>
-
-                <button type="button" onclick="tambahBarisVariabel()" class="btn-pill-outline revisi-btn-add">
-                    <i class="fi fi-rr-plus"></i> + Tambah Kolom Isian
-                </button>
+            <div class="section-head-box-tight" style="margin-bottom: 4px;">
+                <h2 class="section-head-title">4. Variabel DTSEN yang Diminta</h2>
             </div>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">
+                Pilih tema dataset di kotak sebelah kiri, lalu beri tanda centang (checklist) pada variabel data DTSEN yang Anda butuhkan di kotak sebelah kanan.
+            </p>
 
-            <div id="containerVariabel">
-                @php
-                    $defaultVars = ['', '', '', '', ''];
-                    $oldVars = old('variabel_dtsen', $defaultVars);
-                    if (count($oldVars) < 5) {
-                        for ($i = count($oldVars); $i < 5; $i++) {
-                            $oldVars[] = '';
-                        }
-                    }
-                @endphp
-
-                @foreach($oldVars as $idx => $v)
-                    <div class="var-row-item">
-                        <div class="var-num-chip">{{ $idx + 1 }}</div>
-                        <input type="text" 
-                               name="variabel_dtsen[]" 
-                               class="form-text-input" 
-                               value="{{ $v }}" 
-                               placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada" 
-                               required>
-                        @if($idx >= 5)
-                            <button type="button" onclick="hapusBarisVariabel(this)" class="btn-del-var" title="Hapus baris variabel ini"><i class="fi fi-rr-cross-small"></i></button>
-                        @else
-                            <div class="var-spacer-col"></div>
-                        @endif
-                    </div>
-                @endforeach
-            </div>
+            @include('partials.selector_variabel_dtsen', ['selectedVars' => old('variabel_dtsen', [])])
         </div>
 
         <!-- 5. PEMENUHAN DOKUMEN & MATRIKS PELAKSANAAN SOP -->
@@ -559,40 +529,6 @@
         }
     }
 
-    function tambahBarisVariabel() {
-        const container = document.getElementById('containerVariabel');
-        const count = container.querySelectorAll('.var-row-item').length + 1;
-
-        const row = document.createElement('div');
-        row.className = 'var-row-item';
-        row.innerHTML = `
-            <div class="var-num-chip">${count}</div>
-            <input type="text" 
-                   name="variabel_dtsen[]" 
-                   class="form-text-input" 
-                   placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada" 
-                   required>
-            <button type="button" onclick="hapusBarisVariabel(this)" class="btn-del-var" title="Hapus baris variabel ini"><i class="fi fi-rr-cross-small"></i></button>
-        `;
-        container.appendChild(row);
-        urutkanNomor();
-    }
-
-    function hapusBarisVariabel(btn) {
-        const row = btn.closest('.var-row-item');
-        row.remove();
-        urutkanNomor();
-    }
-
-    function urutkanNomor() {
-        const rows = document.querySelectorAll('#containerVariabel .var-row-item');
-        rows.forEach((r, idx) => {
-            const chip = r.querySelector('.var-num-chip');
-            if (chip) chip.innerText = idx + 1;
-            const input = r.querySelector('input');
-            if (input && !input.value) {
-                input.placeholder = "Isi jika ada, atau beri tanda strip (-) bila tidak ada";
-            }
         });
     }
 

@@ -106,9 +106,9 @@
             </div>
         </div>
 
-        <!-- 2. VARIABEL DTSEN YANG DIMINTA (MINIMAL 5 FORM) -->
+        <!-- 2. VARIABEL DTSEN YANG DIMINTA -->
         <div class="form-section-card">
-            <div class="section-head-box-tight">
+            <div class="section-head-box-tight" style="margin-bottom: 4px;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <div class="section-head-icon">
                         <i class="fi fi-rr-list-check"></i>
@@ -117,47 +117,16 @@
                         <h2 class="section-head-title">
                             Variabel DTSEN yang Diminta <span class="form-required">*</span>
                         </h2>
-                        <p class="section-head-desc">Minimal 5 kolom isian variabel yang dibutuhkan</p>
+                        <p class="section-head-desc">Pilih tema dataset di kotak kiri, lalu centang atribut data yang dimohonkan di kotak kanan</p>
                     </div>
                 </div>
-
-                <button type="button" onclick="tambahBarisVariabel()" class="btn-pill-outline revisi-btn-add">
-                    <i class="fi fi-rr-plus"></i> + Tambah Kolom Isian
-                </button>
             </div>
 
-            <p style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.5;">
-                Tuliskan atribut atau variabel data mikro DTSEN yang Anda butuhkan sesuai lampiran Surat Edaran resmi:
+            <p style="font-size: 13px; color: #475569; margin-bottom: 12px; line-height: 1.5;">
+                Pilih tema dataset di kotak sebelah kiri, lalu beri tanda centang (checklist) pada atribut data mikro DTSEN yang Anda butuhkan sesuai lampiran Surat Edaran resmi:
             </p>
 
-            <div id="containerVariabel">
-                @php
-                    $defaultVars = ['Variabel 1', 'Variabel 2', 'Variabel 3', 'Variabel 4', 'Variabel 5'];
-                    $oldVars = old('variabel_dtsen', $defaultVars);
-                    if (count($oldVars) < 5) {
-                        for ($i = count($oldVars); $i < 5; $i++) {
-                            $oldVars[] = 'Variabel ' . ($i + 1);
-                        }
-                    }
-                @endphp
-
-                @foreach($oldVars as $idx => $v)
-                    <div class="var-row-item">
-                        <div class="var-num-chip">{{ $idx + 1 }}</div>
-                        <input type="text" 
-                               name="variabel_dtsen[]" 
-                               class="form-text-input" 
-                               value="{{ $v }}" 
-                               placeholder="Contoh: NIK, Nama, Alamat, Status Kesejahteraan..." 
-                               required>
-                        @if($idx >= 5)
-                            <button type="button" onclick="hapusBarisVariabel(this)" class="btn-del-var" title="Hapus baris variabel ini">✕</button>
-                        @else
-                            <div class="var-spacer-col"></div>
-                        @endif
-                    </div>
-                @endforeach
-            </div>
+            @include('partials.selector_variabel_dtsen', ['selectedVars' => old('variabel_dtsen', [])])
         </div>
 
         <!-- 3. UNGGAH BERKAS LAMPIRAN SURAT EDARAN -->
@@ -208,40 +177,6 @@
 </div>
 
 <script>
-    function tambahBarisVariabel() {
-        const container = document.getElementById('containerVariabel');
-        const count = container.querySelectorAll('.var-row-item').length + 1;
-
-        const row = document.createElement('div');
-        row.className = 'var-row-item';
-        row.innerHTML = `
-            <div class="var-num-chip">${count}</div>
-            <input type="text" 
-                   name="variabel_dtsen[]" 
-                   class="form-text-input" 
-                   placeholder="Variabel ${count}" 
-                   required>
-            <button type="button" onclick="hapusBarisVariabel(this)" class="btn-del-var" title="Hapus baris variabel ini">✕</button>
-        `;
-        container.appendChild(row);
-        urutkanNomor();
-    }
-
-    function hapusBarisVariabel(btn) {
-        const row = btn.closest('.var-row-item');
-        row.remove();
-        urutkanNomor();
-    }
-
-    function urutkanNomor() {
-        const rows = document.querySelectorAll('#containerVariabel .var-row-item');
-        rows.forEach((r, idx) => {
-            const chip = r.querySelector('.var-num-chip');
-            if (chip) chip.innerText = idx + 1;
-            const input = r.querySelector('input');
-            if (input && !input.value) {
-                input.placeholder = `Variabel ${idx + 1}`;
-            }
         });
     }
 
