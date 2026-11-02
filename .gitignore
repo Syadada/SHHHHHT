@@ -35,5 +35,9 @@ venv/
 .venv/
 .pytest_cache/
 
+# Office temporary files
+~$*.xlsx
+~$*.docx
+
 /storage/app/public/formulir_generated/*
 !/storage/app/public/formulir_generated/.gitkeep

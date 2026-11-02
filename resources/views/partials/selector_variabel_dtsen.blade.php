@@ -12,33 +12,59 @@
 @endphp
 
 <div class="dtsen-var-component">
-    <!-- Grid Dua Kotak (Kiri: Filter & Tema | Kanan: Daftar Variabel Checklist) -->
+    <!-- Grid Dua Kotak (Kiri: Filter Checkbox Tema & Terpilih | Kanan: Daftar Variabel Checklist) -->
     <div class="dtsen-var-grid">
         
         <!-- ================================================================= -->
-        <!-- KOTAK KIRI: Filter, Dropdown Tema, Pencarian & Ringkasan Terpilih -->
+        <!-- KOTAK KIRI: Checkbox Tema, Tombol Terapkan, Pencarian & Ringkasan -->
         <!-- ================================================================= -->
         <div class="dtsen-var-box dtsen-var-box-left">
             <div class="dtsen-box-header">
-                <div class="dtsen-box-title">Filter & Kategori Data</div>
-                <div class="dtsen-box-subtitle">Pilih jenis set data DTSEN untuk ditampilkan</div>
+                <div class="dtsen-box-title">Pilih Tema & Filter Data</div>
+                <div class="dtsen-box-subtitle">Pilih 1 atau kedua tema, lalu klik <strong>Terapkan</strong></div>
             </div>
 
-            <!-- Dropdown Pemilihan Tema / Jenis Data -->
-            <div class="dtsen-form-group">
-                <label for="dtsenSelectTema" class="dtsen-field-label">
+            <!-- Pilihan Checkbox Tema (Bisa 1 atau 2-duanya) -->
+            <div class="dtsen-theme-select-group">
+                <label class="dtsen-field-label">
                     Pilih Tema Set Data <span style="color: #dc2626;">*</span>
                 </label>
-                <select id="dtsenSelectTema" class="dtsen-select-input" onchange="dtsenOnTemaChange(this.value)">
-                    <option value="">-- Pilih Jenis/Tema Data --</option>
-                    <option value="keluarga">🏠 1. Set Data Keluarga (52 Variabel)</option>
-                    <option value="anggota">👤 2. Set Data Anggota Keluarga (48 Variabel)</option>
-                    <option value="semua">📑 Gabungan / Seluruh Variabel (100 Variabel)</option>
-                </select>
+                
+                <div class="dtsen-theme-checkboxes">
+                    <!-- Tema 1: Data Keluarga -->
+                    <label class="dtsen-theme-card" for="dtsenChkTemaKeluarga">
+                        <input type="checkbox" id="dtsenChkTemaKeluarga" value="keluarga" class="dtsen-theme-chk">
+                        <div class="dtsen-theme-card-body">
+                            <div class="dtsen-theme-card-title-row">
+                                <span class="dtsen-theme-title">Set Data Keluarga</span>
+                                <span class="dtsen-theme-badge dtsen-badge-blue">52 Var</span>
+                            </div>
+                            <div class="dtsen-theme-card-desc">Karakteristik rumah tangga, aset & fasilitas tempat tinggal</div>
+                        </div>
+                    </label>
+
+                    <!-- Tema 2: Data Anggota Keluarga -->
+                    <label class="dtsen-theme-card" for="dtsenChkTemaAnggota">
+                        <input type="checkbox" id="dtsenChkTemaAnggota" value="anggota" class="dtsen-theme-chk">
+                        <div class="dtsen-theme-card-body">
+                            <div class="dtsen-theme-card-title-row">
+                                <span class="dtsen-theme-title">Set Data Anggota Keluarga</span>
+                                <span class="dtsen-theme-badge dtsen-badge-purple">48 Var</span>
+                            </div>
+                            <div class="dtsen-theme-card-desc">Data demografi individu, NIK/Dukcapil, pendidikan & ketenagakerjaan</div>
+                        </div>
+                    </label>
+                </div>
+
+                <!-- Tombol Terapkan -->
+                <button type="button" id="dtsenBtnApplyTema" class="dtsen-btn-apply" onclick="dtsenApplyThemes()">
+                    <span>✓</span> Terapkan
+                </button>
+                <div id="dtsenTemaFeedback" class="dtsen-tema-feedback" style="display: none;"></div>
             </div>
 
             <!-- Pencarian Cepat Variabel -->
-            <div class="dtsen-form-group" style="margin-top: 12px;">
+            <div class="dtsen-form-group" style="margin-top: 14px;">
                 <label for="dtsenSearchInput" class="dtsen-field-label">
                     Pencarian Cepat
                 </label>
@@ -55,7 +81,7 @@
             <!-- Tombol Aksi Cepat pada Tema Aktif -->
             <div class="dtsen-actions-bar" id="dtsenQuickActions" style="display: none;">
                 <button type="button" class="dtsen-btn-action" onclick="dtsenSelectAllVisible()">
-                    ✓ Pilih Semua di Tema Ini
+                    ✓ Pilih Semua di Tampilan
                 </button>
                 <button type="button" class="dtsen-btn-action dtsen-btn-action-ghost" onclick="dtsenUnselectAllVisible()">
                     ✕ Batalkan Pilihan
@@ -88,7 +114,7 @@
                 <div id="dtsenSelectedChips" class="dtsen-chips-container">
                     <div class="dtsen-chips-empty">
                         Belum ada variabel yang dipilih.<br>
-                        Silakan pilih tema data di atas, lalu centang variabel pada kotak kanan.
+                        Centang tema data di atas lalu klik <strong>Terapkan</strong>, kemudian centang variabel pada kotak kanan.
                     </div>
                 </div>
             </div>
@@ -106,20 +132,19 @@
         <!-- ================================================================= -->
         <div class="dtsen-var-box dtsen-var-box-right">
             
-            <!-- Keadaan 1: KOSONG (Sebelum Pengguna Memilih Tema di Kotak Kiri) -->
+            <!-- Keadaan 1: KOSONG (Sebelum Pengguna Memilih Tema & Klik Terapkan) -->
             <div id="dtsenEmptyState" class="dtsen-empty-state">
                 <div class="dtsen-empty-icon-wrap">
                     📋
                 </div>
-                <h4 class="dtsen-empty-title">Daftar Variabel Masih Kosong</h4>
+                <h4 class="dtsen-empty-title">Daftar Variabel Belum Ditampilkan</h4>
                 <p class="dtsen-empty-text">
-                    Silakan pilih jenis data pada menu dropdown <strong>Pilih Tema Set Data</strong> di kotak sebelah kiri 
-                    (<em>Set Data Keluarga</em> atau <em>Set Data Anggota Keluarga</em>) untuk memunculkan daftar variabel 
-                    yang siap Anda centang (checklist).
+                    Silakan centang tema data pada kotak sebelah kiri (<strong>Set Data Keluarga</strong> dan/atau <strong>Set Data Anggota Keluarga</strong>), 
+                    lalu klik tombol <strong>Terapkan</strong> untuk memunculkan daftar variabel checklist yang dapat dipilih.
                 </p>
             </div>
 
-            <!-- Keadaan 2: AKTIF (Muncul Setelah Tema Dipilih) -->
+            <!-- Keadaan 2: AKTIF (Muncul Setelah Tema Diterapkan) -->
             <div id="dtsenActivePanel" class="dtsen-active-panel" style="display: none;">
                 <!-- Header Daftar Kotak Kanan -->
                 <div class="dtsen-active-header">
@@ -154,7 +179,7 @@
 }
 .dtsen-var-grid {
     display: grid;
-    grid-template-columns: 350px 1fr;
+    grid-template-columns: 360px 1fr;
     gap: 20px;
     align-items: stretch;
 }
@@ -181,7 +206,7 @@
     position: relative;
 }
 .dtsen-box-header {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 .dtsen-box-title {
     font-size: 15px;
@@ -194,6 +219,104 @@
     color: #64748b;
     margin-top: 2px;
 }
+.dtsen-theme-select-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.dtsen-theme-checkboxes {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.dtsen-theme-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    margin: 0;
+}
+.dtsen-theme-card:hover {
+    border-color: #93c5fd;
+    background: #f8fafc;
+}
+.dtsen-theme-chk {
+    width: 17px;
+    height: 17px;
+    margin-top: 2px;
+    accent-color: #0b57d0;
+    cursor: pointer;
+}
+.dtsen-theme-card-body {
+    flex: 1;
+    min-width: 0;
+}
+.dtsen-theme-card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+}
+.dtsen-theme-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+}
+.dtsen-theme-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.dtsen-badge-blue {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+.dtsen-badge-purple {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+.dtsen-theme-card-desc {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 2px;
+    line-height: 1.35;
+}
+.dtsen-btn-apply {
+    width: 100%;
+    height: 38px;
+    background: #0b57d0;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.15s ease, transform 0.1s ease;
+    margin-top: 4px;
+}
+.dtsen-btn-apply:hover {
+    background: #0945a5;
+}
+.dtsen-btn-apply:active {
+    transform: scale(0.98);
+}
+.dtsen-tema-feedback {
+    font-size: 11.5px;
+    margin-top: 4px;
+    font-weight: 600;
+}
 .dtsen-form-group {
     display: flex;
     flex-direction: column;
@@ -203,24 +326,6 @@
     font-size: 12.5px;
     font-weight: 700;
     color: #334155;
-}
-.dtsen-select-input {
-    width: 100%;
-    height: 44px;
-    padding: 0 14px;
-    border-radius: 10px;
-    border: 1.5px solid #94a3b8;
-    background: #ffffff;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #0f172a;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    outline: none;
-}
-.dtsen-select-input:focus {
-    border-color: #0b57d0;
-    box-shadow: 0 0 0 3px rgba(11, 87, 208, 0.15);
 }
 .dtsen-search-wrap {
     position: relative;
@@ -582,14 +687,15 @@
     // Tagging tema
     const allDataset = [
         ...metadataKeluarga.map(item => ({ ...item, tema_key: 'keluarga', tema_label: 'Set Data Keluarga' })),
-        ...metadataAnggota.map(item => ({ ...item, tema_key: 'anggota', tema_label: 'Set Data Anggota' }))
+        ...metadataAnggota.map(item => ({ ...item, tema_key: 'anggota', tema_label: 'Set Data Anggota Keluarga' }))
     ];
 
     // State Variabel Terpilih (Set untuk efisiensi O(1) lookup)
     const initialArr = @json($initialSelected);
     let selectedSet = new Set(initialArr.map(s => String(s).trim()).filter(Boolean));
 
-    let currentTema = '';
+    // Tema yang sedang diterapkan (Set of 'keluarga' and/or 'anggota')
+    let appliedThemes = new Set();
     let currentSearch = '';
 
     // Inisialisasi saat DOM siap
@@ -597,29 +703,66 @@
         dtsenUpdateSelectedUI();
 
         // Jika sudah ada data terpilih sebelumnya (misal di halaman Edit),
-        // otomatis set dropdown tema ke 'semua' agar pengguna langsung bisa melihat & mengubah checklist
+        // otomatis cek tema mana yang memuat variabel tersebut dan terapkan langsung
         if (selectedSet.size > 0) {
-            const selectEl = document.getElementById('dtsenSelectTema');
-            if (selectEl) {
-                selectEl.value = 'semua';
-                dtsenOnTemaChange('semua');
+            let hasKeluarga = false;
+            let hasAnggota = false;
+
+            selectedSet.forEach(vName => {
+                const found = allDataset.find(item => item.nama_layanan === vName);
+                if (found) {
+                    if (found.tema_key === 'keluarga') hasKeluarga = true;
+                    if (found.tema_key === 'anggota') hasAnggota = true;
+                }
+            });
+
+            // Jika tidak terpetakan khusus, centang keduanya agar semua variabel muncul
+            if (!hasKeluarga && !hasAnggota) {
+                hasKeluarga = true;
+                hasAnggota = true;
             }
+
+            const chkKeluarga = document.getElementById('dtsenChkTemaKeluarga');
+            const chkAnggota = document.getElementById('dtsenChkTemaAnggota');
+            if (chkKeluarga) chkKeluarga.checked = hasKeluarga;
+            if (chkAnggota) chkAnggota.checked = hasAnggota;
+
+            // Terapkan otomatis
+            dtsenApplyThemes(true);
         }
     });
 
-    // Handler Perubahan Dropdown Tema
-    window.dtsenOnTemaChange = function(tema) {
-        currentTema = tema;
+    // Handler Tombol "Terapkan"
+    window.dtsenApplyThemes = function(isAutoInit = false) {
+        const chkKeluarga = document.getElementById('dtsenChkTemaKeluarga');
+        const chkAnggota = document.getElementById('dtsenChkTemaAnggota');
+        const feedbackEl = document.getElementById('dtsenTemaFeedback');
+
+        const newThemes = new Set();
+        if (chkKeluarga && chkKeluarga.checked) newThemes.add('keluarga');
+        if (chkAnggota && chkAnggota.checked) newThemes.add('anggota');
+
         const emptyState = document.getElementById('dtsenEmptyState');
         const activePanel = document.getElementById('dtsenActivePanel');
         const quickActions = document.getElementById('dtsenQuickActions');
 
-        if (!tema) {
-            // Kotak kanan KOSONG jika belum ada tema yang dipilih
+        if (newThemes.size === 0) {
+            appliedThemes.clear();
             if (emptyState) emptyState.style.display = 'flex';
             if (activePanel) activePanel.style.display = 'none';
             if (quickActions) quickActions.style.display = 'none';
+
+            if (!isAutoInit && feedbackEl) {
+                feedbackEl.style.display = 'block';
+                feedbackEl.style.color = '#dc2626';
+                feedbackEl.innerText = 'Pilih minimal salah satu tema (Keluarga atau Anggota Keluarga).';
+            }
             return;
+        }
+
+        appliedThemes = newThemes;
+        if (feedbackEl) {
+            feedbackEl.style.display = 'none';
         }
 
         // Tampilkan kotak kanan aktif
@@ -630,15 +773,16 @@
         // Update Judul Tema Aktif
         const titleEl = document.getElementById('dtsenActiveThemeTitle');
         const subtitleEl = document.getElementById('dtsenActiveThemeSubtitle');
-        if (tema === 'keluarga') {
-            if (titleEl) titleEl.innerText = 'Daftar Variabel: Set Data Keluarga';
-            if (subtitleEl) subtitleEl.innerText = 'Total 52 Atribut Variabel Rumah Tangga & Fasilitas';
-        } else if (tema === 'anggota') {
-            if (titleEl) titleEl.innerText = 'Daftar Variabel: Set Data Anggota Keluarga';
-            if (subtitleEl) subtitleEl.innerText = 'Total 48 Atribut Variabel Individu, Demografi & Dukcapil';
-        } else {
+        
+        if (appliedThemes.has('keluarga') && appliedThemes.has('anggota')) {
             if (titleEl) titleEl.innerText = 'Daftar Seluruh Variabel DTSEN';
-            if (subtitleEl) subtitleEl.innerText = 'Total 100 Atribut Variabel (Keluarga & Anggota)';
+            if (subtitleEl) subtitleEl.innerText = 'Menampilkan Set Data Keluarga (52) & Set Data Anggota Keluarga (48) — Total 100 Variabel';
+        } else if (appliedThemes.has('keluarga')) {
+            if (titleEl) titleEl.innerText = 'Daftar Variabel: Set Data Keluarga';
+            if (subtitleEl) subtitleEl.innerText = 'Menampilkan 52 Atribut Variabel Rumah Tangga & Fasilitas Tempat Tinggal';
+        } else if (appliedThemes.has('anggota')) {
+            if (titleEl) titleEl.innerText = 'Daftar Variabel: Set Data Anggota Keluarga';
+            if (subtitleEl) subtitleEl.innerText = 'Menampilkan 48 Atribut Variabel Individu, Demografi & Dukcapil';
         }
 
         dtsenRenderChecklist();
@@ -647,19 +791,16 @@
     // Handler Pencarian Cepat
     window.dtsenOnSearchInput = function(keyword) {
         currentSearch = (keyword || '').toLowerCase().trim();
-        if (currentTema) {
+        if (appliedThemes.size > 0) {
             dtsenRenderChecklist();
         }
     };
 
     // Filter data sesuai tema & pencarian
     function getFilteredList() {
-        let list = allDataset;
-        if (currentTema === 'keluarga') {
-            list = list.filter(item => item.tema_key === 'keluarga');
-        } else if (currentTema === 'anggota') {
-            list = list.filter(item => item.tema_key === 'anggota');
-        }
+        if (appliedThemes.size === 0) return [];
+
+        let list = allDataset.filter(item => appliedThemes.has(item.tema_key));
 
         if (currentSearch) {
             list = list.filter(item => {
@@ -691,7 +832,7 @@
         }
 
         let html = '';
-        visibleItems.forEach((item, idx) => {
+        visibleItems.forEach((item) => {
             const isChecked = selectedSet.has(item.nama_layanan);
             const cardClass = isChecked ? 'dtsen-var-card is-selected' : 'dtsen-var-card';
             const temaClass = item.tema_key === 'keluarga' ? 'dtsen-tema-keluarga' : 'dtsen-tema-anggota';
@@ -757,7 +898,7 @@
     window.dtsenRemoveSelected = function(varName) {
         selectedSet.delete(varName);
         dtsenUpdateSelectedUI();
-        if (currentTema) {
+        if (appliedThemes.size > 0) {
             dtsenRenderChecklist();
         }
     };
@@ -783,7 +924,7 @@
         if (confirm('Yakin ingin mengosongkan seluruh variabel yang telah dipilih?')) {
             selectedSet.clear();
             dtsenUpdateSelectedUI();
-            if (currentTema) {
+            if (appliedThemes.size > 0) {
                 dtsenRenderChecklist();
             }
         }
@@ -809,7 +950,7 @@
                 chipsBox.innerHTML = `
                     <div class="dtsen-chips-empty">
                         Belum ada variabel yang dipilih.<br>
-                        Silakan pilih tema data di atas, lalu centang variabel pada kotak kanan.
+                        Centang tema data di atas lalu klik <strong>Terapkan</strong>, kemudian centang variabel pada kotak kanan.
                     </div>
                 `;
             } else {
