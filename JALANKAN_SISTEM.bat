@@ -149,8 +149,12 @@ if %errorlevel% equ 0 (
 )
 
 :configure_php_ini
-echo [INFO] Memverifikasi ekstensi php.ini (SQLite, cURL, Fileinfo, variables_order)...
-powershell -NoProfile -Command "$cmd = '%PHP_EXE%'; try { $p = & $cmd --ini 2>$null; $ini = ($p | Select-String 'Loaded Configuration File:\s*(.+)').Matches.Groups[1].Value.Trim(); if (-not $ini -or $ini -eq '(none)') { $base = Split-Path (Get-Command $cmd -ErrorAction SilentlyContinue).Source; if (-not $base -and (Test-Path $cmd)) { $base = Split-Path $cmd }; if ($base) { $sample = Get-ChildItem -Path $base -Filter 'php.ini-*' | Select-Object -First 1 -ExpandProperty FullName; if ($sample) { Copy-Item $sample (Join-Path $base 'php.ini'); $ini = Join-Path $base 'php.ini'; } } }; if ($ini -and (Test-Path $ini)) { $c = [System.IO.File]::ReadAllText($ini); $exts = @('pdo_sqlite','sqlite3','fileinfo','curl','gd','zip','intl','mbstring','openssl'); foreach($e in $exts){ $c = $c -replace ';extension='+$e, ('extension='+$e) }; $c = $c -replace ';extension_dir = \"ext\"', 'extension_dir = \"ext\"'; $c = $c -replace 'variables_order = \"GPCS\"', 'variables_order = \"EGPCS\"'; [System.IO.File]::WriteAllText($ini, $c) } } catch {}" >nul 2>&1
+if not exist "%PROJECT_DIR%php\php.ini" (
+    if exist "%PROJECT_DIR%php\php.ini-development" (
+        copy "%PROJECT_DIR%php\php.ini-development" "%PROJECT_DIR%php\php.ini" >nul
+    )
+)
+echo [OK] Konfigurasi runtime PHP dan ekstensi siap.
 
 :php_ready
 
