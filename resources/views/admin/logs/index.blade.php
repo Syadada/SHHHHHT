@@ -17,16 +17,6 @@
         color: #0842a0;
         text-decoration: underline;
     }
-    .instansi-title-link .link-arrow {
-        opacity: 0;
-        transform: translateX(-3px);
-        transition: all 0.2s ease;
-        font-size: 11px;
-    }
-    .instansi-title-link:hover .link-arrow {
-        opacity: 1;
-        transform: translateX(0);
-    }
 </style>
 @endsection
 
@@ -120,7 +110,7 @@
                 </h2>
             </div>
             <div class="admin-card-header-sub">
-                Audit jejak digital identitas laptop/device setiap kali ada akun yang melakukan login
+                Audit jejak digital identitas laptop/device setiap kali ada akun yang melakukan login. Klik pada ID Log atau Akun Pengguna untuk melihat detail.
             </div>
         </div>
 
@@ -130,11 +120,10 @@
                     <tr>
                         <th style="width: 75px;">ID Log</th>
                         <th style="width: 140px;">Waktu & Tanggal</th>
-                        <th style="min-width: 220px;">Akun Pengguna (Klik untuk Detail)</th>
+                        <th style="min-width: 220px;">Akun Pengguna</th>
                         <th style="min-width: 180px;">Nomor Laptop / Device ID</th>
                         <th style="width: 130px;">Alamat IP</th>
-                        <th style="width: 140px;">Status</th>
-                        <th style="width: 90px; text-align: right;">Aksi</th>
+                        <th style="width: 140px; text-align: center;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -153,7 +142,6 @@
                                 <div>
                                     <a href="{{ route('admin.logs.show', $log->id) }}" class="instansi-title-link" title="Klik untuk membuka informasi selengkapnya">
                                         <span>{{ $log->user ? $log->user->username : ($log->user_name ?: 'Sistem / Anonim') }}</span>
-                                        <i class="fi fi-rr-arrow-up-right link-arrow"></i>
                                     </a>
                                 </div>
                                 @if($log->user && $log->user->nama_instansi)
@@ -191,22 +179,16 @@
                                     {{ $log->ip_address ?: '127.0.0.1' }}
                                 </span>
                             </td>
-                            <td class="table-col-nowrap">
+                            <td class="table-col-nowrap" style="text-align: center;">
                                 <span class="role-badge-opd">
                                     <i class="fi fi-rr-check"></i>
                                     BERHASIL LOGIN
                                 </span>
                             </td>
-                            <td style="text-align: right;">
-                                <a href="{{ route('admin.logs.show', $log->id) }}" class="btn-pill-primary" style="padding: 5px 12px; font-size: 11px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Lihat Informasi Selengkapnya">
-                                    <span>Detail</span>
-                                    <i class="fi fi-rr-arrow-right"></i>
-                                </a>
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="table-empty-box">
+                            <td colspan="6" class="table-empty-box">
                                 <div class="table-empty-icon">
                                     <i class="fi fi-rr-laptop"></i>
                                 </div>

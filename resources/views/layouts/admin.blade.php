@@ -60,67 +60,93 @@
             <!-- Left Sidebar Navigation Admin -->
             <aside class="app-sidebar">
                 <ul class="app-nav-list">
-                    <!-- 1. Dashboard Utama & Proses -->
+                    <!-- 1. Dashboard -->
                     <li>
                         <a href="{{ route('admin.dashboard') }}" class="app-nav-item {{ request()->routeIs('admin.dashboard') || request()->routeIs('admin.riwayat') ? 'active' : '' }}">
                             <div class="app-nav-item-left">
                                 <i class="fi fi-rr-apps app-nav-icon"></i>
-                                <span>Manajemen Tiket & Proses</span>
+                                <span>Dashboard</span>
                             </div>
                         </a>
                     </li>
 
-                    <!-- 2. Daftar Tiket Support (Ala DomaiNesia) -->
+                    <!-- 2. Ticket -->
                     <li>
                         <a href="{{ route('admin.tiket.index') }}" class="app-nav-item {{ request()->routeIs('admin.tiket.*') ? 'active' : '' }}">
                             <div class="app-nav-item-left">
                                 <i class="fi fi-rr-ticket app-nav-icon"></i>
-                                <span>Daftar Tiket Support</span>
+                                <span>Ticket</span>
                             </div>
                             <span class="app-nav-badge app-nav-badge-tiket">Tiket</span>
                         </a>
                     </li>
 
-                    <!-- 3. Manajemen Pengguna -->
-                    <li>
-                        <a href="{{ route('admin.users.index') }}" class="app-nav-item {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                    @php
+                        $isUserActive = request()->routeIs('admin.users.*') || request()->routeIs('admin.logs.*') || request()->routeIs('admin.profile');
+                    @endphp
+                    <!-- 3. User (Dropdown Flyout WordPress Style) -->
+                    <li class="app-nav-dropdown {{ $isUserActive ? 'active open' : '' }}">
+                        <button type="button" class="app-nav-dropdown-toggle" onclick="toggleNavDropdown(this)">
                             <div class="app-nav-item-left">
                                 <i class="fi fi-rr-users app-nav-icon"></i>
-                                <span>Manajemen Pengguna</span>
+                                <span>User</span>
                             </div>
-                        </a>
+                            <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
+                        </button>
+                        <ul class="app-nav-submenu">
+                            <li>
+                                <a href="{{ route('admin.users.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.index') || request()->routeIs('admin.users.show') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-users-alt"></i>
+                                    <span>User Management</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.users.create') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.create') || request()->routeIs('admin.users.edit-access') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-user-add"></i>
+                                    <span>Buat Akun</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.logs.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-laptop"></i>
+                                    <span>Log</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.profile') }}" class="app-nav-subitem {{ request()->routeIs('admin.profile') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-user"></i>
+                                    <span>Profile</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
 
-                    <!-- 4. Log Laptop & Audit -->
-                    <li>
-                        <a href="{{ route('admin.logs.index') }}" class="app-nav-item {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
-                            <div class="app-nav-item-left">
-                                <i class="fi fi-rr-laptop app-nav-icon"></i>
-                                <span>Log Laptop & Audit</span>
-                            </div>
-                        </a>
-                    </li>
-                </ul>
-
-                <div class="app-sidebar-divider"></div>
-                
-                <div class="app-sidebar-section">Ekspor Laporan</div>
-                <ul class="app-nav-list">
-                    <li>
-                        <a href="{{ route('admin.riwayat.export') }}" class="app-nav-item">
+                    @php
+                        $isEksporActive = request()->routeIs('admin.riwayat.export*');
+                    @endphp
+                    <!-- 4. Ekspor (Dropdown Flyout WordPress Style) -->
+                    <li class="app-nav-dropdown {{ $isEksporActive ? 'active open' : '' }}">
+                        <button type="button" class="app-nav-dropdown-toggle" onclick="toggleNavDropdown(this)">
                             <div class="app-nav-item-left">
                                 <i class="fi fi-rr-download app-nav-icon"></i>
-                                <span>Ekspor Data Tiket (CSV)</span>
+                                <span>Ekspor</span>
                             </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.riwayat.export-logs', ['format' => 'csv']) }}" class="app-nav-item">
-                            <div class="app-nav-item-left">
-                                <i class="fi fi-rr-document app-nav-icon"></i>
-                                <span>Ekspor Log Audit (CSV)</span>
-                            </div>
-                        </a>
+                            <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
+                        </button>
+                        <ul class="app-nav-submenu">
+                            <li>
+                                <a href="{{ route('admin.riwayat.export') }}" class="app-nav-subitem {{ request()->routeIs('admin.riwayat.export') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-file-chart-line"></i>
+                                    <span>Ekspor Tiket</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.riwayat.export-logs', ['format' => 'csv']) }}" class="app-nav-subitem {{ request()->routeIs('admin.riwayat.export-logs') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-document"></i>
+                                    <span>Ekspor Log</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </aside>
@@ -149,6 +175,14 @@
         </div>
     </div>
 
+    <script>
+        function toggleNavDropdown(btn) {
+            const parent = btn.closest('.app-nav-dropdown');
+            if (parent) {
+                parent.classList.toggle('open');
+            }
+        }
+    </script>
     @yield('scripts')
     @include('partials.idle_session_timer')
 </body>

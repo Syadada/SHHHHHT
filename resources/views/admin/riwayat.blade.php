@@ -27,16 +27,6 @@
             color: #0842a0;
             text-decoration: underline;
         }
-        .instansi-title-link .link-arrow {
-            opacity: 0;
-            transform: translateX(-3px);
-            transition: all 0.2s ease;
-            font-size: 12px;
-        }
-        .instansi-title-link:hover .link-arrow {
-            opacity: 1;
-            transform: translateX(0);
-        }
     </style>
 </head>
 <body>
@@ -59,13 +49,6 @@
 
             <!-- Right Controls -->
             <div class="app-header-right">
-                <a href="{{ route('profile') }}" class="btn-header-link">
-                    <span><i class="fi fi-rr-user"></i> Profil Saya</span>
-                </a>
-                <a href="{{ route('admin.users.index') }}" class="btn-header-link">
-                    <span><i class="fi fi-rr-users"></i> User & Log Laptop</span>
-                </a>
-
                 <div class="app-user-chip">
                     <div class="app-user-avatar">
                         {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
@@ -76,7 +59,7 @@
                 <form action="{{ route('logout') }}" method="POST" style="display: inline; margin: 0;">
                     @csrf
                     <button type="submit" class="btn-header-logout" title="Keluar dari akun">
-                        Logout
+                        <i class="fi fi-rr-sign-out-alt"></i> Logout
                     </button>
                 </form>
             </div>
@@ -88,67 +71,93 @@
             <!-- Left Sidebar Navigation -->
             <aside class="app-sidebar">
                 <ul class="app-nav-list">
-
-
+                    <!-- 1. Dashboard -->
                     <li>
-                        <a href="{{ route('admin.riwayat') }}" class="app-nav-item active">
+                        <a href="{{ route('admin.dashboard') }}" class="app-nav-item active">
                             <div class="app-nav-item-left">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
-                                </svg>
-                                <span>Manajemen Tiket & Proses</span>
+                                <i class="fi fi-rr-apps app-nav-icon"></i>
+                                <span>Dashboard</span>
                             </div>
-                            <span class="app-nav-badge">{{ $totalTiket }}</span>
                         </a>
                     </li>
 
+                    <!-- 2. Ticket -->
                     <li>
                         <a href="{{ route('admin.tiket.index') }}" class="app-nav-item {{ request()->routeIs('admin.tiket.*') ? 'active' : '' }}">
                             <div class="app-nav-item-left">
-                                <i class="fi fi-rr-ticket" style="font-size: 16px;"></i>
-                                <span>Daftar Tiket Support</span>
+                                <i class="fi fi-rr-ticket app-nav-icon"></i>
+                                <span>Ticket</span>
                             </div>
+                            <span class="app-nav-badge app-nav-badge-tiket">{{ $totalTiket ?? '' }}</span>
                         </a>
                     </li>
 
-                    <li>
-                        <a href="{{ route('admin.users.index') }}" class="app-nav-item">
+                    @php
+                        $isUserActive = request()->routeIs('admin.users.*') || request()->routeIs('admin.logs.*') || request()->routeIs('admin.profile');
+                    @endphp
+                    <!-- 3. User (Dropdown Flyout WordPress Style) -->
+                    <li class="app-nav-dropdown {{ $isUserActive ? 'active open' : '' }}">
+                        <button type="button" class="app-nav-dropdown-toggle" onclick="toggleNavDropdown(this)">
                             <div class="app-nav-item-left">
-                                <svg width="18" height="18" style="width: 18px; height: 18px; flex-shrink: 0;" viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
-                                </svg>
-                                <span>User Management & Log</span>
+                                <i class="fi fi-rr-users app-nav-icon"></i>
+                                <span>User</span>
                             </div>
-                        </a>
+                            <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
+                        </button>
+                        <ul class="app-nav-submenu">
+                            <li>
+                                <a href="{{ route('admin.users.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-users-alt"></i>
+                                    <span>User Management</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.users.create') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.create') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-user-add"></i>
+                                    <span>Buat Akun</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.logs.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-laptop"></i>
+                                    <span>Log</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.profile') }}" class="app-nav-subitem {{ request()->routeIs('admin.profile') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-user"></i>
+                                    <span>Profile</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
-                </ul>
 
-                <div class="app-sidebar-divider"></div>
-                
-                <div class="app-sidebar-section">Ekspor Laporan</div>
-                <ul class="app-nav-list">
-                    <li>
-                        <a href="{{ route('admin.riwayat.export') }}" class="app-nav-item">
+                    @php
+                        $isEksporActive = request()->routeIs('admin.riwayat.export*');
+                    @endphp
+                    <!-- 4. Ekspor (Dropdown Flyout WordPress Style) -->
+                    <li class="app-nav-dropdown {{ $isEksporActive ? 'active open' : '' }}">
+                        <button type="button" class="app-nav-dropdown-toggle" onclick="toggleNavDropdown(this)">
                             <div class="app-nav-item-left">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                                </svg>
-                                <span>Ekspor Data Tiket (CSV)</span>
+                                <i class="fi fi-rr-download app-nav-icon"></i>
+                                <span>Ekspor</span>
                             </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.riwayat.export-logs', ['format' => 'csv']) }}" class="app-nav-item">
-                            <div class="app-nav-item-left">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                </svg>
-                                <span>Ekspor Log Audit (CSV)</span>
-                            </div>
-                        </a>
+                            <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
+                        </button>
+                        <ul class="app-nav-submenu">
+                            <li>
+                                <a href="{{ route('admin.riwayat.export') }}" class="app-nav-subitem {{ request()->routeIs('admin.riwayat.export') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-file-chart-line"></i>
+                                    <span>Ekspor Tiket</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('admin.riwayat.export-logs', ['format' => 'csv']) }}" class="app-nav-subitem {{ request()->routeIs('admin.riwayat.export-logs') ? 'active' : '' }}">
+                                    <i class="fi fi-rr-document"></i>
+                                    <span>Ekspor Log</span>
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </aside>
@@ -176,23 +185,23 @@
                 <div class="dash-hero">
                     <div>
                         <h1 class="dash-hero-title">
-                            Dashboard Manajemen Tiket Layanan Bagi Pakai DTSEN
+                            Dashboard Layanan Bagi Pakai DTSEN
                         </h1>
                         <p class="dash-hero-subtitle">
-                            Verifikasi permohonan instansi, manipulasi alur tahapan proses, dan pantau penyelesaian akses data DTSEN.
+                            Ringkasan statistik, 5 permintaan layanan terbaru, dan 10 aktivitas jejak audit sistem DTSEN.
                         </p>
                     </div>
                     <div class="dash-hero-actions">
-                        <a href="{{ route('admin.riwayat.export') }}" class="btn-pill-outline">
-                            📥 Ekspor CSV Tiket
+                        <a href="{{ route('admin.tiket.index') }}" class="btn-pill-primary">
+                            <i class="fi fi-rr-ticket"></i> Kelola Semua Ticket
                         </a>
-                        <a href="{{ route('admin.users.index') }}" class="btn-pill-primary">
-                            👥 Kelola User & Log
+                        <a href="{{ route('admin.riwayat.export') }}" class="btn-pill-outline">
+                            <i class="fi fi-rr-download"></i> Ekspor Data
                         </a>
                     </div>
                 </div>
 
-                <!-- KPI Metric Cards Grid -->
+                <!-- KPI Metric Cards Grid (Small Cards) -->
                 <div class="dash-metric-grid">
                     <div class="dash-metric-card">
                         <div class="dash-metric-label">Total Tiket Masuk</div>
@@ -219,77 +228,7 @@
                     </div>
                 </div>
 
-                <!-- Filter & Search Bar Tiket DTSEN -->
-                <div class="dash-filter-card">
-                    <form method="GET" action="{{ route('admin.riwayat') }}">
-                        <input type="hidden" name="filter" value="1">
-                        <div style="display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; align-items: flex-end;">
-                            <div style="flex: 2; min-width: 260px;">
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
-                                    Pencarian Tiket / Instansi
-                                </label>
-                                <input type="text" 
-                                       name="search" 
-                                       value="{{ request('search') }}" 
-                                       placeholder="Cari nomor tiket, nama instansi, no surat, atau pemohon..." 
-                                       class="form-input" 
-                                       style="height: 40px; font-size: 13px;">
-                            </div>
-
-                            <div style="flex: 1; min-width: 160px;">
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
-                                    Status Tiket
-                                </label>
-                                <select name="status" class="form-input" style="height: 40px; font-size: 13px;">
-                                    <option value="">Semua Status</option>
-                                    <option value="PROSES" {{ request('status') == 'PROSES' ? 'selected' : '' }}>Sedang Diproses</option>
-                                    <option value="SELESAI" {{ request('status') == 'SELESAI' ? 'selected' : '' }}>Selesai (100%)</option>
-                                </select>
-                            </div>
-
-                            <div style="flex: 1.5; min-width: 200px;">
-                                <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
-                                    Instansi Pemohon
-                                </label>
-                                <select name="instansi" class="form-input" style="height: 40px; font-size: 13px;">
-                                    <option value="">Semua Instansi</option>
-                                    @foreach(($instansis ?? []) as $ins)
-                                        <option value="{{ $ins }}" {{ request('instansi') == $ins ? 'selected' : '' }}>{{ $ins }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;">
-                            <div style="display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end;">
-                                <div style="min-width: 150px;">
-                                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">Tanggal Mulai</label>
-                                    <input type="date" name="date_start" value="{{ request('date_start') }}" class="form-input" style="height: 40px; font-size: 13px;">
-                                </div>
-
-                                <div style="min-width: 150px;">
-                                    <label style="display: block; font-size: 12px; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">Tanggal Selesai</label>
-                                    <input type="date" name="date_end" value="{{ request('date_end') }}" class="form-input" style="height: 40px; font-size: 13px;">
-                                </div>
-                            </div>
-
-                            <div style="display: flex; gap: 8px;">
-                                <button type="submit" class="btn-pill-primary" style="height: 40px; padding: 0 20px;">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                        <circle cx="11" cy="11" r="8"></circle>
-                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                    </svg>
-                                    <span>Terapkan Filter</span>
-                                </button>
-                                <a href="{{ route('admin.riwayat') }}" class="btn-pill-outline" style="height: 40px; line-height: 22px; padding: 8px 16px;">
-                                    Reset
-                                </a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Data Table Tiket DTSEN Terdaftar -->
+                <!-- 1. Permintaan Layanan Terbaru (5 Item) -->
                 <div class="dash-card">
                     <div class="dash-card-header">
                         <div>
@@ -297,39 +236,38 @@
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue-primary)" stroke-width="2">
                                     <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
                                 </svg>
-                                <span>Daftar Tiket Permintaan Bagi Pakai DTSEN</span>
+                                <span>Permintaan Layanan Terbaru (5 Item)</span>
                             </h2>
                             <p class="dash-card-subtitle">
-                                @if(!empty($filterApplied))
-                                    Rekapitulasi data entry tiket permohonan hasil filter. Klik pada <strong>Nama Instansi</strong> untuk membuka halaman baru dengan informasi selengkapnya.
-                                @else
-                                    Data tiket dikosongkan secara default. Gunakan formulir filter di atas lalu klik <strong>Terapkan Filter</strong> untuk memunculkan data.
-                                @endif
+                                Menampilkan permohonan layanan bagi pakai DTSEN baru yang masih dalam proses (belum selesai). Tiket yang telah selesai 100% tersimpan di menu Semua Ticket.
                             </p>
                         </div>
-                        <span class="dash-card-count">
-                            @if(!empty($filterApplied))
-                                Ditemukan: {{ isset($tikets) && method_exists($tikets, 'total') ? $tikets->total() : (is_countable($tikets ?? null) ? count($tikets) : 0) }} Tiket
-                            @else
-                                Status: Menunggu Filter
-                            @endif
-                        </span>
+                        <div>
+                            <a href="{{ route('admin.tiket.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                                Semua Ticket
+                            </a>
+                        </div>
                     </div>
 
                     <div class="table-responsive">
-                        <table class="data-table">
+                        <table class="data-table" style="width: 100%; table-layout: auto;">
                             <thead>
                                 <tr>
-                                    <th style="width: 150px;">No. Tiket</th>
-                                    <th style="min-width: 240px;">Nama Instansi (Klik untuk Info Lengkap)</th>
-                                    <th style="min-width: 180px;">Surat Edaran</th>
-                                    <th style="min-width: 160px;">Variabel DTSEN</th>
-                                    <th style="width: 150px;">Status & Progress</th>
-                                    <th style="text-align: right; width: 180px;">Aksi</th>
+                                    <th style="width: 130px;">No. Tiket</th>
+                                    <th>Nama Instansi</th>
+                                    <th style="width: 150px;">Surat Edaran</th>
+                                    <th style="width: 130px;">Variabel DTSEN</th>
+                                    <th style="width: 130px;">Status & Progress</th>
+                                    <th style="text-align: center; width: 60px;">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse(($tikets ?? []) as $item)
+                                @php
+                                    $itemsToShow = (isset($latestTikets) && $latestTikets->isNotEmpty()) 
+                                        ? $latestTikets->filter(fn($t) => !$t->step5_done && $t->status !== 'SELESAI') 
+                                        : ((isset($tikets) && is_iterable($tikets)) ? collect($tikets)->filter(fn($t) => !$t->step5_done && $t->status !== 'SELESAI')->take(5) : collect());
+                                @endphp
+                                @forelse($itemsToShow as $item)
                                     @php
                                         // Cari step aktif saat ini yang belum OK
                                         $activeStepNum = 1;
@@ -353,12 +291,11 @@
                                             </div>
                                         </td>
 
-                                        <!-- 2. Nama Instansi (Klik menuju ke page baru dengan info selengkapnya) -->
+                                        <!-- 2. Nama Instansi & PIC -->
                                         <td>
                                             <div>
                                                 <a href="{{ route('admin.tiket.show', $item->id) }}" class="instansi-title-link" title="Klik untuk membuka informasi selengkapnya">
                                                     <span>{{ $item->nama_instansi }}</span>
-                                                    <i class="fi fi-rr-arrow-up-right link-arrow"></i>
                                                 </a>
                                             </div>
                                             @if($item->nama_pemohon)
@@ -423,73 +360,150 @@
                                             </div>
                                         </td>
 
-                                        <!-- 6. Aksi (Detail, OK Cepat, Hapus) -->
-                                        <td style="text-align: right;">
-                                            <div style="display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end;">
-                                                <!-- Tombol ke Halaman Baru Info Selengkapnya -->
-                                                <a href="{{ route('admin.tiket.show', $item->id) }}" class="btn-pill-primary" style="padding: 6px 12px; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Buka Halaman Info Selengkapnya">
-                                                    <span>Detail</span>
-                                                    <i class="fi fi-rr-arrow-right"></i>
-                                                </a>
-
-                                                <!-- Tombol Cepat "✓ OK" untuk Admin -->
-                                                @if(!$item->step5_done)
-                                                    <form action="{{ route('admin.tiket.step-ok', $item->id) }}" method="POST" style="margin: 0; display: inline;">
-                                                        @csrf
-                                                        <button type="submit" class="btn-step-ok" style="padding: 5px 8px; font-size: 11px;" title="Selesaikan Progress {{ $activeStepNum }} (Centang Hijau)">
-                                                            <span>✓ OK</span>
-                                                        </button>
-                                                    </form>
-                                                @endif
-
-                                                <!-- Tombol Hapus -->
-                                                <form action="{{ route('admin.riwayat.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus tiket {{ $item->nomor_tiket }} milik {{ $item->nama_instansi }}?');" style="display: inline; margin: 0;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn-row-action delete" style="padding: 5px 8px;" title="Hapus Tiket">
-                                                        <i class="fi fi-rr-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
+                                        <!-- 6. Aksi (Hapus) -->
+                                        <td style="text-align: center;">
+                                            <form action="{{ route('admin.riwayat.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus tiket {{ $item->nomor_tiket }} milik {{ $item->nama_instansi }}?');" style="display: inline; margin: 0;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn-row-action delete" style="padding: 5px 8px;" title="Hapus Tiket">
+                                                    <i class="fi fi-rr-trash"></i>
+                                                </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 @empty
-                                    @if(empty($filterApplied))
-                                        <tr>
-                                            <td colspan="6" style="text-align: center; padding: 60px 24px; color: var(--text-muted);">
-                                                <div style="font-size: 38px; margin-bottom: 12px; color: #0b57d0;">
-                                                    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block;">
-                                                        <circle cx="11" cy="11" r="8"></circle>
-                                                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                                                    </svg>
-                                                </div>
-                                                <div style="font-weight: 700; font-size: 16px; color: var(--text-primary); margin-bottom: 6px;">
-                                                    Tabel Data Tiket Dikosongkan
-                                                </div>
-                                                <div style="font-size: 13px; color: var(--text-muted); max-width: 480px; margin: 0 auto; line-height: 1.5;">
-                                                    Silakan gunakan formulir filter di atas, tentukan kata kunci pencarian, status, atau instansi pemohon, lalu klik <strong>"Terapkan Filter"</strong> untuk menampilkan data.
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @else
-                                        <tr>
-                                            <td colspan="6" style="text-align: center; padding: 50px 20px; color: var(--text-muted);">
-                                                <div style="font-size: 32px; margin-bottom: 10px; color: #94a3b8;"><i class="fi fi-rr-search-alt"></i></div>
-                                                <div style="font-weight: 700; font-size: 15px; color: var(--text-primary);">Tidak ada tiket yang sesuai dengan filter</div>
-                                                <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Coba ubah kata kunci atau klik <strong>Reset</strong> untuk mengatur ulang filter.</div>
-                                            </td>
-                                        </tr>
-                                    @endif
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                                            <div style="font-size: 32px; margin-bottom: 8px; color: #10b981;"><i class="fi fi-rr-check-circle"></i></div>
+                                            <div style="font-weight: 700; font-size: 14px; color: var(--text-primary);">Tidak ada permintaan layanan yang belum selesai</div>
+                                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Semua tiket layanan telah selesai diproses (100%), atau belum ada permohonan baru yang diajukan oleh OPD.</div>
+                                        </td>
+                                    </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
+                </div>
 
-                    @if(isset($tikets) && method_exists($tikets, 'links'))
-                    <div class="dash-pagination">
-                        {{ $tikets->links() }}
+                <!-- 2. Aktivitas Terbaru (10 Entri) -->
+                <div class="dash-card" style="margin-top: 24px;">
+                    <div class="dash-card-header">
+                        <div>
+                            <h2 class="dash-card-title">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue-primary)" stroke-width="2">
+                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                </svg>
+                                <span>Aktivitas Terbaru (10 Entri)</span>
+                            </h2>
+                            <p class="dash-card-subtitle">
+                                Rekaman 10 jejak audit waktu-nyata atas tindakan autentikasi, pembaruan tahapan tiket, dan interaksi pengguna.
+                            </p>
+                        </div>
+                        <div>
+                            <a href="{{ route('admin.logs.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                                Semua Log
+                            </a>
+                        </div>
                     </div>
-                    @endif
+
+                    <div class="table-responsive">
+                        <table class="data-table" style="width: 100%; table-layout: auto;">
+                            <thead>
+                                <tr>
+                                    <th style="width: 140px;">Waktu Kejadian</th>
+                                    <th style="width: 120px;">Aksi / Event</th>
+                                    <th style="width: 150px;">Pengguna & Peran</th>
+                                    <th>Keterangan Aktivitas</th>
+                                    <th style="width: 140px;">IP & Perangkat</th>
+                                    <th style="width: 90px; text-align: center;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $logsToShow = (isset($latestAuditLogs) && $latestAuditLogs->isNotEmpty()) 
+                                        ? $latestAuditLogs 
+                                        : ((isset($auditLogs) && is_iterable($auditLogs)) ? collect($auditLogs)->take(10) : collect());
+                                @endphp
+                                @forelse($logsToShow as $log)
+                                    <tr>
+                                        <!-- 1. Waktu -->
+                                        <td>
+                                            <div style="font-weight: 600; color: #1e293b; font-size: 12px;">
+                                                {{ $log->created_at ? $log->created_at->format('d/m/Y H:i:s') : '-' }} WIB
+                                            </div>
+                                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                                                {{ $log->created_at ? $log->created_at->diffForHumans() : '' }}
+                                            </div>
+                                        </td>
+
+                                        <!-- 2. Event / Aksi -->
+                                        <td>
+                                            <span style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; font-family: var(--font-mono); display: inline-block;">
+                                                {{ $log->action }}
+                                            </span>
+                                        </td>
+
+                                        <!-- 3. Pengguna & Peran -->
+                                        <td>
+                                            <div style="font-weight: 600; color: #1e293b; font-size: 13px;">
+                                                {{ $log->user_name ?: ($log->user ? $log->user->name : 'Sistem / Tamu') }}
+                                            </div>
+                                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                                                {{ $log->role ?: ($log->user ? $log->user->role : 'system') }}
+                                            </div>
+                                        </td>
+
+                                        <!-- 4. Keterangan -->
+                                        <td>
+                                            <div style="font-size: 13px; color: #334155; line-height: 1.45;">
+                                                {{ $log->description ?: '-' }}
+                                            </div>
+                                        </td>
+
+                                        <!-- 5. IP & Perangkat -->
+                                        <td>
+                                            <div style="font-family: var(--font-mono); font-size: 12px; color: #475569;">
+                                                {{ $log->ip_address ?: '-' }}
+                                            </div>
+                                            @php
+                                                $devId = $log->device_id ?: ($log->details['device_id'] ?? null);
+                                            @endphp
+                                            @if($devId)
+                                                <div style="font-size: 11px; color: var(--blue-primary); font-weight: 600; margin-top: 2px;">
+                                                    💻 {{ $devId }}
+                                                </div>
+                                            @endif
+                                        </td>
+
+                                        <!-- 6. Status -->
+                                        <td style="text-align: center;">
+                                            @if(strtoupper($log->status ?? '') === 'SUCCESS')
+                                                <span style="background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block;">
+                                                    ✓ SUCCESS
+                                                </span>
+                                            @elseif(strtoupper($log->status ?? '') === 'FAILED')
+                                                <span style="background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block;">
+                                                    ✕ FAILED
+                                                </span>
+                                            @else
+                                                <span style="background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block;">
+                                                    {{ strtoupper($log->status ?? 'INFO') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                                            <div style="font-size: 30px; margin-bottom: 8px; color: #94a3b8;"><i class="fi fi-rr-time-past"></i></div>
+                                            <div style="font-weight: 700; font-size: 14px; color: var(--text-primary);">Belum ada rekaman aktivitas</div>
+                                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Aktivitas audit sistem akan tercatat secara otomatis di sini.</div>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </main>
@@ -785,5 +799,6 @@
             if (e.target === modalVerif) closeVerifModal();
         });
     </script>
+    @include('partials.idle_session_timer')
 </body>
 </html>

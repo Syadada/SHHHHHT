@@ -123,17 +123,35 @@ class UserController extends Controller
     }
 
     /**
-     * Tambah Akun Perangkat Daerah Baru
+     * Halaman Formulir Buat Akun Pengguna Baru
+     */
+    public function create()
+    {
+        if (!auth()->user()->canManageUsers()) {
+            return redirect()->route('admin.users.index')->with('error', 'Akses Ditolak: Anda tidak memiliki wewenang untuk membuat akun pengguna.');
+        }
+
+        $roles = \App\Models\Role::orderBy('id')->get();
+        return view('admin.users.create', compact('roles'));
+    }
+
+    /**
+     * Tambah Akun Pengguna Baru & Langsung Arahkan ke Pengaturan Hak Akses
      */
     public function storeUser(Request $request)
     {
+        // Pemeriksaan Hak Akses: manage-users (Admin 1 / Super Admin)
+        if (!auth()->user()->canManageUsers()) {
+            return redirect()->route('admin.users.index', ['tab' => 'users'])->with('error', 'Akses Ditolak: Akun Anda tidak memiliki hak akses untuk membuat akun baru.');
+        }
+
         $request->validate([
             'nama_instansi' => 'required|string|max:200',
             'name' => 'required|string|max:150',
             'username' => 'required|string|max:80|unique:users,username',
             'email' => 'required|email|max:150|unique:users,email',
             'password' => 'required|string|min:4',
-            'role' => 'required|in:perangkat_daerah,superadmin',
+            'role_id' => 'nullable|exists:roles,id',
             'nomor_kontak' => 'nullable|string|max:50',
         ], [
             'username.unique' => 'Username ini sudah digunakan.',
@@ -141,23 +159,185 @@ class UserController extends Controller
             'password.min' => 'Password minimal 4 karakter.',
         ]);
 
+        $roleId = $request->role_id;
+        $roleObj = $roleId ? \App\Models\Role::find($roleId) : null;
+        
+        $roleStr = 'perangkat_daerah';
+        if ($roleObj) {
+            if ($roleObj->slug === 'superadmin') {
+                $roleStr = 'superadmin';
+            } elseif (in_array($roleObj->slug, ['admin_user_manager', 'admin_operator', 'eselon2', 'admin'])) {
+                $roleStr = 'admin';
+            } else {
+                $roleStr = 'perangkat_daerah';
+            }
+        }
+
         $user = User::create([
             'nama_instansi' => $request->nama_instansi,
             'name' => $request->name,
             'username' => trim($request->username),
             'email' => trim($request->email),
             'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'role' => $roleStr,
+            'role_id' => $roleId,
             'nomor_kontak' => $request->nomor_kontak,
         ]);
 
         AuditLogger::log(
             'USER_CREATED',
-            "Super Admin membuat akun [{$user->username}] untuk instansi {$user->nama_instansi} (Role: {$user->role}).",
+            "Administrator membuat akun [{$user->username}] ({$user->nama_instansi}) dengan peran " . ($roleObj ? $roleObj->name : 'Pengguna') . ". Melanjutkan ke pengaturan hak akses.",
+            'SUCCESS',
+            ['target_user_id' => $user->id, 'created_by' => auth()->user()->name]
+        );
+
+        // Setelah klik buat akun, kita otomatis beralih ke page baru untuk mengedit hak akses akun tersebut!
+        return redirect()->route('admin.users.edit-access', $user->id)
+            ->with('success', "Akun [{$user->username}] berhasil dibuat! Silakan sesuaikan hak akses dan wewenang akun di bawah ini.");
+    }
+
+    /**
+     * Halaman Baru: Edit Hak Akses untuk Akun Pengguna Tertentu
+     */
+    public function editAccess($id)
+    {
+        if (!auth()->user()->canManageUsers() && !auth()->user()->canManageAccess()) {
+            return redirect()->route('admin.users.index')->with('error', 'Akses Ditolak: Anda tidak memiliki wewenang untuk mengedit hak akses.');
+        }
+
+        $user = User::with('roleRelation.privileges')->findOrFail($id);
+        $roles = \App\Models\Role::with('privileges')->get();
+        $privileges = \App\Models\Privilege::orderBy('module')->orderBy('id')->get()->groupBy('module');
+        $allPrivilegesList = \App\Models\Privilege::orderBy('id')->get();
+
+        return view('admin.users.edit_access', compact('user', 'roles', 'privileges', 'allPrivilegesList'));
+    }
+
+    /**
+     * Simpan Perubahan Hak Akses Akun Pengguna
+     */
+    public function updateAccess(Request $request, $id)
+    {
+        if (!auth()->user()->canManageUsers() && !auth()->user()->canManageAccess()) {
+            return redirect()->route('admin.users.index')->with('error', 'Akses Ditolak.');
+        }
+
+        $user = User::findOrFail($id);
+
+        $request->validate([
+            'role_id' => 'required|exists:roles,id',
+            'privilege_ids' => 'nullable|array',
+            'privilege_ids.*' => 'exists:privileges,id',
+        ]);
+
+        $selectedRole = \App\Models\Role::findOrFail($request->role_id);
+        $privilegeIds = $request->input('privilege_ids', []);
+
+        // Ambil default privilege ID dari role yang dipilih
+        $defaultPrivilegeIds = $selectedRole->privileges->pluck('id')->toArray();
+        sort($defaultPrivilegeIds);
+        $newPrivIds = array_map('intval', $privilegeIds);
+        sort($newPrivIds);
+
+        // Jika hak akses dicustomize (berbeda dari preset bawaan role):
+        if ($defaultPrivilegeIds != $newPrivIds && !empty($newPrivIds)) {
+            $customRoleSlug = 'custom_user_' . $user->id;
+            $customRole = \App\Models\Role::updateOrCreate(
+                ['slug' => $customRoleSlug],
+                [
+                    'name' => $selectedRole->name . ' (' . $user->username . ')',
+                    'deskripsi' => 'Hak akses khusus yang disesuaikan untuk akun ' . $user->username . ' (' . $user->nama_instansi . ')',
+                ]
+            );
+            $customRole->privileges()->sync($newPrivIds);
+            $user->role_id = $customRole->id;
+        } else {
+            $user->role_id = $selectedRole->id;
+        }
+
+        // Tentukan level peran untuk autentikasi sistem
+        $allPrivs = \App\Models\Privilege::whereIn('id', $newPrivIds)->pluck('slug')->toArray();
+        if ($selectedRole->slug === 'superadmin' || in_array('manage-access', $allPrivs)) {
+            $user->role = 'superadmin';
+        } elseif (in_array('manipulate-steps', $allPrivs) || in_array('manage-users', $allPrivs) || in_array('verify-se', $allPrivs)) {
+            $user->role = 'admin';
+        } else {
+            $user->role = 'perangkat_daerah';
+        }
+
+        $user->save();
+
+        AuditLogger::log(
+            'USER_ACCESS_UPDATED',
+            "Administrator memperbarui hak akses akun [{$user->username}] ({$user->nama_instansi}) menjadi " . ($user->roleRelation ? $user->roleRelation->name : $user->role) . ".",
+            'SUCCESS',
+            [
+                'target_user_id' => $user->id,
+                'target_username' => $user->username,
+                'role_id' => $user->role_id,
+                'privileges' => $allPrivs,
+                'updated_by' => auth()->user()->name
+            ]
+        );
+
+        return redirect()->route('admin.users.show', $user->id)
+            ->with('success', "Hak akses untuk akun [{$user->username}] berhasil disimpan dan langsung aktif!");
+    }
+
+    /**
+     * Halaman Profil Akun Administrator
+     */
+    public function profile()
+    {
+        $user = auth()->user()->load('roleRelation.privileges');
+        
+        $recentLogs = AuditLog::where(function($q) use ($user) {
+                $q->where('user_id', $user->id)
+                  ->orWhere('user_name', $user->name)
+                  ->orWhere('description', 'like', "%{$user->username}%");
+            })
+            ->latest()
+            ->take(10)
+            ->get();
+
+        return view('admin.profile', compact('user', 'recentLogs'));
+    }
+
+    /**
+     * Update Informasi Profil & Kata Sandi Administrator
+     */
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'name' => 'required|string|max:150',
+            'email' => 'required|email|max:150|unique:users,email,' . $user->id,
+            'nama_instansi' => 'nullable|string|max:200',
+            'nomor_kontak' => 'nullable|string|max:50',
+            'password' => 'nullable|string|min:4|confirmed',
+        ], [
+            'email.unique' => 'Email ini sudah digunakan oleh akun lain.',
+            'password.min' => 'Password baru minimal 4 karakter.',
+            'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = trim($request->email);
+        if ($request->filled('nama_instansi')) $user->nama_instansi = $request->nama_instansi;
+        if ($request->filled('nomor_kontak')) $user->nomor_kontak = $request->nomor_kontak;
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        $user->save();
+
+        AuditLogger::log(
+            'PROFILE_UPDATED',
+            "Administrator [{$user->username}] memperbarui informasi profil akun pribadinya.",
             'SUCCESS'
         );
 
-        return redirect()->route('admin.users.index', ['tab' => 'users'])->with('success', "Akun [{$user->username}] ({$user->nama_instansi}) berhasil dibuat.");
+        return redirect()->route('admin.profile')->with('success', 'Profil dan informasi akun Anda berhasil diperbarui.');
     }
 
     /**
@@ -165,6 +345,11 @@ class UserController extends Controller
      */
     public function destroyUser($id)
     {
+        // Pemeriksaan Hak Akses: manage-users (Admin 1 / Super Admin)
+        if (!auth()->user()->canManageUsers()) {
+            return redirect()->route('admin.users.index', ['tab' => 'users'])->with('error', 'Akses Ditolak: Akun Anda tidak memiliki hak akses untuk menghapus pengguna.');
+        }
+
         $user = User::findOrFail($id);
 
         if ($user->id === auth()->id()) {

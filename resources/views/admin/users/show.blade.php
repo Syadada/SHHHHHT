@@ -25,10 +25,14 @@
                 Rincian lengkap profil instansi, hak akses, jejak digital perangkat, dan riwayat permohonan.
             </p>
         </div>
-        <div>
+        <div style="display: flex; gap: 10px;">
+            <a href="{{ route('admin.users.edit-access', $user->id) }}" class="btn-pill-primary" style="background: #f59e0b; border-color: #d97706; display: inline-flex; align-items: center; gap: 6px;" title="Atur hak akses & wewenang akun ini">
+                <i class="fi fi-rr-shield-check"></i>
+                <span>Edit Hak Akses Akun</span>
+            </a>
             <a href="{{ route('admin.users.index') }}" class="btn-pill-secondary">
                 <i class="fi fi-rr-arrow-left"></i>
-                <span>Kembali ke Daftar Pengguna</span>
+                <span>Kembali ke User</span>
             </a>
         </div>
     </div>
@@ -46,15 +50,26 @@
                         <div class="user-modal-strip-instansi">{{ $user->nama_instansi ?: 'Pemerintah Daerah' }}</div>
                     </div>
                 </div>
-                <div>
-                    @if($user->isSuperAdmin())
-                        <span class="role-badge-super">
-                            <i class="fi fi-rr-shield-check"></i> {{ $user->roleRelation ? $user->roleRelation->name : 'Super Administrator' }}
-                        </span>
-                    @else
-                        <span class="role-badge-opd">
-                            <i class="fi fi-rr-building"></i> {{ $user->roleRelation ? $user->roleRelation->name : 'Perangkat Daerah (OPD)' }}
-                        </span>
+                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                    <div>
+                        @if($user->isSuperAdmin())
+                            <span class="role-badge-super">
+                                <i class="fi fi-rr-shield-check"></i> {{ $user->roleRelation ? $user->roleRelation->name : 'Super Administrator' }}
+                            </span>
+                        @else
+                            <span class="role-badge-opd">
+                                <i class="fi fi-rr-building"></i> {{ $user->roleRelation ? $user->roleRelation->name : 'Perangkat Daerah (OPD)' }}
+                            </span>
+                        @endif
+                    </div>
+                    @if($user->roleRelation && $user->roleRelation->privileges && $user->roleRelation->privileges->count() > 0)
+                        <div style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 380px;">
+                            @foreach($user->roleRelation->privileges as $priv)
+                                <span style="font-size: 10px; font-weight: 700; background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 2px 7px; border-radius: 6px;">
+                                    ✓ {{ $priv->name }}
+                                </span>
+                            @endforeach
+                        </div>
                     @endif
                 </div>
             </div>

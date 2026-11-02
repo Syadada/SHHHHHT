@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>
+<head>33
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Masuk Administrator — Layanan Bagi Pakai DTSEN</title>
+    <title>Login ADMINISTRATOR</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,42 +18,12 @@
         
         <!-- Standard White Form Card with Dark Slate Accents -->
         <div class="form-card login-card-admin">
-            
-            <!-- Top Utility Bar: Admin Badge & Language Selector -->
-            <div class="form-top-bar form-group-mb-20">
-                <div class="login-chip-admin">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg>
-                    <span>PORTAL KHUSUS ADMINISTRATOR</span>
-                </div>
-
-                <div class="lang-selector-box">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1 4-10z"></path>
-                    </svg>
-                    <select id="langSwitcher" class="lang-dropdown" aria-label="Pilih Bahasa">
-                        <option value="id">🇮🇩 Bahasa Indonesia</option>
-                        <option value="en">🇬🇧 English</option>
-                    </select>
-                </div>
-            </div>
 
             <div class="form-header form-group-mb-24">
-                <h1 class="form-title login-title-admin">Masuk Administrator</h1>
-                <p class="form-subtitle">Autentikasi verifikator Walidata untuk mengelola tiket permohonan dan verifikasi bagi pakai DTSEN.</p>
+                <h1 class="form-title login-title-admin">LOGIN ADMINISTRATOR</h1>
             </div>
 
-            <!-- Laptop Device Identification Badge -->
-            <div class="login-device-badge">
-                <span><i class="fi fi-rr-laptop login-title-admin"></i> <strong>ID Laptop Admin:</strong></span>
-                <span id="detectedLaptopId" class="login-device-id-admin">
-                    Memuat...
-                </span>
-            </div>
+           
 
             @if(isset($errors) && $errors->any())
                 <div class="form-alert-error form-group-mb-16">
@@ -66,7 +36,7 @@
 
                 <div class="form-group form-group-mb-16">
                     <label for="input_login" class="form-label">
-                        <span>Username atau Email Administrator</span> <span class="form-required">*</span>
+                        <span>Username atau Email</span> <span class="form-required">*</span>
                     </label>
                     <input type="text" 
                            name="login" 
@@ -75,23 +45,25 @@
                            value="{{ old('login') }}" 
                            placeholder="Masukkan akun admin..." 
                            required 
-                           autofocus>
+                           autofocus
+                           autocomplete="username">
                 </div>
 
                 <div class="form-group form-group-mb-24">
                     <label for="input_password" class="form-label">
-                        <span>Kata Sandi Administrator</span> <span class="form-required">*</span>
+                        <span>Kata Sandi</span> <span class="form-required">*</span>
                     </label>
                     <input type="password" 
                            name="password" 
                            id="input_password" 
                            class="form-control" 
                            placeholder="••••••••" 
-                           required>
+                           required
+                           autocomplete="current-password">
                 </div>
 
                 <button type="submit" class="form-btn-submit login-btn-admin">
-                    <span>Masuk ke Dashboard Administrator</span>
+                    <span>Masuk ke Dashboard</span>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -102,10 +74,7 @@
 
         <!-- Footer Notice -->
         <footer class="form-footer">
-            <p>Portal Pengendalian Data Terpadu Sosial Ekonomi Nasional (DTSEN) — Administrator</p>
-            <p class="login-footer-desc">
-                Akses Administrator terproteksi secara ketat. Semua percobaan akses ilegal diawasi dan dicatat.
-            </p>
+            <p>Kebijakan Privasi</p>
         </footer>
 
     </div>

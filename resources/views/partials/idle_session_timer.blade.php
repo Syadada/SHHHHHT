@@ -1,8 +1,8 @@
 @auth
-<!-- Pengatur Waktu Sesi Aktif 90 Detik (Auto Logout ke Login Biasa jika Idle) -->
+<!-- Pengatur Waktu Sesi Aktif 5 Menit (Auto Logout ke Login Biasa jika Idle) -->
 <script>
 (function() {
-    var maxIdleSeconds = 90;
+    var maxIdleSeconds = {{ (int) config('session.lifetime', 5) * 60 }};
     var idleSeconds = 0;
     var logoutUrl = "{{ route('logout') }}";
     var csrfToken = "{{ csrf_token() }}";

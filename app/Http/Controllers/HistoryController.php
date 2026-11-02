@@ -59,9 +59,25 @@ class HistoryController extends Controller
 
             $tikets = $query->paginate(15)->withQueryString();
         } else {
-            // Kosongkan daftar tiket secara default sampai pengguna menerapkan filter
-            $tikets = TiketDtsen::whereRaw('1 = 0')->paginate(15);
+            // Tampilkan tiket permohonan layanan terbaru yang masih aktif (belum selesai)
+            $tikets = TiketDtsen::where('step5_done', false)
+                ->where(function ($q) {
+                    $q->whereNull('status')->orWhere('status', '!=', 'SELESAI');
+                })
+                ->latest()
+                ->take(5)
+                ->get();
         }
+
+        // Permintaan layanan terbaru (5 entri): HANYA untuk proses yang baru dan belum selesai
+        $latestTikets = TiketDtsen::where('step5_done', false)
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'SELESAI');
+            })
+            ->latest()
+            ->take(5)
+            ->get();
+        $latestAuditLogs = AuditLog::latest()->take(10)->get();
 
         $instansis = TiketDtsen::whereNotNull('nama_instansi')
             ->where('nama_instansi', '!=', '')
@@ -100,6 +116,8 @@ class HistoryController extends Controller
 
         return view('admin.riwayat', compact(
             'tikets',
+            'latestTikets',
+            'latestAuditLogs',
             'filterApplied',
             'totalTiket',
             'totalHariIni',
@@ -118,6 +136,23 @@ class HistoryController extends Controller
      */
     public function stepOk(Request $request, $id)
     {
+        // Pemeriksaan Hak Akses: Hanya Admin dengan privilege 'manipulate-steps' (Admin 2 / Super Admin)
+        if (!auth()->user()->canManipulateSteps()) {
+            AuditLogger::log(
+                'UNAUTHORIZED_ACTION',
+                "Pengguna " . auth()->user()->name . " mencoba menyetujui tahapan tiket #{$id} tanpa hak akses 'manipulate-steps'.",
+                'WARNING',
+                ['user_id' => auth()->id(), 'attempted_action' => 'manipulate-steps']
+            );
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses Ditolak: Anda tidak memiliki hak akses untuk memanipulasi atau memperbarui tahapan proses tiket.'
+                ], 403);
+            }
+            return redirect()->back()->with('error', 'Akses Ditolak: Akun Anda tidak memiliki hak akses untuk memanipulasi atau memperbarui tahapan proses tiket (Khusus Operator / Super Admin).');
+        }
+
         $tiket = TiketDtsen::findOrFail($id);
         $stepFinished = null;
 
@@ -185,6 +220,11 @@ class HistoryController extends Controller
      */
     public function updateSteps(Request $request, $id)
     {
+        // Pemeriksaan Hak Akses: manipulate-steps
+        if (!auth()->user()->canManipulateSteps()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Akun Anda tidak memiliki hak akses untuk mengubah alur tahapan proses tiket.');
+        }
+
         $tiket = TiketDtsen::findOrFail($id);
 
         $tiket->step1_done = $request->boolean('step1_done');
@@ -236,6 +276,11 @@ class HistoryController extends Controller
      */
     public function verifikasiVariabel(Request $request, $id)
     {
+        // Pemeriksaan Hak Akses: verify-se
+        if (!auth()->user()->canVerifySe()) {
+            return redirect()->back()->with('error', 'Akses Ditolak: Akun Anda tidak memiliki hak akses untuk memverifikasi dokumen atau variabel.');
+        }
+
         $tiket = TiketDtsen::findOrFail($id);
 
         $request->validate([

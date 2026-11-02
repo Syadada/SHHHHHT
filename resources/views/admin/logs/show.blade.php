@@ -257,17 +257,20 @@
             <table class="data-table" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th style="width: 70px;">ID</th>
+                        <th style="width: 70px;">ID Log</th>
                         <th style="width: 140px;">Waktu</th>
                         <th style="min-width: 160px;">Aksi</th>
                         <th>Keterangan Aktivitas</th>
-                        <th style="width: 100px; text-align: right;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($relatedLogs as $rel)
                         <tr>
-                            <td><strong>#{{ $rel->id }}</strong></td>
+                            <td>
+                                <a href="{{ route('admin.logs.show', $rel->id) }}" style="font-family: var(--font-mono); font-weight: 700; color: #0b57d0; text-decoration: none;" title="Buka Detail Log #{{ $rel->id }}">
+                                    #{{ $rel->id }}
+                                </a>
+                            </td>
                             <td style="font-size: 12px; color: #64748b;">
                                 {{ \Carbon\Carbon::parse($rel->created_at)->format('d/m/Y H:i') }} WIB
                             </td>
@@ -276,11 +279,6 @@
                             </td>
                             <td style="font-size: 13px; color: #334155;">
                                 {{ $rel->description }}
-                            </td>
-                            <td style="text-align: right;">
-                                <a href="{{ route('admin.logs.show', $rel->id) }}" class="btn-pill-outline" style="padding: 3px 8px; font-size: 11px; text-decoration: none;">
-                                    Detail
-                                </a>
                             </td>
                         </tr>
                     @endforeach

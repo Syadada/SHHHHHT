@@ -110,10 +110,9 @@
                 <thead>
                     <tr>
                         <th style="min-width: 220px;">1. Nama Instansi</th>
-                        <th style="min-width: 220px;">2. Surat Edaran (Klik untuk Detail)</th>
+                        <th style="min-width: 220px;">2. Surat Edaran</th>
                         <th style="min-width: 150px; white-space: nowrap;">3. Waktu Tiket Dibuat</th>
                         <th style="min-width: 220px;">4. Status & Nomor BAST</th>
-                        <th style="text-align: right; min-width: 130px;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,7 +121,9 @@
                             <!-- 1. Nama Instansi -->
                             <td>
                                 <div class="ticket-table-instansi">
-                                    {{ $item->nama_instansi }}
+                                    <a href="{{ route('opd.riwayat-bagi-data.show', $item->id) }}" style="color: #0b57d0; text-decoration: none; font-weight: 700;" title="Buka Detail">
+                                        {{ $item->nama_instansi }}
+                                    </a>
                                 </div>
                                 @if($item->tiket)
                                     <div class="ticket-detail-sub">
@@ -137,9 +138,6 @@
                                     <i class="fi fi-rr-document"></i>
                                     <span>{{ $item->no_surat_edaran }}</span>
                                 </a>
-                                <div class="ticket-detail-sub" style="margin-top: 4px;">
-                                    Klik untuk rincian lengkap & perangkat &rarr;
-                                </div>
                             </td>
 
                             <!-- 3. Tanggal dan Waktu Tiket Dibuat -->
@@ -164,18 +162,10 @@
                                     Waktu BAST: {{ $item->tanggal_bast_selesai ? $item->tanggal_bast_selesai->format('d F Y, H:i') . ' WIB' : 'Selesai Sesuai Jadwal' }}
                                 </div>
                             </td>
-
-                            <!-- 5. Aksi Detail Link -->
-                            <td style="text-align: right;">
-                                <a href="{{ route('opd.riwayat-bagi-data.show', $item->id) }}" class="btn-pill-primary" style="padding: 6px 14px; font-size: 12px; text-decoration: none;" title="Buka Detail">
-                                    <span>Detail</span>
-                                    <i class="fi fi-rr-arrow-right"></i>
-                                </a>
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="ticket-empty-cell">
+                            <td colspan="4" class="ticket-empty-cell">
                                 <div class="ticket-empty-icon"><i class="fi fi-rr-folder"></i></div>
                                 <div class="ticket-empty-title">Belum Ada Data Riwayat Bagi Data DTSEN Resmi</div>
                                 <div class="ticket-empty-desc">

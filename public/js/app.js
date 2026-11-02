@@ -406,3 +406,11 @@ function handleFileSelect(input) {
 function printBlankForm() {
     window.open('/formulir/blanko', '_blank');
 }
+
+// 8. Sidebar Navigation Dropdown Toggle
+function toggleNavDropdown(btn) {
+    const parent = btn.closest('.app-nav-dropdown');
+    if (parent) {
+        parent.classList.toggle('open');
+    }
+}

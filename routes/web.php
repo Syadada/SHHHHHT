@@ -104,20 +104,33 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/riwayat/export', [HistoryController::class, 'exportCsv'])->name('riwayat.export');
         Route::get('/riwayat/export-logs', [HistoryController::class, 'exportLogs'])->name('riwayat.export-logs');
         
-        // User Management
+        // User: 1.a User Management, 1.b Buat Akun & Edit Hak Akses, 1.c Log Akun, 1.d Profile
         Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+        Route::get('/users/{id}', [UserController::class, 'show'])->whereNumber('id')->name('users.show');
         Route::post('/users', [UserController::class, 'storeUser'])->name('users.store');
-        Route::delete('/users/{id}', [UserController::class, 'destroyUser'])->name('users.destroy');
+        Route::get('/users/{id}/access', [UserController::class, 'editAccess'])->whereNumber('id')->name('users.edit-access');
+        Route::post('/users/{id}/access', [UserController::class, 'updateAccess'])->whereNumber('id')->name('users.update-access');
+        Route::delete('/users/{id}', [UserController::class, 'destroyUser'])->whereNumber('id')->name('users.destroy');
         
         // Log Laptop & Audit Keamanan
         Route::get('/logs', [UserController::class, 'logsIndex'])->name('logs.index');
         Route::get('/logs/{id}', [UserController::class, 'logsShow'])->whereNumber('id')->name('logs.show');
+
+        // Profile Administrator
+        Route::get('/profile', [UserController::class, 'profile'])->name('profile');
+        Route::post('/profile', [UserController::class, 'updateProfile'])->name('profile.update');
         
         // Input & Kelola Tabel Riwayat Bagi Pakai Data DTSEN Resmi
         Route::get('/riwayat-bagi-data/{id}', [UserController::class, 'showRiwayatBagiData'])->whereNumber('id')->name('riwayat-bagi-data.show');
         Route::post('/riwayat-bagi-data', [UserController::class, 'storeRiwayatBagiData'])->name('riwayat-bagi-data.store');
         Route::delete('/riwayat-bagi-data/{id}', [UserController::class, 'destroyRiwayatBagiData'])->name('riwayat-bagi-data.destroy');
+
+        // Hak Akses & Peran Administrator (Filament Access Control)
+        Route::get('/access-control', [\App\Http\Controllers\AdminAccessController::class, 'index'])->name('access.index');
+        Route::post('/access-control', [\App\Http\Controllers\AdminAccessController::class, 'storeAdmin'])->name('access.store');
+        Route::post('/access-control/{id}/update', [\App\Http\Controllers\AdminAccessController::class, 'updateAccess'])->name('access.update');
+        Route::delete('/access-control/{id}', [\App\Http\Controllers\AdminAccessController::class, 'destroyAdmin'])->name('access.destroy');
     });
 });
 

@@ -52,6 +52,59 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
+    /**
+     * Memeriksa apakah pengguna memiliki privilege / hak akses tertentu
+     */
+    public function hasPrivilege(string $slug): bool
+    {
+        // Akun utama superadmin selalu memiliki seluruh hak akses
+        if ($this->role === 'superadmin' || $this->username === 'admin') {
+            return true;
+        }
+
+        if (!$this->relationLoaded('roleRelation')) {
+            $this->load('roleRelation.privileges');
+        }
+
+        if ($this->roleRelation && $this->roleRelation->privileges) {
+            return $this->roleRelation->privileges->contains('slug', $slug);
+        }
+
+        return false;
+    }
+
+    /**
+     * Hak akses membuat & mengelola akun pengguna (Admin 1)
+     */
+    public function canManageUsers(): bool
+    {
+        return $this->hasPrivilege('manage-users');
+    }
+
+    /**
+     * Hak akses memanipulasi & memperbarui alur tahapan proses tiket (Admin 2)
+     */
+    public function canManipulateSteps(): bool
+    {
+        return $this->hasPrivilege('manipulate-steps');
+    }
+
+    /**
+     * Hak akses verifikasi dokumen surat edaran & variabel
+     */
+    public function canVerifySe(): bool
+    {
+        return $this->hasPrivilege('verify-se');
+    }
+
+    /**
+     * Hak akses modul konfigurasi hak akses admin (Filament Access Control)
+     */
+    public function canManageAccess(): bool
+    {
+        return $this->role === 'superadmin' || $this->username === 'admin' || $this->hasPrivilege('manage-access');
+    }
+
     public function riwayatBagiDatas()
     {
         return $this->hasMany(RiwayatBagiDataDtsen::class, 'user_id');

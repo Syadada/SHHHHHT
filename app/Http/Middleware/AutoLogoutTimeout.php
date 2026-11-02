@@ -11,9 +11,15 @@ use Symfony\Component\HttpFoundation\Response;
 class AutoLogoutTimeout
 {
     /**
-     * Waktu timeout sesi dalam detik (90 detik).
+     * Waktu timeout sesi dalam detik (5 menit = 300 detik).
      */
-    protected int $timeoutSeconds = 90;
+    protected int $timeoutSeconds = 300;
+
+    public function __construct()
+    {
+        $configuredMinutes = (int) config('session.lifetime', 5);
+        $this->timeoutSeconds = $configuredMinutes > 0 ? $configuredMinutes * 60 : 300;
+    }
 
     /**
      * Handle an incoming request.
@@ -30,8 +36,8 @@ class AutoLogoutTimeout
 
                 // Catat di Audit Logger
                 AuditLogger::log(
-                    'SESSION_TIMEOUT_90S',
-                    "Sesi {$userName} berakhir otomatis karena tidak ada aktivitas selama 90 detik.",
+                    'SESSION_TIMEOUT_5M',
+                    "Sesi {$userName} berakhir otomatis karena tidak ada aktivitas selama 5 menit.",
                     'WARNING',
                     [
                         'user_id' => $user ? $user->id : null,
@@ -47,7 +53,7 @@ class AutoLogoutTimeout
 
                 if ($request->expectsJson()) {
                     return response()->json([
-                        'message' => 'Sesi Anda telah berakhir karena tidak ada aktivitas selama 90 detik.',
+                        'message' => 'Sesi Anda telah berakhir karena tidak ada aktivitas selama 5 menit.',
                         'redirect' => route('login')
                     ], 401);
                 }
