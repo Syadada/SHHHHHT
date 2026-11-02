@@ -3,6 +3,22 @@
 @section('title', 'Daftar Tiket Support — Admin Walidata')
 
 @section('content')
+@php
+    $currentSort = request('sort', 'terbaru');
+    $sortOptions = [
+        'terbaru' => ['icon' => 'fi-rr-clock', 'label' => 'Dibuat: Terbaru (Desc)'],
+        'terlama' => ['icon' => 'fi-rr-time-past', 'label' => 'Dibuat: Terlama (Asc)'],
+        'updated_desc' => ['icon' => 'fi-rr-refresh', 'label' => 'Terakhir Diperbarui (Desc)'],
+        'updated_asc' => ['icon' => 'fi-rr-history', 'label' => 'Terlama Diperbarui (Asc)'],
+        'alphabet_asc' => ['icon' => 'fi-rr-sort-alpha-down', 'label' => 'Instansi: A → Z (Asc)'],
+        'alphabet_desc' => ['icon' => 'fi-rr-sort-alpha-up', 'label' => 'Instansi: Z → A (Desc)'],
+        'tiket_asc' => ['icon' => 'fi-rr-sort-numeric-down', 'label' => 'No. Tiket: Asc (A → Z)'],
+        'tiket_desc' => ['icon' => 'fi-rr-sort-numeric-up', 'label' => 'No. Tiket: Desc (Z → A)'],
+        'progress_desc' => ['icon' => 'fi-rr-chart-histogram', 'label' => 'Progress: Tertinggi (100% → 0%)'],
+        'progress_asc' => ['icon' => 'fi-rr-chart-line-down', 'label' => 'Progress: Terendah (0% → 100%)'],
+    ];
+    $activeSort = $sortOptions[$currentSort] ?? $sortOptions['terbaru'];
+@endphp
 <div class="ticket-stack-container">
 
     <!-- Breadcrumb Navigasi Admin -->
@@ -41,18 +57,34 @@
                         <option value="REVISI" {{ request('status') === 'REVISI' ? 'selected' : '' }}>Perlu Perbaikan</option>
                     </select>
 
-                    <select name="sort" onchange="this.form.submit()" class="form-select ticket-filter-select" style="min-width: 195px;" title="Urutkan Data Tiket">
-                        <option value="terbaru" {{ (request('sort') === 'terbaru' || (!request('sort') && !request('status'))) ? 'selected' : '' }}>🕒 Dibuat: Terbaru (Desc)</option>
-                        <option value="terlama" {{ request('sort') === 'terlama' || request('sort') === 'asc' ? 'selected' : '' }}>⏳ Dibuat: Terlama (Asc)</option>
-                        <option value="updated_desc" {{ request('sort') === 'updated_desc' ? 'selected' : '' }}>🔄 Terakhir Diperbarui (Desc)</option>
-                        <option value="updated_asc" {{ request('sort') === 'updated_asc' ? 'selected' : '' }}>⌛ Terlama Diperbarui (Asc)</option>
-                        <option value="alphabet_asc" {{ request('sort') === 'alphabet_asc' ? 'selected' : '' }}>🔤 Instansi: A → Z (Asc)</option>
-                        <option value="alphabet_desc" {{ request('sort') === 'alphabet_desc' ? 'selected' : '' }}>🔠 Instansi: Z → A (Desc)</option>
-                        <option value="tiket_asc" {{ request('sort') === 'tiket_asc' ? 'selected' : '' }}>🔢 No. Tiket: Asc (A → Z)</option>
-                        <option value="tiket_desc" {{ request('sort') === 'tiket_desc' ? 'selected' : '' }}>🔢 No. Tiket: Desc (Z → A)</option>
-                        <option value="progress_desc" {{ request('sort') === 'progress_desc' ? 'selected' : '' }}>📊 Progress: Tertinggi (100% → 0%)</option>
-                        <option value="progress_asc" {{ request('sort') === 'progress_asc' ? 'selected' : '' }}>📉 Progress: Terendah (0% → 100%)</option>
-                    </select>
+                    <!-- Custom Flaticon Sort Dropdown (Zero OS Emojis, 100% Flat Icon) -->
+                    <div class="custom-flaticon-dropdown" id="sort-flaticon-dropdown">
+                        <button type="button" class="custom-flaticon-btn" id="sort-dropdown-toggle" title="Urutkan Data Tiket">
+                            <i class="fi {{ $activeSort['icon'] }} sort-active-icon"></i>
+                            <span>{{ $activeSort['label'] }}</span>
+                            <i class="fi fi-rr-angle-small-down sort-caret"></i>
+                        </button>
+
+                        <div class="custom-flaticon-menu">
+                            <div class="custom-flaticon-header">
+                                <i class="fi fi-rr-sort-alt"></i> Urutkan Berdasarkan
+                            </div>
+
+                            @foreach($sortOptions as $key => $opt)
+                                @if(in_array($key, ['updated_desc', 'alphabet_asc', 'tiket_asc', 'progress_desc']))
+                                    <div class="custom-flaticon-divider"></div>
+                                @endif
+                                <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => $key])) }}" 
+                                   class="custom-flaticon-item {{ $currentSort === $key ? 'active' : '' }}">
+                                    <i class="fi {{ $opt['icon'] }}"></i>
+                                    <span>{{ $opt['label'] }}</span>
+                                    @if($currentSort === $key)
+                                        <i class="fi fi-rr-check sort-check"></i>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
 
                     @if(request('search') || request('status') || (request('sort') && request('sort') !== 'terbaru'))
                         <a href="{{ route('admin.tiket.index') }}" class="btn-pill-outline" style="height: 38px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px; font-size: 12px; color: #64748b; text-decoration: none;" title="Reset Semua Filter">
@@ -69,50 +101,50 @@
                 <thead>
                     <tr>
                         <th class="th-w-28">
-                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'alphabet_asc' ? 'alphabet_desc' : 'alphabet_asc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Abjad Instansi A-Z / Z-A">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'alphabet_asc' ? 'alphabet_desc' : 'alphabet_asc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Klik untuk mengurutkan Abjad Instansi">
                                 <span>Nama Instansi</span>
                                 @if(request('sort') === 'alphabet_asc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ (A-Z)</span>
+                                    <i class="fi fi-rr-sort-alpha-down" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @elseif(request('sort') === 'alphabet_desc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ (Z-A)</span>
+                                    <i class="fi fi-rr-sort-alpha-up" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @else
-                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                    <i class="fi fi-rr-sort-alt" style="color: #94a3b8; font-size: 12px; opacity: 0.5;"></i>
                                 @endif
                             </a>
                         </th>
                         <th class="th-w-32">
-                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'tiket_asc' ? 'tiket_desc' : 'tiket_asc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Nomor Tiket Asc / Desc">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'tiket_asc' ? 'tiket_desc' : 'tiket_asc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Klik untuk mengurutkan Nomor Tiket">
                                 <span>Subject (Nomor Tiket)</span>
                                 @if(request('sort') === 'tiket_asc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ (Asc)</span>
+                                    <i class="fi fi-rr-sort-numeric-down" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @elseif(request('sort') === 'tiket_desc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ (Desc)</span>
+                                    <i class="fi fi-rr-sort-numeric-up" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @else
-                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                    <i class="fi fi-rr-sort-alt" style="color: #94a3b8; font-size: 12px; opacity: 0.5;"></i>
                                 @endif
                             </a>
                         </th>
                         <th class="th-w-20">
-                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'progress_desc' ? 'progress_asc' : 'progress_desc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Progress">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'progress_desc' ? 'progress_asc' : 'progress_desc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Klik untuk mengurutkan Progress">
                                 <span>Status</span>
                                 @if(request('sort') === 'progress_desc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ (100%→0%)</span>
+                                    <i class="fi fi-rr-chart-histogram" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @elseif(request('sort') === 'progress_asc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ (0%→100%)</span>
+                                    <i class="fi fi-rr-chart-line-down" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @else
-                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                    <i class="fi fi-rr-sort-alt" style="color: #94a3b8; font-size: 12px; opacity: 0.5;"></i>
                                 @endif
                             </a>
                         </th>
                         <th class="th-w-20">
-                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'updated_desc' ? 'updated_asc' : 'updated_desc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Waktu Update">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'updated_desc' ? 'updated_asc' : 'updated_desc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Klik untuk mengurutkan Waktu Update">
                                 <span>Last Updated</span>
                                 @if(request('sort') === 'updated_desc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ Terbaru</span>
+                                    <i class="fi fi-rr-time-forward" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @elseif(request('sort') === 'updated_asc')
-                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ Terlama</span>
+                                    <i class="fi fi-rr-time-past" style="color: var(--blue-primary); font-size: 13px;"></i>
                                 @else
-                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                    <i class="fi fi-rr-sort-alt" style="color: #94a3b8; font-size: 12px; opacity: 0.5;"></i>
                                 @endif
                             </a>
                         </th>

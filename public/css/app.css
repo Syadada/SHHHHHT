@@ -4559,3 +4559,141 @@ nav[role="navigation"] svg,
     display: block;
     margin-top: 4px;
 }
+
+/* ==========================================================================
+   CUSTOM FLATICON SORT DROPDOWN
+   ========================================================================== */
+.custom-flaticon-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.custom-flaticon-btn {
+    height: 38px;
+    padding: 0 14px;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.custom-flaticon-btn:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+}
+
+.custom-flaticon-btn:focus,
+.custom-flaticon-dropdown.open .custom-flaticon-btn {
+    border-color: #0b57d0;
+    box-shadow: 0 0 0 3px rgba(11, 87, 208, 0.12);
+}
+
+.sort-active-icon {
+    font-size: 14px;
+    color: #0b57d0;
+}
+
+.sort-caret {
+    font-size: 11px;
+    color: #64748b;
+    transition: transform 0.2s ease;
+}
+
+.custom-flaticon-dropdown.open .sort-caret {
+    transform: rotate(180deg);
+}
+
+.custom-flaticon-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 270px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+    padding: 6px;
+    z-index: 1050;
+    display: none;
+    animation: fadeInDropdown 0.15s ease-out;
+}
+
+.custom-flaticon-dropdown.open .custom-flaticon-menu {
+    display: block;
+}
+
+@keyframes fadeInDropdown {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.custom-flaticon-header {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #94a3b8;
+    padding: 6px 10px 4px 10px;
+}
+
+.custom-flaticon-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+    text-decoration: none;
+    transition: all 0.12s ease;
+}
+
+.custom-flaticon-item:hover {
+    background: #f1f5f9;
+    color: #0b57d0;
+}
+
+.custom-flaticon-item.active {
+    background: #eff6ff;
+    color: #0b57d0;
+    font-weight: 700;
+}
+
+.custom-flaticon-item i {
+    font-size: 14px;
+    color: #64748b;
+    width: 16px;
+    text-align: center;
+}
+
+.custom-flaticon-item:hover i,
+.custom-flaticon-item.active i {
+    color: #0b57d0;
+}
+
+.custom-flaticon-item .sort-check {
+    margin-left: auto;
+    font-size: 12px;
+    color: #0b57d0;
+}
+
+.custom-flaticon-divider {
+    height: 1px;
+    background: #f1f5f9;
+    margin: 4px 0;
+}

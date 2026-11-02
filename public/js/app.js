@@ -414,3 +414,29 @@ function toggleNavDropdown(btn) {
         parent.classList.toggle('open');
     }
 }
+
+// 9. Generic Custom Flaticon Dropdown Toggle
+document.addEventListener('click', function(e) {
+    const toggleBtn = e.target.closest('.custom-flaticon-btn');
+    const allDropdowns = document.querySelectorAll('.custom-flaticon-dropdown');
+
+    if (toggleBtn) {
+        e.preventDefault();
+        const parent = toggleBtn.closest('.custom-flaticon-dropdown');
+        allDropdowns.forEach(dd => {
+            if (dd !== parent) dd.classList.remove('open');
+        });
+        if (parent) parent.classList.toggle('open');
+        return;
+    }
+
+    if (!e.target.closest('.custom-flaticon-dropdown')) {
+        allDropdowns.forEach(dd => dd.classList.remove('open'));
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        document.querySelectorAll('.custom-flaticon-dropdown').forEach(dd => dd.classList.remove('open'));
+    }
+});
