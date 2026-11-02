@@ -40,6 +40,25 @@
                         <option value="SELESAI" {{ request('status') === 'SELESAI' ? 'selected' : '' }}>Selesai (100%)</option>
                         <option value="REVISI" {{ request('status') === 'REVISI' ? 'selected' : '' }}>Perlu Perbaikan</option>
                     </select>
+
+                    <select name="sort" onchange="this.form.submit()" class="form-select ticket-filter-select" style="min-width: 195px;" title="Urutkan Data Tiket">
+                        <option value="terbaru" {{ (request('sort') === 'terbaru' || (!request('sort') && !request('status'))) ? 'selected' : '' }}>🕒 Dibuat: Terbaru (Desc)</option>
+                        <option value="terlama" {{ request('sort') === 'terlama' || request('sort') === 'asc' ? 'selected' : '' }}>⏳ Dibuat: Terlama (Asc)</option>
+                        <option value="updated_desc" {{ request('sort') === 'updated_desc' ? 'selected' : '' }}>🔄 Terakhir Diperbarui (Desc)</option>
+                        <option value="updated_asc" {{ request('sort') === 'updated_asc' ? 'selected' : '' }}>⌛ Terlama Diperbarui (Asc)</option>
+                        <option value="alphabet_asc" {{ request('sort') === 'alphabet_asc' ? 'selected' : '' }}>🔤 Instansi: A → Z (Asc)</option>
+                        <option value="alphabet_desc" {{ request('sort') === 'alphabet_desc' ? 'selected' : '' }}>🔠 Instansi: Z → A (Desc)</option>
+                        <option value="tiket_asc" {{ request('sort') === 'tiket_asc' ? 'selected' : '' }}>🔢 No. Tiket: Asc (A → Z)</option>
+                        <option value="tiket_desc" {{ request('sort') === 'tiket_desc' ? 'selected' : '' }}>🔢 No. Tiket: Desc (Z → A)</option>
+                        <option value="progress_desc" {{ request('sort') === 'progress_desc' ? 'selected' : '' }}>📊 Progress: Tertinggi (100% → 0%)</option>
+                        <option value="progress_asc" {{ request('sort') === 'progress_asc' ? 'selected' : '' }}>📉 Progress: Terendah (0% → 100%)</option>
+                    </select>
+
+                    @if(request('search') || request('status') || (request('sort') && request('sort') !== 'terbaru'))
+                        <a href="{{ route('admin.tiket.index') }}" class="btn-pill-outline" style="height: 38px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px; font-size: 12px; color: #64748b; text-decoration: none;" title="Reset Semua Filter">
+                            <i class="fi fi-rr-refresh"></i> Reset
+                        </a>
+                    @endif
                 </form>
             </div>
         </div>
@@ -49,10 +68,54 @@
             <table class="ticket-portal-table">
                 <thead>
                     <tr>
-                        <th class="th-w-28">Nama Instansi</th>
-                        <th class="th-w-32">Subject (Nomor Tiket)</th>
-                        <th class="th-w-20">Status</th>
-                        <th class="th-w-20">Last Updated</th>
+                        <th class="th-w-28">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'alphabet_asc' ? 'alphabet_desc' : 'alphabet_asc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Abjad Instansi A-Z / Z-A">
+                                <span>Nama Instansi</span>
+                                @if(request('sort') === 'alphabet_asc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ (A-Z)</span>
+                                @elseif(request('sort') === 'alphabet_desc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ (Z-A)</span>
+                                @else
+                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                @endif
+                            </a>
+                        </th>
+                        <th class="th-w-32">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'tiket_asc' ? 'tiket_desc' : 'tiket_asc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Nomor Tiket Asc / Desc">
+                                <span>Subject (Nomor Tiket)</span>
+                                @if(request('sort') === 'tiket_asc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ (Asc)</span>
+                                @elseif(request('sort') === 'tiket_desc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ (Desc)</span>
+                                @else
+                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                @endif
+                            </a>
+                        </th>
+                        <th class="th-w-20">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'progress_desc' ? 'progress_asc' : 'progress_desc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Progress">
+                                <span>Status</span>
+                                @if(request('sort') === 'progress_desc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ (100%→0%)</span>
+                                @elseif(request('sort') === 'progress_asc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ (0%→100%)</span>
+                                @else
+                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                @endif
+                            </a>
+                        </th>
+                        <th class="th-w-20">
+                            <a href="{{ route('admin.tiket.index', array_merge(request()->query(), ['sort' => request('sort') === 'updated_desc' ? 'updated_asc' : 'updated_desc'])) }}" style="color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Klik untuk mengurutkan Waktu Update">
+                                <span>Last Updated</span>
+                                @if(request('sort') === 'updated_desc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▼ Terbaru</span>
+                                @elseif(request('sort') === 'updated_asc')
+                                    <span style="color: var(--blue-primary); font-size: 11px; font-weight: 700;">▲ Terlama</span>
+                                @else
+                                    <span style="color: #94a3b8; font-size: 11px; opacity: 0.6;">⇅</span>
+                                @endif
+                            </a>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>

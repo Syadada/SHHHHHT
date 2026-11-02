@@ -530,8 +530,9 @@ class HistoryController extends Controller
      */
     public function tiketIndex(Request $request)
     {
-        $query = TiketDtsen::query()->latest('updated_at');
+        $query = TiketDtsen::query();
 
+        // 1. Pencarian Kata Kunci
         if ($request->filled('search')) {
             $search = '%' . trim($request->search) . '%';
             $query->where(function ($q) use ($search) {
@@ -542,6 +543,7 @@ class HistoryController extends Controller
             });
         }
 
+        // 2. Filter Status Tiket
         if ($request->filled('status')) {
             if ($request->status === 'SELESAI') {
                 $query->where('step5_done', true);
@@ -553,9 +555,55 @@ class HistoryController extends Controller
             }
         }
 
+        // 3. Filter Urutan (Sort By)
+        $sortBy = $request->get('sort', 'terbaru');
+        switch ($sortBy) {
+            case 'terlama':
+            case 'asc':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'updated_desc':
+            case 'update_terbaru':
+                $query->orderBy('updated_at', 'desc');
+                break;
+            case 'updated_asc':
+            case 'update_terlama':
+                $query->orderBy('updated_at', 'asc');
+                break;
+            case 'alphabet_asc':
+            case 'nama_asc':
+            case 'instansi_asc':
+                $query->orderBy('nama_instansi', 'asc');
+                break;
+            case 'alphabet_desc':
+            case 'nama_desc':
+            case 'instansi_desc':
+                $query->orderBy('nama_instansi', 'desc');
+                break;
+            case 'tiket_asc':
+                $query->orderBy('nomor_tiket', 'asc');
+                break;
+            case 'tiket_desc':
+                $query->orderBy('nomor_tiket', 'desc');
+                break;
+            case 'progress_desc':
+                $query->orderByRaw('(step1_done + step2_done + step3_done + step4_done + step5_done) DESC')
+                      ->orderBy('created_at', 'desc');
+                break;
+            case 'progress_asc':
+                $query->orderByRaw('(step1_done + step2_done + step3_done + step4_done + step5_done) ASC')
+                      ->orderBy('created_at', 'desc');
+                break;
+            case 'terbaru':
+            case 'desc':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
         $tikets = $query->paginate(12)->withQueryString();
 
-        return view('admin.tiket.index', compact('tikets'));
+        return view('admin.tiket.index', compact('tikets', 'sortBy'));
     }
 
     /**
