@@ -22,9 +22,14 @@
             <i class="fi fi-rr-arrow-left"></i> Kembali ke Daftar Tiket
         </a>
 
-        <div class="ticket-last-updated">
-            <i class="fi fi-rr-clock"></i>
-            <span>Terakhir diperbarui: <strong>{{ $tiket->updated_at ? $tiket->updated_at->format('d/m/Y H:i') . ' WIB' : '-' }}</strong></span>
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <a href="{{ route('opd.tiket.formulir', $tiket->id) }}" target="_blank" class="btn-pill-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;" title="Cetak / Unduh Formulir Pemenuhan Layanan Resmi">
+                <i class="fi fi-rr-document-signed"></i> <span>Formulir Pemenuhan Layanan</span>
+            </a>
+            <div class="ticket-last-updated">
+                <i class="fi fi-rr-clock"></i>
+                <span>Terakhir diperbarui: <strong>{{ $tiket->updated_at ? $tiket->updated_at->format('d/m/Y H:i') . ' WIB' : '-' }}</strong></span>
+            </div>
         </div>
     </div>
 

@@ -79,14 +79,14 @@
             </div>
         @endif
 
-        <!-- 1. Hero Card: Sambutan & Tombol "Buat Tiket Baru" -->
+        <!-- 1. Hero Card: Sambutan & Tombol "Permintaan Bagi Pakai" -->
         <div class="ticket-hero">
             <div>
                 <h1 class="ticket-hero-title">
                     <span>Permohonan Bagi Pakai Data DTSEN</span>
                 </h1>
                 <p class="ticket-hero-desc">
-                    Silakan buat tiket baru untuk mengajukan permintaan pemanfaatan variabel data DTSEN antar instansi, atau pantau alur tahapan verifikasi tiket Anda secara real-time di bawah.
+                    Silakan ajukan permintaan bagi pakai data DTSEN antar instansi, atau pantau alur tahapan verifikasi berkas Anda secara real-time di bawah.
                 </p>
             </div>
             <div>
@@ -95,7 +95,7 @@
                         <line x1="12" y1="5" x2="12" y2="19"></line>
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                     </svg>
-                    <span>Buat Tiket Baru</span>
+                    <span>Permintaan Bagi Pakai</span>
                 </button>
             </div>
         </div>
@@ -540,7 +540,7 @@
                         @empty
                             <tr>
                                 <td colspan="7" style="text-align: center; padding: 32px; color: var(--text-muted);">
-                                    Belum ada tiket permohonan bagi pakai DTSEN. Silakan klik tombol <strong>"Buat Tiket Baru"</strong> di atas.
+                                    Belum ada permohonan bagi pakai DTSEN. Silakan klik tombol <strong>"Permintaan Bagi Pakai"</strong> di atas.
                                 </td>
                             </tr>
                         @endforelse

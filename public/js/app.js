@@ -407,8 +407,23 @@ function printBlankForm() {
     window.open('/formulir/blanko', '_blank');
 }
 
-// 8. Sidebar Navigation Dropdown Toggle
+// 8. Sidebar Navigation Dropdown (Ensure flyout closes immediately when hover ends)
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.app-nav-dropdown').forEach(function(item) {
+        item.classList.remove('open');
+        item.addEventListener('mouseleave', function() {
+            item.classList.remove('open');
+            const sub = item.querySelector('.app-nav-submenu');
+            if (sub) {
+                sub.style.display = 'none';
+                setTimeout(() => { sub.style.display = ''; }, 30);
+            }
+        });
+    });
+});
+
 function toggleNavDropdown(btn) {
+    // No-op or toggle with auto-close
     const parent = btn.closest('.app-nav-dropdown');
     if (parent) {
         parent.classList.toggle('open');

@@ -69,7 +69,7 @@
                 <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                     @if(!$user->isSuperAdmin())
                         <a href="{{ route('formulir.index') }}" class="btn-pill-primary" style="font-size: 12px; padding: 7px 16px;">
-                            <i class="fi fi-rr-plus"></i> Formulir Tiket Baru
+                            <i class="fi fi-rr-plus"></i> Permintaan Bagi Pakai
                         </a>
                     @endif
 

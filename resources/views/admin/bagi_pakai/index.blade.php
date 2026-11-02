@@ -283,6 +283,12 @@
                             <!-- 6. Aksi (Edit, Hapus) -->
                             <td style="text-align: center;">
                                 <div style="display: inline-flex; align-items: center; gap: 6px; justify-content: center;">
+                                    <!-- Tombol Generate Formulir Pemenuhan SOP -->
+                                    <a href="{{ route('admin.bagi-pakai-dtsen.formulir', $item->id) }}" target="_blank" class="btn-pill-outline" style="padding: 4px 8px; font-size: 11px; text-decoration: none; color: #166534; border-color: #bbf7d0; background: #f0fdf4; display: inline-flex; align-items: center; gap: 3px;" title="Cetak / Unduh Formulir Pemenuhan Layanan (Format SOP)">
+                                        <i class="fi fi-rr-document-signed" style="font-size: 11px;"></i>
+                                        <span>Formulir</span>
+                                    </a>
+
                                     <!-- Tombol Edit Permintaan -->
                                     <a href="{{ route('admin.bagi-pakai-dtsen.edit', $item->id) }}" class="btn-pill-outline" style="padding: 4px 8px; font-size: 11px; text-decoration: none; color: #0b57d0; border-color: #bfdbfe; background: #eff6ff; display: inline-flex; align-items: center; gap: 3px;" title="Edit Permintaan Layanan">
                                         <i class="fi fi-rr-edit" style="font-size: 11px;"></i>

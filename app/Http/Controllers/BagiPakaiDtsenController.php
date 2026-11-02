@@ -178,7 +178,27 @@ class BagiPakaiDtsenController extends Controller
         }
 
         // Generate Nomor Tiket Unik
-        $nomorTiket = 'TIK-DTSEN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
+        $nomorTiket = $request->filled('nomor_tiket') ? trim($request->input('nomor_tiket')) : ('TIK-DTSEN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4)));
+
+        // Matriks SOP Dokumen Persyaratan
+        $extraSop = [
+            'status_kak' => $request->input('status_kak', 'Ada'),
+            'nomor_kak' => $request->input('nomor_kak', $request->input('no_surat_edaran')),
+            'status_tim' => $request->input('status_tim', 'Ada'),
+            'nomor_tim' => $request->input('nomor_tim', $request->input('no_surat_tugas', 'ST.090/182/DISKOMINFO SP/' . date('Y'))),
+            'status_ropa' => $request->input('status_ropa', 'Sesuai'),
+            'nomor_ropa' => $request->input('nomor_ropa', 'ROPA-DTSEN-' . date('Y')),
+            'status_dpia' => $request->input('status_dpia', 'Sesuai'),
+            'nomor_dpia' => $request->input('nomor_dpia', 'DPIA-DTSEN-' . date('Y')),
+            'status_klasifikasi' => $request->input('status_klasifikasi', 'Sesuai (Data Terbatas)'),
+            'nomor_klasifikasi' => $request->input('nomor_klasifikasi', 'KLAS-DTSEN-' . date('Y')),
+            'status_hak_akses' => $request->input('status_hak_akses', 'Diverifikasi'),
+            'nomor_hak_akses' => $request->input('nomor_hak_akses', 'HA-DTSEN-' . date('Y')),
+            'jadwal_serah_terima' => $request->input('jadwal_serah_terima', date('Y-m-d')),
+            'no_formulir_pengolahan' => $request->input('no_formulir_pengolahan'),
+            'no_formulir_transfer' => $request->input('no_formulir_transfer'),
+            'no_bast' => $request->input('no_bast'),
+        ];
 
         $tiket = TiketDtsen::create([
             'nomor_tiket' => $nomorTiket,
@@ -201,7 +221,27 @@ class BagiPakaiDtsenController extends Controller
             'step4_done' => false,
             'step5_done' => false,
             'status' => 'DIPROSES',
-            'catatan_admin' => 'Permintaan layanan dibuat oleh Walidata/Admin atas nama OPD (SOP: ' . self::NO_SOP . '). Menunggu verifikasi berkas.',
+            'catatan_admin' => $request->filled('catatan_admin') ? trim($request->input('catatan_admin')) : 'Permintaan layanan dibuat oleh Walidata/Admin atas nama OPD (SOP: ' . self::NO_SOP . '). Menunggu verifikasi berkas.',
+
+            // Data Elemen Lampiran I SOP Form
+            'nomor_naskah' => trim($request->input('nomor_naskah')) ?: self::NO_SOP,
+            'no_agenda_disposisi' => trim($request->input('no_agenda_disposisi')) ?: ('DSP-' . date('Y') . '-' . strtoupper(substr(uniqid(), -4))),
+            'tgl_permintaan' => $request->input('tgl_permintaan') ?: date('Y-m-d'),
+            'tgl_diterima' => $request->input('tgl_diterima') ?: date('Y-m-d'),
+            'no_surat_tugas' => trim($request->input('no_surat_tugas')) ?: ('ST.090/182/DISKOMINFO SP/' . date('Y')),
+            'tgl_surat_tugas' => $request->input('tgl_surat_tugas') ?: date('Y-m-d'),
+            'deskripsi_pekerjaan' => trim($request->input('deskripsi_pekerjaan')) ?: ('Memenuhi permintaan layanan bagi pakai data mikro DTSEN dari Walidata ke ' . trim($request->input('nama_instansi')) . '.'),
+            'penanggung_jawab' => trim($request->input('penanggung_jawab')) ?: 'Chobir Sabbaha, S.Kom., M.T.',
+            'tempat_pelaksanaan' => trim($request->input('tempat_pelaksanaan')) ?: 'Gedung Diskominfo SP Provinsi Banten (KP3B Serang)',
+            'pelaksana_1' => trim($request->input('pelaksana_1')) ?: 'Tia Fitria Saumi, S.Kom.',
+            'pelaksana_2' => trim($request->input('pelaksana_2')) ?: 'Ahmad Fauzi, S.T.',
+            'pelaksana_3' => trim($request->input('pelaksana_3')) ?: '-',
+            'pelaksana_4' => trim($request->input('pelaksana_4')) ?: '-',
+            'tgl_mulai' => $request->input('tgl_mulai') ?: date('Y-m-d'),
+            'tgl_selesai' => $request->input('tgl_selesai') ?: date('Y-m-d', strtotime('+3 days')),
+            'sop_rujukan' => trim($request->input('sop_rujukan')) ?: self::NO_SOP,
+            'hasil_pekerjaan' => trim($request->input('hasil_pekerjaan')) ?: ('Pelaksana telah melaksanakan pemenuhan permintaan Layanan Bagi Pakai DTSEN ke ' . trim($request->input('nama_instansi')) . ' sesuai dengan penugasan pimpinan dan SOP ' . self::NO_SOP . '.'),
+            'data_sop_extra' => $extraSop,
         ]);
 
         AuditLogger::log(
@@ -273,6 +313,47 @@ class BagiPakaiDtsenController extends Controller
             $tiket->catatan_admin = trim($request->input('catatan_admin'));
         }
 
+        // Simpan Data Elemen Lampiran I SOP Form
+        if ($request->filled('nomor_naskah')) $tiket->nomor_naskah = trim($request->input('nomor_naskah'));
+        if ($request->filled('no_agenda_disposisi')) $tiket->no_agenda_disposisi = trim($request->input('no_agenda_disposisi'));
+        if ($request->filled('tgl_permintaan')) $tiket->tgl_permintaan = $request->input('tgl_permintaan');
+        if ($request->filled('tgl_diterima')) $tiket->tgl_diterima = $request->input('tgl_diterima');
+        if ($request->filled('no_surat_tugas')) $tiket->no_surat_tugas = trim($request->input('no_surat_tugas'));
+        if ($request->filled('tgl_surat_tugas')) $tiket->tgl_surat_tugas = $request->input('tgl_surat_tugas');
+        if ($request->filled('deskripsi_pekerjaan')) $tiket->deskripsi_pekerjaan = trim($request->input('deskripsi_pekerjaan'));
+        if ($request->filled('penanggung_jawab')) $tiket->penanggung_jawab = trim($request->input('penanggung_jawab'));
+        if ($request->filled('tempat_pelaksanaan')) $tiket->tempat_pelaksanaan = trim($request->input('tempat_pelaksanaan'));
+        if ($request->filled('pelaksana_1')) $tiket->pelaksana_1 = trim($request->input('pelaksana_1'));
+        if ($request->filled('pelaksana_2')) $tiket->pelaksana_2 = trim($request->input('pelaksana_2'));
+        if ($request->filled('pelaksana_3')) $tiket->pelaksana_3 = trim($request->input('pelaksana_3'));
+        if ($request->filled('pelaksana_4')) $tiket->pelaksana_4 = trim($request->input('pelaksana_4'));
+        if ($request->filled('tgl_mulai')) $tiket->tgl_mulai = $request->input('tgl_mulai');
+        if ($request->filled('tgl_selesai')) $tiket->tgl_selesai = $request->input('tgl_selesai');
+        if ($request->filled('sop_rujukan')) $tiket->sop_rujukan = trim($request->input('sop_rujukan'));
+        if ($request->filled('hasil_pekerjaan')) $tiket->hasil_pekerjaan = trim($request->input('hasil_pekerjaan'));
+
+        // Update data_sop_extra
+        $existingExtra = is_array($tiket->data_sop_extra) ? $tiket->data_sop_extra : [];
+        $extraSop = array_merge($existingExtra, [
+            'status_kak' => $request->input('status_kak', $existingExtra['status_kak'] ?? 'Ada'),
+            'nomor_kak' => $request->input('nomor_kak', $existingExtra['nomor_kak'] ?? $tiket->no_surat_edaran),
+            'status_tim' => $request->input('status_tim', $existingExtra['status_tim'] ?? 'Ada'),
+            'nomor_tim' => $request->input('nomor_tim', $existingExtra['nomor_tim'] ?? $tiket->no_surat_tugas),
+            'status_ropa' => $request->input('status_ropa', $existingExtra['status_ropa'] ?? 'Sesuai'),
+            'nomor_ropa' => $request->input('nomor_ropa', $existingExtra['nomor_ropa'] ?? ('ROPA-DTSEN-' . date('Y'))),
+            'status_dpia' => $request->input('status_dpia', $existingExtra['status_dpia'] ?? 'Sesuai'),
+            'nomor_dpia' => $request->input('nomor_dpia', $existingExtra['nomor_dpia'] ?? ('DPIA-DTSEN-' . date('Y'))),
+            'status_klasifikasi' => $request->input('status_klasifikasi', $existingExtra['status_klasifikasi'] ?? 'Sesuai (Data Terbatas)'),
+            'nomor_klasifikasi' => $request->input('nomor_klasifikasi', $existingExtra['nomor_klasifikasi'] ?? ('KLAS-DTSEN-' . date('Y'))),
+            'status_hak_akses' => $request->input('status_hak_akses', $existingExtra['status_hak_akses'] ?? 'Diverifikasi'),
+            'nomor_hak_akses' => $request->input('nomor_hak_akses', $existingExtra['nomor_hak_akses'] ?? ('HA-DTSEN-' . date('Y'))),
+            'jadwal_serah_terima' => $request->input('jadwal_serah_terima', $existingExtra['jadwal_serah_terima'] ?? date('Y-m-d')),
+            'no_formulir_pengolahan' => $request->input('no_formulir_pengolahan', $existingExtra['no_formulir_pengolahan'] ?? ''),
+            'no_formulir_transfer' => $request->input('no_formulir_transfer', $existingExtra['no_formulir_transfer'] ?? ''),
+            'no_bast' => $request->input('no_bast', $existingExtra['no_bast'] ?? ''),
+        ]);
+        $tiket->data_sop_extra = $extraSop;
+
         // Jika status diubah jadi SELESAI, aktifkan step5
         if ($tiket->status === 'SELESAI' && !$tiket->step5_done) {
             $tiket->step1_done = true;
@@ -342,6 +423,39 @@ class BagiPakaiDtsenController extends Controller
 
         return redirect()->route('admin.bagi-pakai-dtsen.index')
             ->with('success', "Permintaan layanan [#{$nomor}] milik {$instansi} berhasil dihapus dari sistem.");
+    }
+
+    /**
+     * 7. Tampilkan Formulir Pemenuhan Permintaan Layanan (Format SOP Lampiran I)
+     */
+    public function formulir($id)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+        $noSop = self::NO_SOP;
+
+        return view('admin.bagi_pakai.formulir_pemenuhan', compact('tiket', 'noSop'));
+    }
+
+    /**
+     * 8. Generate & Unduh Berkas Microsoft Word (.docx) Resmi dari Template Root
+     */
+    public function downloadDocx($id)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+
+        $scriptPath = base_path('python_engine/generate_formulir_docx.py');
+        $cmd = "python " . escapeshellarg($scriptPath) . " " . escapeshellarg($tiket->id);
+
+        $output = shell_exec($cmd);
+        $res = json_decode($output, true);
+
+        if ($res && !empty($res['success']) && file_exists($res['path'])) {
+            return response()->download($res['path'], $res['filename'], [
+                'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+            ]);
+        }
+
+        return back()->with('error', 'Gagal men-generate berkas dokumen Word: ' . ($res['error'] ?? 'Terjadi kesalahan pada script generator.'));
     }
 }
 

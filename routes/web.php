@@ -70,6 +70,8 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         // 3. Daftar Tiket Saya (Ala DomaiNesia Support Tickets) & Detail Progress
         Route::get('/opd/tiket', [ProfileController::class, 'daftarTiket'])->name('opd.tiket.index');
         Route::get('/opd/tiket/{id}', [ProfileController::class, 'showTiket'])->whereNumber('id')->name('opd.tiket.show');
+        Route::get('/opd/tiket/{id}/formulir', [BagiPakaiDtsenController::class, 'formulir'])->whereNumber('id')->name('opd.tiket.formulir');
+        Route::get('/opd/tiket/{id}/download-docx', [BagiPakaiDtsenController::class, 'downloadDocx'])->whereNumber('id')->name('opd.tiket.download-docx');
 
         // 4. Halaman Layanan Bagi Pakai DTSEN (Progress 5 Tahapan & Tabel Riwayat Bagi Data Resmi)
         Route::get('/opd/layanan-bagi-pakai', [ProfileController::class, 'layananBagiPakai'])->name('opd.layanan-bagi-pakai');
@@ -93,8 +95,10 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/dashboard', [HistoryController::class, 'index'])->name('dashboard');
         Route::get('/riwayat', [HistoryController::class, 'index'])->name('riwayat'); // Dukungan alias
 
-        // Daftar Tiket Support (Ala DomaiNesia) & Detail Progress Tiket Sisi Admin
-        Route::get('/tiket', [HistoryController::class, 'tiketIndex'])->name('tiket.index');
+        // Redirect legacy /tiket ke Layanan Bagi Pakai DTSEN
+        Route::get('/tiket', function () {
+            return redirect()->route('admin.bagi-pakai-dtsen.index');
+        })->name('tiket.index');
         Route::get('/tiket/{id}', [HistoryController::class, 'tiketShow'])->whereNumber('id')->name('tiket.show');
 
         // Layanan Bagi Pakai DTSEN (SOP: 555/07-SOP/DISKOMINFO SP/2026 - Permintaan Layanan Buat/Edit/Hapus)
@@ -104,6 +108,8 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/bagi-pakai-dtsen/{id}/edit', [BagiPakaiDtsenController::class, 'edit'])->whereNumber('id')->name('bagi-pakai-dtsen.edit');
         Route::put('/bagi-pakai-dtsen/{id}', [BagiPakaiDtsenController::class, 'update'])->whereNumber('id')->name('bagi-pakai-dtsen.update');
         Route::delete('/bagi-pakai-dtsen/{id}', [BagiPakaiDtsenController::class, 'destroy'])->whereNumber('id')->name('bagi-pakai-dtsen.destroy');
+        Route::get('/bagi-pakai-dtsen/{id}/formulir', [BagiPakaiDtsenController::class, 'formulir'])->whereNumber('id')->name('bagi-pakai-dtsen.formulir');
+        Route::get('/bagi-pakai-dtsen/{id}/download-docx', [BagiPakaiDtsenController::class, 'downloadDocx'])->whereNumber('id')->name('bagi-pakai-dtsen.download-docx');
 
         Route::post('/tiket/{id}/step-ok', [HistoryController::class, 'stepOk'])->name('tiket.step-ok');
         Route::post('/tiket/{id}/update-steps', [HistoryController::class, 'updateSteps'])->name('tiket.update-steps');

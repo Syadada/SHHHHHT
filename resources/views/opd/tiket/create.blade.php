@@ -1,7 +1,7 @@
 @extends('layouts.opd')
 
-@section('title', 'Buat Tiket Permohonan DTSEN — Portal Perangkat Daerah')
-@section('page_title', 'Buat Tiket Baru')
+@section('title', 'Permintaan Bagi Pakai DTSEN — Portal Perangkat Daerah')
+@section('page_title', 'Permintaan Bagi Pakai')
 @section('page_subtitle', 'Pengajuan Permohonan Bagi Pakai Data Terpadu Sosial Ekonomi Nasional')
 
 @section('content')
@@ -199,7 +199,7 @@
 
             <button type="submit" class="btn-pill-primary btn-submit-action">
                 <i class="fi fi-rr-paper-plane"></i>
-                <span>Kirim Tiket Permohonan DTSEN Sekarang</span>
+                <span>Ajukan Permintaan Bagi Pakai Sekarang</span>
             </button>
         </div>
 

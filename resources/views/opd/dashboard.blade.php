@@ -30,7 +30,7 @@
         </div>
     @endif
 
-    <!-- Clean Hero Card (Fokus Utama: Tombol Buat Tiket Baru) -->
+    <!-- Clean Hero Card (Fokus Utama: Tombol Permintaan Bagi Pakai) -->
     <div class="opd-clean-hero-card">
         <div class="opd-clean-icon-bubble">
             <i class="fi fi-rr-ticket"></i>
@@ -46,14 +46,14 @@
         </h1>
 
         <p class="opd-clean-desc">
-            Selamat datang di Portal Layanan DTSEN. Silakan buat tiket permohonan baru untuk pengajuan data terpadu sosial ekonomi nasional bagi perencanaan program instansi Anda.
+            Selamat datang di Portal Layanan DTSEN. Silakan ajukan permintaan bagi pakai data terpadu sosial ekonomi nasional untuk perencanaan program instansi Anda.
         </p>
 
-        <!-- Aksi Utama: Tombol Buat Tiket Baru -->
+        <!-- Aksi Utama: Tombol Permintaan Bagi Pakai -->
         <div>
             <a href="{{ route('opd.tiket.create') }}" class="btn-clean-cta" id="btnBuatTiketBaru">
                 <i class="fi fi-rr-plus"></i>
-                <span>Buat Tiket Baru</span>
+                <span>Permintaan Bagi Pakai</span>
             </a>
         </div>
     </div>
@@ -67,7 +67,7 @@
         <div class="opd-guide-grid">
             <div class="opd-guide-card">
                 <div class="opd-guide-number">1</div>
-                <div class="opd-guide-card-title">Ajukan Tiket Baru</div>
+                <div class="opd-guide-card-title">Ajukan Permintaan Bagi Pakai</div>
                 <div class="opd-guide-card-desc">
                     Isi formulir dan cantumkan nomor Surat Edaran resmi beserta rincian variabel data yang dibutuhkan.
                 </div>

@@ -1,187 +1,30 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pengelolaan Tiket Layanan Bagi Pakai DTSEN — Admin Panel</title>
-    <!-- Modern Typography (Roboto & JetBrains Mono) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    
-    <!-- Unified Master Stylesheet -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <style>
-        .instansi-title-link {
-            font-weight: 700;
-            color: #0b57d0;
-            text-decoration: none;
-            font-size: 14px;
-            line-height: 1.4;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: all 0.2s ease;
-        }
-        .instansi-title-link:hover {
-            color: #0842a0;
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+@extends('layouts.admin')
 
-    <div class="app-shell">
-        
-        <!-- Top App Bar -->
-        <header class="app-header">
-            <div class="app-header-left">
-                <a href="{{ route('admin.riwayat') }}" class="app-brand">
-                    <div class="app-brand-icon" style="background: #0b57d0; color: #fff; font-weight: 800; font-size: 11px;">
-                        DTSEN
-                    </div>
-                    <div class="app-brand-title">
-                        <span>Layanan Bagi Pakai DTSEN</span>
-                        <span class="app-brand-badge">ADMIN</span>
-                    </div>
-                </a>
-            </div>
+@section('title', 'Dashboard Layanan Bagi Pakai DTSEN — Admin Panel')
 
-            <!-- Right Controls -->
-            <div class="app-header-right">
-                <div class="app-user-chip">
-                    <div class="app-user-avatar">
-                        {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
-                    </div>
-                    <span>{{ Auth::user()->name ?? 'Administrator' }}</span>
-                </div>
+@section('styles')
+<style>
+    .instansi-title-link {
+        font-weight: 700;
+        color: #0b57d0;
+        text-decoration: none;
+        font-size: 14px;
+        line-height: 1.4;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s ease;
+    }
+    .instansi-title-link:hover {
+        color: #0842a0;
+        text-decoration: underline;
+    }
+</style>
+@endsection
 
-                <form action="{{ route('logout') }}" method="POST" style="display: inline; margin: 0;">
-                    @csrf
-                    <button type="submit" class="btn-header-logout" title="Keluar dari akun">
-                        <i class="fi fi-rr-sign-out-alt"></i> Logout
-                    </button>
-                </form>
-            </div>
-        </header>
+@section('content')
 
-        <!-- Body Layout -->
-        <div class="app-body">
-            
-            <!-- Left Sidebar Navigation -->
-            <aside class="app-sidebar">
-                <ul class="app-nav-list">
-                    <!-- 1. Dashboard -->
-                    <li>
-                        <a href="{{ route('admin.dashboard') }}" class="app-nav-item active">
-                            <div class="app-nav-item-left">
-                                <i class="fi fi-rr-apps app-nav-icon"></i>
-                                <span>Dashboard</span>
-                            </div>
-                        </a>
-                    </li>
-
-                    <!-- 2. Ticket -->
-                    <li>
-                        <a href="{{ route('admin.tiket.index') }}" class="app-nav-item {{ request()->routeIs('admin.tiket.*') ? 'active' : '' }}">
-                            <div class="app-nav-item-left">
-                                <i class="fi fi-rr-ticket app-nav-icon"></i>
-                                <span>Ticket</span>
-                            </div>
-                            <span class="app-nav-badge app-nav-badge-tiket">{{ $totalTiket ?? '' }}</span>
-                        </a>
-                    </li>
-
-                    @php
-                        $isUserActive = request()->routeIs('admin.users.*') || request()->routeIs('admin.logs.*') || request()->routeIs('admin.profile');
-                    @endphp
-                    <!-- 3. User (Dropdown Flyout WordPress Style) -->
-                    <li class="app-nav-dropdown {{ $isUserActive ? 'active open' : '' }}">
-                        <button type="button" class="app-nav-dropdown-toggle" onclick="toggleNavDropdown(this)">
-                            <div class="app-nav-item-left">
-                                <i class="fi fi-rr-users app-nav-icon"></i>
-                                <span>User</span>
-                            </div>
-                            <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
-                        </button>
-                        <ul class="app-nav-submenu">
-                            <li>
-                                <a href="{{ route('admin.users.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.index') ? 'active' : '' }}">
-                                    <i class="fi fi-rr-users-alt"></i>
-                                    <span>User Management</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.users.create') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.create') ? 'active' : '' }}">
-                                    <i class="fi fi-rr-user-add"></i>
-                                    <span>Buat Akun</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.logs.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
-                                    <i class="fi fi-rr-laptop"></i>
-                                    <span>Log</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.profile') }}" class="app-nav-subitem {{ request()->routeIs('admin.profile') ? 'active' : '' }}">
-                                    <i class="fi fi-rr-user"></i>
-                                    <span>Profile</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
-                    @php
-                        $isEksporActive = request()->routeIs('admin.riwayat.export*');
-                    @endphp
-                    <!-- 4. Ekspor (Dropdown Flyout WordPress Style) -->
-                    <li class="app-nav-dropdown {{ $isEksporActive ? 'active open' : '' }}">
-                        <button type="button" class="app-nav-dropdown-toggle" onclick="toggleNavDropdown(this)">
-                            <div class="app-nav-item-left">
-                                <i class="fi fi-rr-download app-nav-icon"></i>
-                                <span>Ekspor</span>
-                            </div>
-                            <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
-                        </button>
-                        <ul class="app-nav-submenu">
-                            <li>
-                                <a href="{{ route('admin.riwayat.export') }}" class="app-nav-subitem {{ request()->routeIs('admin.riwayat.export') ? 'active' : '' }}">
-                                    <i class="fi fi-rr-file-chart-line"></i>
-                                    <span>Ekspor Tiket</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('admin.riwayat.export-logs', ['format' => 'csv']) }}" class="app-nav-subitem {{ request()->routeIs('admin.riwayat.export-logs') ? 'active' : '' }}">
-                                    <i class="fi fi-rr-document"></i>
-                                    <span>Ekspor Log</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </aside>
-
-            <!-- Main Content Area -->
-            <main class="app-main-content">
-
-                @if(session('success'))
-                    <div class="form-alert-success" style="margin-bottom: 20px;">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        <span>{{ session('success') }}</span>
-                    </div>
-                @endif
-
-                @if(session('info'))
-                    <div class="form-notice-box" style="margin-bottom: 20px;">
-                        <span>ℹ️</span>
-                        <span>{{ session('info') }}</span>
-                    </div>
-                @endif
-                
-                <!-- Hero Header -->
+<!-- Hero Header -->
                 <div class="dash-hero">
                     <div>
                         <h1 class="dash-hero-title">
@@ -192,8 +35,8 @@
                         </p>
                     </div>
                     <div class="dash-hero-actions">
-                        <a href="{{ route('admin.tiket.index') }}" class="btn-pill-primary">
-                            <i class="fi fi-rr-ticket"></i> Kelola Semua Ticket
+                        <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="btn-pill-primary">
+                            <i class="fi fi-rr-share"></i> Kelola Layanan Bagi Pakai
                         </a>
                         <a href="{{ route('admin.riwayat.export') }}" class="btn-pill-outline">
                             <i class="fi fi-rr-download"></i> Ekspor Data
@@ -239,12 +82,12 @@
                                 <span>Permintaan Layanan Terbaru (5 Item)</span>
                             </h2>
                             <p class="dash-card-subtitle">
-                                Menampilkan permohonan layanan bagi pakai DTSEN baru yang masih dalam proses (belum selesai). Tiket yang telah selesai 100% tersimpan di menu Semua Ticket.
+                                Menampilkan permohonan layanan bagi pakai DTSEN baru yang masih dalam proses (belum selesai). Permohonan yang telah selesai 100% tersimpan di menu Layanan Bagi Pakai.
                             </p>
                         </div>
                         <div>
-                            <a href="{{ route('admin.tiket.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
-                                Semua Ticket
+                            <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
+                                Semua Permintaan
                             </a>
                         </div>
                     </div>
@@ -506,9 +349,7 @@
                     </div>
                 </div>
 
-            </main>
-
-        </div>
+</div>
 
     </div>
 
@@ -680,9 +521,12 @@
     </div>
 
     <!-- Unified Master JavaScript -->
-    <script src="{{ asset('js/app.js') }}"></script>
-    <script>
-        // Modal Variabel
+
+@endsection
+
+@section('scripts')
+<script>
+// Modal Variabel
         const modalVar = document.getElementById('modalVariabel');
         function openVarModal(noTiket, instansi, vars) {
             document.getElementById('varModalTitle').textContent = `Variabel DTSEN — ${noTiket}`;
@@ -798,7 +642,5 @@
             if (e.target === modalManage) closeManageModal();
             if (e.target === modalVerif) closeVerifModal();
         });
-    </script>
-    @include('partials.idle_session_timer')
-</body>
-</html>
+</script>
+@endsection

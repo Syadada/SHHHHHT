@@ -5,6 +5,22 @@
 @section('page_subtitle', 'Daftar Tiket Layanan Bagi Pakai DTSEN Instansi Anda')
 
 @section('content')
+@php
+    $currentSort = request('sort', 'terbaru');
+    $sortOptions = [
+        'terbaru' => ['icon' => 'fi-rr-clock', 'label' => 'Dibuat: Terbaru (Desc)'],
+        'terlama' => ['icon' => 'fi-rr-time-past', 'label' => 'Dibuat: Terlama (Asc)'],
+        'updated_desc' => ['icon' => 'fi-rr-refresh', 'label' => 'Terakhir Diperbarui (Desc)'],
+        'updated_asc' => ['icon' => 'fi-rr-history', 'label' => 'Terlama Diperbarui (Asc)'],
+        'alphabet_asc' => ['icon' => 'fi-rr-sort-alpha-down', 'label' => 'Instansi: A → Z (Asc)'],
+        'alphabet_desc' => ['icon' => 'fi-rr-sort-alpha-up', 'label' => 'Instansi: Z → A (Desc)'],
+        'tiket_asc' => ['icon' => 'fi-rr-sort-numeric-down', 'label' => 'No. Tiket: Asc (A → Z)'],
+        'tiket_desc' => ['icon' => 'fi-rr-sort-numeric-up', 'label' => 'No. Tiket: Desc (Z → A)'],
+        'progress_desc' => ['icon' => 'fi-rr-chart-histogram', 'label' => 'Progress: Tertinggi (100% → 0%)'],
+        'progress_asc' => ['icon' => 'fi-rr-chart-line-down', 'label' => 'Progress: Terendah (0% → 100%)'],
+    ];
+    $activeSort = $sortOptions[$currentSort] ?? $sortOptions['terbaru'];
+@endphp
 <div class="ticket-stack-container">
 
     <!-- Breadcrumb Navigasi -->
@@ -42,10 +58,45 @@
                         <option value="SELESAI" {{ request('status') === 'SELESAI' ? 'selected' : '' }}>Selesai (100%)</option>
                         <option value="REVISI" {{ request('status') === 'REVISI' ? 'selected' : '' }}>Perlu Perbaikan</option>
                     </select>
+
+                    <!-- Custom Flaticon Sort Dropdown (Zero OS Emojis, 100% Flat Icon) -->
+                    <div class="custom-flaticon-dropdown" id="sort-flaticon-dropdown">
+                        <button type="button" class="custom-flaticon-btn" id="sort-dropdown-toggle" title="Urutkan Data Tiket">
+                            <i class="fi {{ $activeSort['icon'] }} sort-active-icon"></i>
+                            <span>{{ $activeSort['label'] }}</span>
+                            <i class="fi fi-rr-angle-small-down sort-caret"></i>
+                        </button>
+
+                        <div class="custom-flaticon-menu">
+                            <div class="custom-flaticon-header">
+                                <i class="fi fi-rr-sort-alt"></i> Urutkan Berdasarkan
+                            </div>
+
+                            @foreach($sortOptions as $key => $opt)
+                                @if(in_array($key, ['updated_desc', 'alphabet_asc', 'tiket_asc', 'progress_desc']))
+                                    <div class="custom-flaticon-divider"></div>
+                                @endif
+                                <a href="{{ route('opd.tiket.index', array_merge(request()->query(), ['sort' => $key])) }}" 
+                                   class="custom-flaticon-item {{ $currentSort === $key ? 'active' : '' }}">
+                                    <i class="fi {{ $opt['icon'] }}"></i>
+                                    <span>{{ $opt['label'] }}</span>
+                                    @if($currentSort === $key)
+                                        <i class="fi fi-rr-check sort-check"></i>
+                                    @endif
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    @if(request('search') || request('status') || (request('sort') && request('sort') !== 'terbaru'))
+                        <a href="{{ route('opd.tiket.index') }}" class="btn-pill-outline" style="height: 38px; display: inline-flex; align-items: center; gap: 4px; padding: 0 10px; font-size: 12px; color: #64748b; text-decoration: none;" title="Reset Semua Filter">
+                            <i class="fi fi-rr-cross-small"></i> Reset
+                        </a>
+                    @endif
                 </form>
 
                 <a href="{{ route('opd.tiket.create') }}" class="btn-pill-primary ticket-btn-back">
-                    <i class="fi fi-rr-plus"></i> Buat Tiket Baru
+                    <i class="fi fi-rr-plus"></i> Permintaan Bagi Pakai
                 </a>
             </div>
         </div>
@@ -122,7 +173,7 @@
                                     Anda belum memiliki tiket permohonan aktif atau sesuai filter yang dipilih.
                                 </div>
                                 <a href="{{ route('formulir.index') }}" class="btn-clean-cta ticket-btn-back">
-                                    <i class="fi fi-rr-plus"></i> Buat Tiket Sekarang
+                                    <i class="fi fi-rr-plus"></i> Permintaan Bagi Pakai Sekarang
                                 </a>
                             </td>
                         </tr>

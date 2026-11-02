@@ -41,8 +41,7 @@ class ProfileController extends Controller
         $query = TiketDtsen::where(function ($q) use ($user, $namaInstansi) {
                 $q->where('nama_instansi', 'like', '%' . $namaInstansi . '%')
                   ->orWhere('email_pemohon', $user->email);
-            })
-            ->latest('updated_at');
+            });
 
         // Filter Pencarian
         if ($request->filled('search')) {
@@ -66,9 +65,47 @@ class ProfileController extends Controller
             }
         }
 
+        // Sort Option
+        $sortBy = $request->query('sort', 'terbaru');
+        switch ($sortBy) {
+            case 'terlama':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'updated_desc':
+                $query->orderBy('updated_at', 'desc');
+                break;
+            case 'updated_asc':
+                $query->orderBy('updated_at', 'asc');
+                break;
+            case 'alphabet_asc':
+                $query->orderBy('nama_instansi', 'asc');
+                break;
+            case 'alphabet_desc':
+                $query->orderBy('nama_instansi', 'desc');
+                break;
+            case 'tiket_asc':
+                $query->orderBy('nomor_tiket', 'asc');
+                break;
+            case 'tiket_desc':
+                $query->orderBy('nomor_tiket', 'desc');
+                break;
+            case 'progress_desc':
+                $query->orderByRaw('(step1_done + step2_done + step3_done + step4_done + step5_done) DESC')
+                      ->orderBy('created_at', 'desc');
+                break;
+            case 'progress_asc':
+                $query->orderByRaw('(step1_done + step2_done + step3_done + step4_done + step5_done) ASC')
+                      ->orderBy('created_at', 'desc');
+                break;
+            case 'terbaru':
+            default:
+                $query->orderBy('created_at', 'desc');
+                break;
+        }
+
         $tikets = $query->paginate(10)->withQueryString();
 
-        return view('opd.tiket.index', compact('user', 'tikets'));
+        return view('opd.tiket.index', compact('user', 'tikets', 'sortBy'));
     }
 
     /**

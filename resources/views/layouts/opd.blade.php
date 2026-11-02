@@ -54,10 +54,10 @@
                     <span>Layanan Bagi Pakai DTSEN</span>
                 </a>
 
-                <!-- 4. Buat Tiket Baru (Formulir Pengajuan) -->
+                <!-- 4. Permintaan Bagi Pakai (Formulir Pengajuan) -->
                 <a href="{{ route('opd.tiket.create') }}" class="opd-nav-link {{ request()->routeIs('formulir.*') || request()->routeIs('opd.tiket.create') ? 'active' : '' }}">
                     <i class="fi fi-rr-plus"></i>
-                    <span>Buat Tiket Baru</span>
+                    <span>Permintaan Bagi Pakai</span>
                     <span class="opd-nav-badge">+Form</span>
                 </a>
 
@@ -107,7 +107,7 @@
                     </div>
 
                     <a href="{{ route('formulir.index') }}" class="btn-pill-primary ticket-btn-back">
-                        <i class="fi fi-rr-plus"></i> Tiket Baru
+                        <i class="fi fi-rr-plus"></i> Permintaan Bagi Pakai
                     </a>
                 </div>
             </header>

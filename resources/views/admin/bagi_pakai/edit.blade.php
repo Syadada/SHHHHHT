@@ -3,6 +3,9 @@
 @section('title', 'Edit Permintaan Layanan #' . $tiket->nomor_tiket . ' — Bagi Pakai DTSEN')
 
 @section('content')
+@php
+    $extra = is_array($tiket->data_sop_extra) ? $tiket->data_sop_extra : [];
+@endphp
 <div class="form-create-shell">
 
     <!-- Breadcrumb Navigasi Admin -->
@@ -27,14 +30,17 @@
                         #{{ $tiket->nomor_tiket }}
                     </span>
                     <span class="dtsen-chip" style="font-family: var(--font-mono); font-size: 11px; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0;">
-                        <i class="fi fi-rr-document"></i> SOP: {{ $noSop }}
+                        <i class="fi fi-rr-document"></i> Format SOP: FR.01-SOP.DTSEN-09/DKISP
                     </span>
                 </div>
                 <p style="font-size: 13px; color: #64748b; margin: 0;">
-                    Perbarui data instansi, variabel data, berkas permohonan, atau status tahapan tiket (ID Unik: <strong>#{{ $tiket->nomor_tiket }}</strong>).
+                    Perbarui data formulir pemenuhan bagi pakai DTSEN (Lampiran I SOP). Seluruh data tersimpan akan otomatis menjadi basis data tampilan dan ekspor berkas Word resmi (.docx).
                 </p>
             </div>
-            <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <a href="{{ route('admin.bagi-pakai-dtsen.formulir', $tiket->id) }}" target="_blank" class="btn-pill-primary" style="font-size: 12px; padding: 6px 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fi fi-rr-document-signed"></i> Pratinjau Formulir SOP
+                </a>
                 <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
                     <i class="fi fi-rr-arrow-left"></i> Kembali
                 </a>
@@ -60,73 +66,111 @@
         @csrf
         @method('PUT')
 
-        <!-- 1. IDENTITAS INSTANSI & SURAT PERMOHONAN -->
+        <!-- 1. HEADER DOKUMEN & STATUS LAYANAN -->
         <div class="form-section-card">
             <div class="section-head-box">
-                <div class="section-head-icon">
-                    <i class="fi fi-rr-building"></i>
-                </div>
-                <div>
-                    <h2 class="section-head-title">Identitas Instansi & Status Permintaan</h2>
-                    <p class="section-head-desc">Informasi instansi pemohon, status layanan, dan rujukan surat edaran</p>
-                </div>
+                <h2 class="section-head-title">1. Header Dokumen & Status Permintaan</h2>
             </div>
 
             <div class="form-2col-grid">
-                <!-- Nama Instansi -->
                 <div>
-                    <label class="form-group-label">
-                        Nama Instansi / Lembaga Pemohon <span class="form-required">*</span>
-                    </label>
+                    <label class="form-group-label">Nomor Naskah Internal Bidang</label>
                     <input type="text" 
-                           name="nama_instansi" 
-                           id="nama_instansi"
+                           name="nomor_naskah" 
                            class="form-text-input" 
-                           value="{{ old('nama_instansi', $tiket->nama_instansi) }}" 
-                           required>
-                    <div class="form-help-hint">Nama Perangkat Daerah (OPD) pemohon layanan.</div>
+                           value="{{ old('nomor_naskah', $tiket->nomor_naskah) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
                 </div>
 
-                <!-- Status Layanan -->
                 <div>
-                    <label class="form-group-label">
-                        Status Permintaan Layanan <span class="form-required">*</span>
-                    </label>
+                    <label class="form-group-label">Status Permintaan Layanan</label>
                     <select name="status" class="form-text-input" style="font-size: 13px; padding: 8px 12px;">
                         <option value="DIPROSES" {{ old('status', $tiket->status) === 'DIPROSES' ? 'selected' : '' }}>Sedang Berjalan (DIPROSES)</option>
                         <option value="SELESAI" {{ old('status', $tiket->status) === 'SELESAI' ? 'selected' : '' }}>Selesai 100% (SELESAI)</option>
                         <option value="PERLU_PERBAIKAN" {{ old('status', $tiket->status) === 'PERLU_PERBAIKAN' ? 'selected' : '' }}>Perlu Perbaikan (REVISI)</option>
                     </select>
-                    <div class="form-help-hint">Status pemrosesan permohonan bagi pakai data.</div>
                 </div>
             </div>
 
-            <div class="form-2col-grid form-group-mb-16" style="margin-top: 18px;">
-                <!-- No Surat Edaran -->
+            <div class="form-2col-grid" style="margin-top: 18px;">
                 <div>
-                    <label class="form-group-label">
-                        Nomor Surat Edaran / Permohonan <span class="form-required">*</span>
-                    </label>
+                    <label class="form-group-label">No. Agenda Disposisi</label>
+                    <input type="text" 
+                           name="no_agenda_disposisi" 
+                           class="form-text-input" 
+                           value="{{ old('no_agenda_disposisi', $tiket->no_agenda_disposisi) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+
+                <div>
+                    <label class="form-group-label">SOP Rujukan</label>
+                    <input type="text" 
+                           name="sop_rujukan" 
+                           class="form-text-input" 
+                           value="{{ old('sop_rujukan', $tiket->sop_rujukan) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. PERMINTAAN LAYANAN (INSTANSI & NARAHUBUNG) -->
+        <div class="form-section-card">
+            <div class="section-head-box">
+                <h2 class="section-head-title">2. Permintaan Layanan (Instansi & Narahubung)</h2>
+            </div>
+
+            <div class="form-2col-grid">
+                <div>
+                    <label class="form-group-label">Nama Instansi / Lembaga Pemohon</label>
+                    <input type="text" 
+                           name="nama_instansi" 
+                           id="nama_instansi"
+                           class="form-text-input" 
+                           value="{{ old('nama_instansi', $tiket->nama_instansi) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada" 
+                           required>
+                </div>
+
+                <div>
+                    <label class="form-group-label">Nomor Surat Permintaan / Edaran Resmi</label>
                     <input type="text" 
                            name="no_surat_edaran" 
                            class="form-text-input" 
                            value="{{ old('no_surat_edaran', $tiket->no_surat_edaran) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada" 
                            required>
-                </div>
-
-                <!-- PIC Pemohon -->
-                <div>
-                    <label class="form-group-label">Nama PIC / Penanggung Jawab</label>
-                    <input type="text" 
-                           name="nama_pemohon" 
-                           id="nama_pemohon"
-                           class="form-text-input" 
-                           value="{{ old('nama_pemohon', $tiket->nama_pemohon) }}">
                 </div>
             </div>
 
             <div class="form-2col-grid form-group-mb-16" style="margin-top: 18px;">
-                <!-- Kontak Telepon / WhatsApp -->
+                <div>
+                    <label class="form-group-label">Tanggal Permintaan</label>
+                    <input type="date" 
+                           name="tgl_permintaan" 
+                           class="form-text-input" 
+                           value="{{ old('tgl_permintaan', $tiket->tgl_permintaan ? $tiket->tgl_permintaan->format('Y-m-d') : '') }}">
+                </div>
+
+                <div>
+                    <label class="form-group-label">Tanggal Diterima Walidata</label>
+                    <input type="date" 
+                           name="tgl_diterima" 
+                           class="form-text-input" 
+                           value="{{ old('tgl_diterima', $tiket->tgl_diterima ? $tiket->tgl_diterima->format('Y-m-d') : '') }}">
+                </div>
+            </div>
+
+            <div class="form-2col-grid form-group-mb-16" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Nama Lengkap Narahubung / PIC</label>
+                    <input type="text" 
+                           name="nama_pemohon" 
+                           id="nama_pemohon"
+                           class="form-text-input" 
+                           value="{{ old('nama_pemohon', $tiket->nama_pemohon) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+
                 <div>
                     <label class="form-group-label">Kontak Telepon / WhatsApp</label>
                     <input type="text" 
@@ -134,58 +178,155 @@
                            id="kontak_pemohon"
                            class="form-text-input" 
                            value="{{ old('kontak_pemohon', $tiket->kontak_pemohon) }}" 
-                           placeholder="Contoh: 081234567890">
-                </div>
-
-                <!-- Email Pemohon -->
-                <div>
-                    <label class="form-group-label">Alamat Email Resmi</label>
-                    <input type="email" 
-                           name="email_pemohon" 
-                           id="email_pemohon"
-                           class="form-text-input" 
-                           value="{{ old('email_pemohon', $tiket->email_pemohon) }}" 
-                           placeholder="nama@instansi.go.id">
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
                 </div>
             </div>
 
-            <!-- Tujuan Pemanfaatan Data -->
+            <div class="form-group-mb-16" style="margin-top: 18px;">
+                <label class="form-group-label">Alamat Email Resmi Narahubung</label>
+                <input type="email" 
+                       name="email_pemohon" 
+                       id="email_pemohon"
+                       class="form-text-input" 
+                       value="{{ old('email_pemohon', $tiket->email_pemohon) }}" 
+                       placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+            </div>
+
             <div style="margin-top: 18px;">
                 <label class="form-group-label">Tujuan Pemanfaatan Data DTSEN</label>
                 <textarea name="tujuan_pemanfaatan" 
                           class="form-text-input form-textarea-dtsen" 
-                          placeholder="Jelaskan secara singkat rencana pemanfaatan data DTSEN untuk program instansi Anda...">{{ old('tujuan_pemanfaatan', $tiket->tujuan_pemanfaatan) }}</textarea>
+                          placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">{{ old('tujuan_pemanfaatan', $tiket->tujuan_pemanfaatan) }}</textarea>
             </div>
         </div>
 
-        <!-- 2. VARIABEL DTSEN YANG DIMINTA -->
+        <!-- 3. PENUGASAN & DESKRIPSI PEKERJAAN (WALIDATA) -->
+        <div class="form-section-card">
+            <div class="section-head-box">
+                <h2 class="section-head-title">3. Penugasan & Deskripsi Pekerjaan (Walidata)</h2>
+            </div>
+
+            <div class="form-2col-grid">
+                <div>
+                    <label class="form-group-label">Nomor Surat Tugas</label>
+                    <input type="text" 
+                           name="no_surat_tugas" 
+                           class="form-text-input" 
+                           value="{{ old('no_surat_tugas', $tiket->no_surat_tugas) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+
+                <div>
+                    <label class="form-group-label">Tanggal Surat Tugas</label>
+                    <input type="date" 
+                           name="tgl_surat_tugas" 
+                           class="form-text-input" 
+                           value="{{ old('tgl_surat_tugas', $tiket->tgl_surat_tugas ? $tiket->tgl_surat_tugas->format('Y-m-d') : '') }}">
+                </div>
+            </div>
+
+            <div class="form-group-mb-16" style="margin-top: 18px;">
+                <label class="form-group-label">Deskripsi Pekerjaan</label>
+                <input type="text" 
+                       name="deskripsi_pekerjaan" 
+                       class="form-text-input" 
+                       value="{{ old('deskripsi_pekerjaan', $tiket->deskripsi_pekerjaan) }}" 
+                       placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+            </div>
+
+            <div class="form-2col-grid" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Penanggung Jawab (Pejabat Administrator)</label>
+                    <input type="text" 
+                           name="penanggung_jawab" 
+                           class="form-text-input" 
+                           value="{{ old('penanggung_jawab', $tiket->penanggung_jawab) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+
+                <div>
+                    <label class="form-group-label">Tempat Pelaksanaan</label>
+                    <input type="text" 
+                           name="tempat_pelaksanaan" 
+                           class="form-text-input" 
+                           value="{{ old('tempat_pelaksanaan', $tiket->tempat_pelaksanaan) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+            </div>
+
+            <div class="form-2col-grid" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Tanggal Mulai Pelaksanaan</label>
+                    <input type="date" 
+                           name="tgl_mulai" 
+                           class="form-text-input" 
+                           value="{{ old('tgl_mulai', $tiket->tgl_mulai ? $tiket->tgl_mulai->format('Y-m-d') : '') }}">
+                </div>
+
+                <div>
+                    <label class="form-group-label">Tanggal Selesai Pelaksanaan</label>
+                    <input type="date" 
+                           name="tgl_selesai" 
+                           class="form-text-input" 
+                           value="{{ old('tgl_selesai', $tiket->tgl_selesai ? $tiket->tgl_selesai->format('Y-m-d') : '') }}">
+                </div>
+            </div>
+
+            <div class="form-2col-grid" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Pelaksana 1</label>
+                    <input type="text" 
+                           name="pelaksana_1" 
+                           class="form-text-input" 
+                           value="{{ old('pelaksana_1', $tiket->pelaksana_1) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+
+                <div>
+                    <label class="form-group-label">Pelaksana 2</label>
+                    <input type="text" 
+                           name="pelaksana_2" 
+                           class="form-text-input" 
+                           value="{{ old('pelaksana_2', $tiket->pelaksana_2) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+            </div>
+
+            <div class="form-2col-grid" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Pelaksana 3</label>
+                    <input type="text" 
+                           name="pelaksana_3" 
+                           class="form-text-input" 
+                           value="{{ old('pelaksana_3', $tiket->pelaksana_3) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+
+                <div>
+                    <label class="form-group-label">Pelaksana 4</label>
+                    <input type="text" 
+                           name="pelaksana_4" 
+                           class="form-text-input" 
+                           value="{{ old('pelaksana_4', $tiket->pelaksana_4) }}" 
+                           placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. VARIABEL DTSEN YANG DIMINTA -->
         <div class="form-section-card">
             <div class="section-head-box-tight">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div class="section-head-icon">
-                        <i class="fi fi-rr-list-check"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-head-title">
-                            Variabel DTSEN yang Diminta <span class="form-required">*</span>
-                        </h2>
-                        <p class="section-head-desc">Atribut atau kolom data mikro DTSEN yang dimohonkan</p>
-                    </div>
-                </div>
+                <h2 class="section-head-title">4. Variabel DTSEN yang Diminta</h2>
 
                 <button type="button" onclick="tambahBarisVariabel()" class="btn-pill-outline revisi-btn-add">
                     <i class="fi fi-rr-plus"></i> + Tambah Kolom Isian
                 </button>
             </div>
 
-            <p style="font-size: 13px; color: #475569; margin-bottom: 16px; line-height: 1.5;">
-                Tuliskan atribut atau variabel data mikro DTSEN yang Anda butuhkan sesuai lampiran Surat Edaran resmi:
-            </p>
-
-            <div id="containerVariabel">
+            <div id="containerVariabel" style="margin-top: 16px;">
                 @php
                     $vars = old('variabel_dtsen', is_array($tiket->variabel_dtsen) ? $tiket->variabel_dtsen : []);
-                    if (count($vars) < 1) $vars = ['NIK, Nama Kepala Keluarga, Alamat Lengkap'];
+                    if (count($vars) < 1) $vars = [''];
                 @endphp
 
                 @foreach($vars as $idx => $v)
@@ -195,8 +336,7 @@
                                name="variabel_dtsen[]" 
                                class="form-text-input" 
                                value="{{ $v }}" 
-                               placeholder="Nama atribut variabel DTSEN..." 
-                               required>
+                               placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
                         @if(count($vars) > 1)
                             <button type="button" onclick="hapusBarisVariabel(this)" class="btn-del-var" title="Hapus baris variabel ini"><i class="fi fi-rr-cross-small"></i></button>
                         @else
@@ -207,16 +347,130 @@
             </div>
         </div>
 
-        <!-- 3. UNGGAH BERKAS LAMPIRAN SURAT EDARAN -->
+        <!-- 5. PEMENUHAN DOKUMEN & MATRIKS PELAKSANAAN SOP -->
         <div class="form-section-card">
             <div class="section-head-box">
-                <div class="section-head-icon">
-                    <i class="fi fi-rr-document"></i>
-                </div>
+                <h2 class="section-head-title">5. Pemenuhan Dokumen & Matriks Pelaksanaan SOP</h2>
+            </div>
+
+            <div class="form-2col-grid">
                 <div>
-                    <h2 class="section-head-title">Lampiran Surat Edaran / Permohonan Resmi</h2>
-                    <p class="section-head-desc">Unggah scan surat dinas bertanda tangan jika ada pembaruan dokumen (Maks. 50MB)</p>
+                    <label class="form-group-label">Dokumen KAK (Kerangka Acuan Kerja)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select name="status_kak" class="form-text-input" style="width: 140px;">
+                            <option value="Ada" {{ old('status_kak', $extra['status_kak'] ?? 'Ada') === 'Ada' ? 'selected' : '' }}>Ada</option>
+                            <option value="Tidak ada" {{ old('status_kak', $extra['status_kak'] ?? 'Ada') === 'Tidak ada' ? 'selected' : '' }}>Tidak ada</option>
+                        </select>
+                        <input type="text" name="nomor_kak" class="form-text-input" value="{{ old('nomor_kak', $extra['nomor_kak'] ?? '') }}" placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                    </div>
                 </div>
+
+                <div>
+                    <label class="form-group-label">Penetapan Tim Pelaksana</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select name="status_tim" class="form-text-input" style="width: 140px;">
+                            <option value="Ada" {{ old('status_tim', $extra['status_tim'] ?? 'Ada') === 'Ada' ? 'selected' : '' }}>Ada</option>
+                            <option value="Tidak ada" {{ old('status_tim', $extra['status_tim'] ?? 'Ada') === 'Tidak ada' ? 'selected' : '' }}>Tidak ada</option>
+                        </select>
+                        <input type="text" name="nomor_tim" class="form-text-input" value="{{ old('nomor_tim', $extra['nomor_tim'] ?? '') }}" placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-2col-grid" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Dokumen ROPA DTSEN</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select name="status_ropa" class="form-text-input" style="width: 140px;">
+                            <option value="Sesuai" {{ old('status_ropa', $extra['status_ropa'] ?? 'Sesuai') === 'Sesuai' ? 'selected' : '' }}>Sesuai</option>
+                            <option value="Belum Sesuai" {{ old('status_ropa', $extra['status_ropa'] ?? 'Sesuai') === 'Belum Sesuai' ? 'selected' : '' }}>Belum Sesuai</option>
+                        </select>
+                        <input type="text" name="nomor_ropa" class="form-text-input" value="{{ old('nomor_ropa', $extra['nomor_ropa'] ?? '') }}" placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-group-label">Dokumen DPIA DTSEN (Penilaian Dampak PDP)</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select name="status_dpia" class="form-text-input" style="width: 140px;">
+                            <option value="Sesuai" {{ old('status_dpia', $extra['status_dpia'] ?? 'Sesuai') === 'Sesuai' ? 'selected' : '' }}>Sesuai</option>
+                            <option value="Belum Sesuai" {{ old('status_dpia', $extra['status_dpia'] ?? 'Sesuai') === 'Belum Sesuai' ? 'selected' : '' }}>Belum Sesuai</option>
+                        </select>
+                        <input type="text" name="nomor_dpia" class="form-text-input" value="{{ old('nomor_dpia', $extra['nomor_dpia'] ?? '') }}" placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-2col-grid" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Klasifikasi DTSEN</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select name="status_klasifikasi" class="form-text-input" style="width: 160px;">
+                            <option value="Sesuai (Data Terbatas)" {{ old('status_klasifikasi', $extra['status_klasifikasi'] ?? 'Sesuai (Data Terbatas)') === 'Sesuai (Data Terbatas)' ? 'selected' : '' }}>Sesuai (Data Terbatas)</option>
+                            <option value="Terbuka" {{ old('status_klasifikasi', $extra['status_klasifikasi'] ?? '') === 'Terbuka' ? 'selected' : '' }}>Terbuka</option>
+                            <option value="Rahasia" {{ old('status_klasifikasi', $extra['status_klasifikasi'] ?? '') === 'Rahasia' ? 'selected' : '' }}>Rahasia</option>
+                        </select>
+                        <input type="text" name="nomor_klasifikasi" class="form-text-input" value="{{ old('nomor_klasifikasi', $extra['nomor_klasifikasi'] ?? '') }}" placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-group-label">Hak Akses DTSEN</label>
+                    <div style="display: flex; gap: 8px;">
+                        <select name="status_hak_akses" class="form-text-input" style="width: 140px;">
+                            <option value="Diverifikasi" {{ old('status_hak_akses', $extra['status_hak_akses'] ?? 'Diverifikasi') === 'Diverifikasi' ? 'selected' : '' }}>Diverifikasi</option>
+                            <option value="Belum Sesuai" {{ old('status_hak_akses', $extra['status_hak_akses'] ?? '') === 'Belum Sesuai' ? 'selected' : '' }}>Belum Sesuai</option>
+                        </select>
+                        <input type="text" name="nomor_hak_akses" class="form-text-input" value="{{ old('nomor_hak_akses', $extra['nomor_hak_akses'] ?? '') }}" placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-2col-grid" style="margin-top: 18px;">
+                <div>
+                    <label class="form-group-label">Jadwal Pelaksanaan Serah Terima</label>
+                    <input type="date" name="jadwal_serah_terima" class="form-text-input" value="{{ old('jadwal_serah_terima', $extra['jadwal_serah_terima'] ?? '') }}">
+                </div>
+
+                <div>
+                    <label class="form-group-label">No. Berita Acara Serah Terima (BAST)</label>
+                    <input type="text" name="no_bast" class="form-text-input" value="{{ old('no_bast', $extra['no_bast'] ?? '') }}" placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. CATATAN PELAKSANA -->
+        <div class="form-section-card">
+            <div class="section-head-box" style="margin-bottom: 14px;">
+                <h2 class="section-head-title">6. Catatan Pelaksana</h2>
+            </div>
+
+            <div>
+                <textarea name="catatan_admin" 
+                          rows="3" 
+                          class="form-text-input" 
+                          placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">{{ old('catatan_admin', $tiket->catatan_admin) }}</textarea>
+            </div>
+        </div>
+
+        <!-- 7. HASIL PELAKSANAAN PEKERJAAN -->
+        <div class="form-section-card">
+            <div class="section-head-box" style="margin-bottom: 14px;">
+                <h2 class="section-head-title">7. Hasil Pelaksanaan Pekerjaan</h2>
+            </div>
+
+            <div>
+                <textarea name="hasil_pekerjaan" 
+                          rows="3" 
+                          class="form-text-input" 
+                          placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">{{ old('hasil_pekerjaan', $tiket->hasil_pekerjaan) }}</textarea>
+            </div>
+        </div>
+
+        <!-- 8. UNGGAH BERKAS LAMPIRAN SURAT EDARAN RESMI -->
+        <div class="form-section-card">
+            <div class="section-head-box">
+                <h2 class="section-head-title">8. Lampiran Berkas Permohonan Resmi</h2>
             </div>
 
             @if($tiket->file_surat)
@@ -255,15 +509,6 @@
                        accept=".pdf,.doc,.docx"
                        onchange="updateFilePreview(this)">
             </div>
-
-            <!-- Catatan Admin -->
-            <div style="margin-top: 20px;">
-                <label class="form-group-label">Catatan Admin / Verifikator Walidata</label>
-                <textarea name="catatan_admin" 
-                          rows="2" 
-                          class="form-text-input" 
-                          placeholder="Catatan hasil verifikasi atau arahan perbaikan untuk OPD...">{{ old('catatan_admin', $tiket->catatan_admin) }}</textarea>
-            </div>
         </div>
 
         <!-- TOMBOL AKSI SUBMIT -->
@@ -274,7 +519,7 @@
 
             <button type="submit" class="btn-pill-primary btn-submit-action">
                 <i class="fi fi-rr-check"></i>
-                <span>Simpan Perubahan Permintaan Layanan</span>
+                <span>Simpan Perubahan Formulir Layanan SOP</span>
             </button>
         </div>
 
@@ -295,8 +540,7 @@
             <input type="text" 
                    name="variabel_dtsen[]" 
                    class="form-text-input" 
-                   placeholder="Variabel ${count}" 
-                   required>
+                   placeholder="Isi jika ada, atau beri tanda strip (-) bila tidak ada">
             <button type="button" onclick="hapusBarisVariabel(this)" class="btn-del-var" title="Hapus baris variabel ini"><i class="fi fi-rr-cross-small"></i></button>
         `;
         container.appendChild(row);
@@ -316,7 +560,7 @@
             if (chip) chip.innerText = idx + 1;
             const input = r.querySelector('input');
             if (input && !input.value) {
-                input.placeholder = `Variabel ${idx + 1}`;
+                input.placeholder = 'Isi jika ada, atau beri tanda strip (-) bila tidak ada';
             }
         });
     }
