@@ -157,46 +157,63 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "$cmd = '%PHP_EXE%'; try 
 rem =======================================================================
 rem 3. OTOMASI COMPOSER DAN DEPENDENSI VENDOR LARAVEL
 rem =======================================================================
-if not exist "%PROJECT_DIR%vendor\autoload.php" (
-    echo.
-    echo [3/8] Folder vendor belum ada. Mengunduh seluruh dependensi Composer otomatis...
-    if exist "%COMPOSER_PHAR%" (
-        echo [INFO] Menjalankan Composer phar lokal (%COMPOSER_PHAR%)...
-        "%PHP_EXE%" "%COMPOSER_PHAR%" install --no-interaction --prefer-dist --ignore-platform-reqs
-    ) else if exist "%PROJECT_DIR%php\composer.phar" (
-        echo [INFO] Menjalankan composer.phar folder php...
-        "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
-    ) else if exist "%PROJECT_DIR%composer.phar" (
-        echo [INFO] Menjalankan composer.phar direktori root...
-        "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
-    ) else (
-        echo [INFO] Mengunduh composer.phar mandiri resmi dari getcomposer.org...
-        powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%php\composer.phar')"
-        if exist "%PROJECT_DIR%php\composer.phar" (
-            "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
-        ) else (
-            powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%composer.phar')"
-            if exist "%PROJECT_DIR%composer.phar" (
-                "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
-            ) else (
-                where composer >nul 2>&1
-                if !errorlevel! equ 0 (
-                    echo [INFO] Menjalankan Composer dari System PATH...
-                    composer install --no-interaction --prefer-dist --ignore-platform-reqs
-                )
-            )
-        )
-    )
-    if exist "%PROJECT_DIR%vendor\autoload.php" (
-        echo [OK] Seluruh dependensi Composer vendor berhasil terpasang!
-    ) else (
-        echo [ERROR] Gagal memasang dependensi vendor! Pastikan koneksi internet aktif dan ekstensi openssl aktif di php.ini.
-        pause
-        exit /b 1
-    )
-) else (
+if exist "%PROJECT_DIR%vendor\autoload.php" (
     echo [OK] Folder vendor dependensi sudah terpasang lengkap.
+    goto :vendor_ready
 )
+
+echo.
+echo [3/8] Folder vendor belum ada. Mengunduh seluruh dependensi Composer otomatis...
+
+if exist "%PROJECT_DIR%php\composer.phar" (
+    echo [INFO] Menjalankan Composer phar folder php...
+    "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
+    goto :check_vendor_result
+)
+
+if defined COMPOSER_PHAR if exist "%COMPOSER_PHAR%" (
+    echo [INFO] Menjalankan Composer phar terdeteksi...
+    "%PHP_EXE%" "%COMPOSER_PHAR%" install --no-interaction --prefer-dist --ignore-platform-reqs
+    goto :check_vendor_result
+)
+
+if exist "%PROJECT_DIR%composer.phar" (
+    echo [INFO] Menjalankan composer.phar direktori root...
+    "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
+    goto :check_vendor_result
+)
+
+echo [INFO] Mengunduh composer.phar resmi dari getcomposer.org...
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%php\composer.phar')" >nul 2>&1
+
+if exist "%PROJECT_DIR%php\composer.phar" (
+    "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
+    goto :check_vendor_result
+)
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%composer.phar')" >nul 2>&1
+
+if exist "%PROJECT_DIR%composer.phar" (
+    "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
+    goto :check_vendor_result
+)
+
+where composer >nul 2>&1
+if %errorlevel% equ 0 (
+    echo [INFO] Menjalankan Composer dari System PATH...
+    composer install --no-interaction --prefer-dist --ignore-platform-reqs
+)
+
+:check_vendor_result
+if exist "%PROJECT_DIR%vendor\autoload.php" (
+    echo [OK] Seluruh dependensi Composer vendor berhasil terpasang!
+) else (
+    echo [ERROR] Gagal memasang dependensi vendor! Pastikan koneksi internet aktif dan ekstensi openssl aktif di php.ini.
+    pause
+    exit /b 1
+)
+
+:vendor_ready
 
 rem =======================================================================
 rem 4. OTOMASI ENVIRONMENT DAN APPLICATION KEY (.env)
@@ -322,7 +339,7 @@ echo.
 "%PHP_EXE%" -d variables_order=EGPCS artisan serve --host=0.0.0.0 --port=%LARAVEL_PORT% --no-reload
 if %errorlevel% neq 0 (
     echo.
-    echo [INFO] artisan serve gagal binding 0.0.0.0. Menjalankan fallback web server langsung (server.php)...
+    echo [INFO] artisan serve gagal binding 0.0.0.0. Menjalankan fallback web server langsung [server.php]...
     "%PHP_EXE%" -d variables_order=EGPCS -S 0.0.0.0:%LARAVEL_PORT% "%PROJECT_DIR%server.php"
     if %errorlevel% neq 0 (
         echo [INFO] Menjalankan fallback ke localhost 127.0.0.1...
