@@ -150,7 +150,7 @@ if %errorlevel% equ 0 (
 
 :configure_php_ini
 echo [INFO] Memverifikasi ekstensi php.ini (SQLite, cURL, Fileinfo, variables_order)...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$cmd = '%PHP_EXE%'; try { $p = & $cmd --ini 2>$null; $ini = ($p | Select-String 'Loaded Configuration File:\s*(.+)').Matches.Groups[1].Value.Trim(); if (-not $ini -or $ini -eq '(none)') { $base = Split-Path (Get-Command $cmd -ErrorAction SilentlyContinue).Source; if (-not $base -and (Test-Path $cmd)) { $base = Split-Path $cmd }; if ($base) { $sample = Get-ChildItem -Path $base -Filter 'php.ini-*' | Select-Object -First 1 -ExpandProperty FullName; if ($sample) { Copy-Item $sample (Join-Path $base 'php.ini'); $ini = Join-Path $base 'php.ini'; } } }; if ($ini -and (Test-Path $ini)) { $c = [System.IO.File]::ReadAllText($ini); $exts = @('pdo_sqlite','sqlite3','fileinfo','curl','gd','zip','intl','mbstring','openssl'); foreach($e in $exts){ $c = $c -replace ';extension='+$e, ('extension='+$e) }; $c = $c -replace ';extension_dir = \"ext\"', 'extension_dir = \"ext\"'; $c = $c -replace 'variables_order = \"GPCS\"', 'variables_order = \"EGPCS\"'; [System.IO.File]::WriteAllText($ini, $c) } } catch {}" >nul 2>&1
+powershell -NoProfile -Command "$cmd = '%PHP_EXE%'; try { $p = & $cmd --ini 2>$null; $ini = ($p | Select-String 'Loaded Configuration File:\s*(.+)').Matches.Groups[1].Value.Trim(); if (-not $ini -or $ini -eq '(none)') { $base = Split-Path (Get-Command $cmd -ErrorAction SilentlyContinue).Source; if (-not $base -and (Test-Path $cmd)) { $base = Split-Path $cmd }; if ($base) { $sample = Get-ChildItem -Path $base -Filter 'php.ini-*' | Select-Object -First 1 -ExpandProperty FullName; if ($sample) { Copy-Item $sample (Join-Path $base 'php.ini'); $ini = Join-Path $base 'php.ini'; } } }; if ($ini -and (Test-Path $ini)) { $c = [System.IO.File]::ReadAllText($ini); $exts = @('pdo_sqlite','sqlite3','fileinfo','curl','gd','zip','intl','mbstring','openssl'); foreach($e in $exts){ $c = $c -replace ';extension='+$e, ('extension='+$e) }; $c = $c -replace ';extension_dir = \"ext\"', 'extension_dir = \"ext\"'; $c = $c -replace 'variables_order = \"GPCS\"', 'variables_order = \"EGPCS\"'; [System.IO.File]::WriteAllText($ini, $c) } } catch {}" >nul 2>&1
 
 :php_ready
 
@@ -184,14 +184,14 @@ if exist "%PROJECT_DIR%composer.phar" (
 )
 
 echo [INFO] Mengunduh composer.phar resmi dari getcomposer.org...
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%php\composer.phar')" >nul 2>&1
+powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%php\composer.phar')" >nul 2>&1
 
 if exist "%PROJECT_DIR%php\composer.phar" (
     "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
     goto :check_vendor_result
 )
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%composer.phar')" >nul 2>&1
+powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%composer.phar')" >nul 2>&1
 
 if exist "%PROJECT_DIR%composer.phar" (
     "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
@@ -323,9 +323,12 @@ echo  - OPD Bappeda    : bappeda / bappeda123
 echo =======================================================================
 echo.
 
-echo [7/8] Menyiapkan peluncur peramban cerdas (menunggu port %LARAVEL_PORT% aktif)...
-rem Socket poller: Memeriksa koneksi TCP port secara berulang sampai server benar-benar siap merespons sebelum membuka browser
-start "" /min powershell -NoProfile -ExecutionPolicy Bypass -Command "$p = %LARAVEL_PORT%; for ($i = 0; $i -lt 50; $i++) { try { $client = New-Object System.Net.Sockets.TcpClient('127.0.0.1', $p); if ($client.Connected) { $client.Close(); break; } } catch {} Start-Sleep -Milliseconds 250; }; Start-Process ('http://127.0.0.1:' + $p + '/login')"
+echo [7/8] Membuka peramban (browser) otomatis ke Portal OPD...
+if defined PYTHON_EXE (
+    start "" /b "%PYTHON_EXE%" -c "import time, webbrowser; time.sleep(2); webbrowser.open('http://127.0.0.1:%LARAVEL_PORT%/login')" >nul 2>&1
+) else (
+    start "" http://127.0.0.1:%LARAVEL_PORT%/login
+)
 
 echo [8/8] SERVER SEDANG AKTIF DI PORT %LARAVEL_PORT% (0.0.0.0)...
 echo.
