@@ -94,29 +94,7 @@
 
             <div class="dtsen-filebox-grid">
                 
-                <!-- Surat KAK (File Box) Required -->
-                <div class="dtsen-filebox-card">
-                    <div class="dtsen-filebox-header">
-                        <div class="dtsen-filebox-title">
-                            KAK
-                        </div>
-                        <span class="dtsen-badge-req">Wajib</span>
-                    </div>
-                    <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKak').click()">
-                        <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
-                        <div class="dtsen-dropzone-title" id="kakTitle">Pilih Berkas  KAK</div>
-                        <div class="dtsen-dropzone-sub" id="kakSub">PDF, DOC, DOCX (Maks 50MB)</div>
-                        <input type="file" 
-                               name="file_kak" 
-                               id="inputKak" 
-                               class="d-none" 
-                               accept=".pdf,.doc,.docx" 
-                               required
-                               onchange="handleFileChange(this, 'kakTitle', 'kakSub')">
-                    </div>
-                </div>
-
-                <!-- Surat Permohonan (File Box & Input Fields) Required -->
+                <!-- 1. Surat Permohonan (File Box & Input Fields) Required - Spans Full Width at Top -->
                 <div class="dtsen-filebox-card dtsen-filebox-permohonan">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
@@ -126,7 +104,7 @@
                     </div>
                     <div class="dtsen-permohonan-body">
                         <!-- File Dropzone Permohonan -->
-                        <div class="dtsen-file-dropzone" onclick="document.getElementById('inputPermohonan').click()">
+                        <div class="dtsen-file-dropzone dtsen-dropzone-permohonan" onclick="document.getElementById('inputPermohonan').click()">
                             <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
                             <div class="dtsen-dropzone-title" id="permohonanTitle">Pilih Berkas Surat Permohonan</div>
                             <div class="dtsen-dropzone-sub" id="permohonanSub">PDF, DOC, DOCX (Maks 50MB)</div>
@@ -141,7 +119,7 @@
 
                         <!-- 3 Input Surat Permohonan: Nomor Surat, Tanggal, Perihal (Tanpa Nomor) -->
                         <div class="dtsen-permohonan-meta-inputs">
-                            <div style="margin-bottom: 8px;">
+                            <div>
                                 <label class="form-group-label" style="font-size: 12px; margin-bottom: 4px;">
                                     Nomor Surat
                                 </label>
@@ -153,7 +131,7 @@
                                        style="padding: 8px 12px; font-size: 13px;">
                             </div>
 
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                                 <div>
                                     <label class="form-group-label" style="font-size: 12px; margin-bottom: 4px;">
                                         Tanggal Surat
@@ -180,7 +158,50 @@
                     </div>
                 </div>
 
-                <!-- ROPA (File Box) Opsional -->
+                <!-- 2. KAK (File Box) Required -->
+                <div class="dtsen-filebox-card">
+                    <div class="dtsen-filebox-header">
+                        <div class="dtsen-filebox-title">
+                            KAK
+                        </div>
+                        <span class="dtsen-badge-req">Wajib</span>
+                    </div>
+                    <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKak').click()">
+                        <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
+                        <div class="dtsen-dropzone-title" id="kakTitle">Pilih Berkas KAK</div>
+                        <div class="dtsen-dropzone-sub" id="kakSub">PDF, DOC, DOCX (Maks 50MB)</div>
+                        <input type="file" 
+                               name="file_kak" 
+                               id="inputKak" 
+                               class="d-none" 
+                               accept=".pdf,.doc,.docx" 
+                               required
+                               onchange="handleFileChange(this, 'kakTitle', 'kakSub')">
+                    </div>
+                </div>
+
+                <!-- 3. SK Tim Pelaksana (File Box) Opsional -->
+                <div class="dtsen-filebox-card">
+                    <div class="dtsen-filebox-header">
+                        <div class="dtsen-filebox-title">
+                            SK Tim Pelaksana
+                        </div>
+                        <span class="dtsen-badge-opt">Opsional</span>
+                    </div>
+                    <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
+                        <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
+                        <div class="dtsen-dropzone-title" id="sktmTitle">Pilih Berkas SK Tim Pelaksana</div>
+                        <div class="dtsen-dropzone-sub" id="sktmSub">PDF, DOC, DOCX, ZIP (Maks 50MB)</div>
+                        <input type="file" 
+                               name="file_sktm" 
+                               id="inputSktm" 
+                               class="d-none" 
+                               accept=".pdf,.doc,.docx,.zip" 
+                               onchange="handleFileChange(this, 'sktmTitle', 'sktmSub')">
+                    </div>
+                </div>
+
+                <!-- 4. ROPA (File Box) Opsional -->
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
@@ -201,7 +222,7 @@
                     </div>
                 </div>
 
-                <!-- DPIA (File Box) Opsional -->
+                <!-- 5. DPIA (File Box) Opsional -->
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
@@ -219,27 +240,6 @@
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.xlsx,.xls" 
                                onchange="handleFileChange(this, 'dpiaTitle', 'dpiaSub')">
-                    </div>
-                </div>
-
-                <!-- SKTM (File Box) Opsional -->
-                <div class="dtsen-filebox-card">
-                    <div class="dtsen-filebox-header">
-                        <div class="dtsen-filebox-title">
-                            SK Tim Pelaksana
-                        </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
-                    </div>
-                    <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
-                        <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
-                        <div class="dtsen-dropzone-title" id="sktmTitle">Pilih Berkas SK Tim Pelaksana</div>
-                        <div class="dtsen-dropzone-sub" id="sktmSub">PDF, DOC, DOCX, ZIP (Maks 50MB)</div>
-                        <input type="file" 
-                               name="file_sktm" 
-                               id="inputSktm" 
-                               class="d-none" 
-                               accept=".pdf,.doc,.docx,.zip" 
-                               onchange="handleFileChange(this, 'sktmTitle', 'sktmSub')">
                     </div>
                 </div>
 
@@ -279,15 +279,20 @@
 <style>
 .dtsen-filebox-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
     margin-top: 14px;
+}
+@media (max-width: 820px) {
+    .dtsen-filebox-grid {
+        grid-template-columns: 1fr;
+    }
 }
 .dtsen-filebox-card {
     background: #ffffff;
     border: 1.5px solid #e2e8f0;
     border-radius: 12px;
-    padding: 16px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -328,11 +333,17 @@
 .dtsen-file-dropzone {
     border: 1.5px dashed #cbd5e1;
     border-radius: 10px;
-    padding: 18px 12px;
+    padding: 18px 14px;
     text-align: center;
     background: #f8fafc;
     cursor: pointer;
     transition: all 0.2s ease;
+    min-height: 110px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
 }
 .dtsen-file-dropzone:hover {
     background: #f1f5f9;
@@ -362,28 +373,37 @@
     align-items: center;
     gap: 4px;
 }
-@media (min-width: 860px) {
-    .dtsen-filebox-permohonan {
-        grid-column: span 2;
-    }
+.dtsen-filebox-permohonan {
+    grid-column: 1 / -1;
+}
+.dtsen-permohonan-body {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 18px;
+    align-items: stretch;
+}
+@media (max-width: 820px) {
     .dtsen-permohonan-body {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: 14px;
-        align-items: center;
     }
 }
-@media (max-width: 859px) {
-    .dtsen-permohonan-body {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
+.dtsen-dropzone-permohonan {
+    height: 100%;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 16px;
+    box-sizing: border-box;
 }
 .dtsen-permohonan-meta-inputs {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
+    gap: 10px;
 }
 </style>
 
