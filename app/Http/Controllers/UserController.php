@@ -27,12 +27,15 @@ class UserController extends Controller
         // Daftar tiket untuk referensi cepat input riwayat
         $availableTikets = TiketDtsen::latest()->get();
 
+        // Permintaan Reset Password Lupa Kata Sandi
+        $pendingResetRequests = \App\Models\PasswordResetRequest::where('status', 'MENUNGGU')->latest()->get();
+
         // Statistik Pengguna
         $totalUsers = User::count();
         $totalOpd = User::where('role', 'perangkat_daerah')->count();
         $totalAdmin = User::where('role', 'superadmin')->count();
 
-        return view('admin.users.index', compact('users', 'riwayatBagiDatas', 'availableTikets', 'totalUsers', 'totalOpd', 'totalAdmin', 'activeTab'));
+        return view('admin.users.index', compact('users', 'riwayatBagiDatas', 'availableTikets', 'totalUsers', 'totalOpd', 'totalAdmin', 'activeTab', 'pendingResetRequests'));
     }
 
     /**
@@ -173,16 +176,17 @@ class UserController extends Controller
             }
         }
 
-        $user = User::create([
+        $user = new User([
             'nama_instansi' => $request->nama_instansi,
             'name' => $request->name ?: $request->nama_instansi,
             'username' => trim($request->username),
             'email' => trim($request->email),
-            'password' => Hash::make($request->password),
             'role' => $roleStr,
             'role_id' => $roleId,
             'nomor_kontak' => $request->nomor_kontak,
         ]);
+        $user->setPlainPassword($request->password);
+        $user->save();
 
         AuditLogger::log(
             'USER_CREATED',
@@ -466,5 +470,76 @@ class UserController extends Controller
             ->get();
 
         return view('admin.logs.show', compact('log', 'relatedLogs'));
+    }
+
+    /**
+     * Superadmin Mereset Password Akun Pengguna Langsung
+     */
+    public function superAdminResetPassword(Request $request, $id)
+    {
+        if (!auth()->user()->isSuperAdminOnly()) {
+            abort(403, 'Hanya Super Administrator yang berhak mereset kata sandi akun.');
+        }
+
+        $request->validate([
+            'password' => 'required|string|min:4',
+        ], [
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi baru minimal 4 karakter.',
+        ]);
+
+        $user = User::findOrFail($id);
+        $user->setPlainPassword($request->password);
+        $user->save();
+
+        // Tandai permintaan reset terkait sebagai DIRESET
+        \App\Models\PasswordResetRequest::where('user_id', $user->id)
+            ->where('status', 'MENUNGGU')
+            ->update([
+                'status' => 'DIRESET',
+                'password_baru' => $request->password,
+                'reset_by' => auth()->id(),
+            ]);
+
+        AuditLogger::log(
+            'USER_PASSWORD_RESET_SUPERADMIN',
+            "Superadmin mereset kata sandi akun [{$user->username}] ({$user->nama_instansi}).",
+            'SUCCESS',
+            ['target_user_id' => $user->id, 'admin_id' => auth()->id()]
+        );
+
+        return back()->with('success', "Kata sandi akun {$user->username} berhasil direset menjadi: {$request->password}");
+    }
+
+    /**
+     * Superadmin Menyetujui Permintaan Reset Password Masuk
+     */
+    public function approveResetRequest(Request $request, $id)
+    {
+        if (!auth()->user()->isSuperAdminOnly()) {
+            abort(403, 'Hanya Super Administrator yang berhak menyetujui permintaan reset kata sandi.');
+        }
+
+        $resetReq = \App\Models\PasswordResetRequest::findOrFail($id);
+        $user = $resetReq->user ?: User::where('username', $resetReq->username)->firstOrFail();
+
+        $newPassword = $request->input('password') ?: 'opd123';
+        $user->setPlainPassword($newPassword);
+        $user->save();
+
+        $resetReq->update([
+            'status' => 'DIRESET',
+            'password_baru' => $newPassword,
+            'reset_by' => auth()->id(),
+        ]);
+
+        AuditLogger::log(
+            'USER_RESET_REQUEST_APPROVED',
+            "Superadmin menyetujui reset kata sandi akun [{$user->username}] menjadi [{$newPassword}].",
+            'SUCCESS',
+            ['target_user_id' => $user->id, 'admin_id' => auth()->id()]
+        );
+
+        return back()->with('success', "Permintaan reset kata sandi akun {$user->username} berhasil disetujui. Kata sandi telah direset ke: {$newPassword}");
     }
 }

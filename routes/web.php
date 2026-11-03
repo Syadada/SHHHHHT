@@ -30,6 +30,10 @@ Route::middleware('guest')->group(function () {
     Route::get('/admin/login', function () {
         return redirect()->route('login');
     });
+
+    // Fitur Lupa Password & Reset Password
+    Route::post('/lupa-password', [AuthController::class, 'requestResetPassword'])->name('password.request-reset');
+    Route::post('/reset-password-mandiri', [AuthController::class, 'resetPasswordMandiri'])->name('password.reset-mandiri');
 });
 
 // Logout Sesi Pengguna (Mendukung GET & POST untuk OPD maupun Administrator)
@@ -83,8 +87,9 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/opd/riwayat-bagi-data/{id}', [ProfileController::class, 'showRiwayatBagiData'])->whereNumber('id')->name('opd.riwayat-bagi-data.show');
         Route::get('/profile', [ProfileController::class, 'layananBagiPakai'])->name('profile'); // Dukungan alias
 
-        // 5. Halaman Profil Pengguna / User (Hanya Bisa Lihat / Read-Only)
+        // 5. Halaman Profil Pengguna / User & Ubah Password
         Route::get('/opd/user', [ProfileController::class, 'userProfile'])->name('opd.user.index');
+        Route::post('/opd/ubah-password', [ProfileController::class, 'updatePassword'])->name('opd.user.update-password');
 
         // 6. Unduh Dokumen, Surat & Revisi Berkas
         Route::get('/tiket/{id}/surat', [TiketDtsenController::class, 'downloadSurat'])->name('tiket.download-surat');
@@ -138,6 +143,8 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::post('/users', [UserController::class, 'storeUser'])->name('users.store');
         Route::get('/users/{id}/access', [UserController::class, 'editAccess'])->whereNumber('id')->name('users.edit-access');
         Route::post('/users/{id}/access', [UserController::class, 'updateAccess'])->whereNumber('id')->name('users.update-access');
+        Route::post('/users/{id}/reset-password', [UserController::class, 'superAdminResetPassword'])->whereNumber('id')->name('users.reset-password');
+        Route::post('/reset-requests/{id}/approve', [UserController::class, 'approveResetRequest'])->whereNumber('id')->name('reset-requests.approve');
         Route::delete('/users/{id}', [UserController::class, 'destroyUser'])->whereNumber('id')->name('users.destroy');
         
         // Log Laptop & Audit Keamanan

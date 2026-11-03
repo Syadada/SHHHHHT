@@ -15,6 +15,7 @@ class User extends Authenticatable
         'email',
         'username',
         'password',
+        'password_display',
         'role',
         'role_id',
         'nama_instansi',
@@ -35,6 +36,44 @@ class User extends Authenticatable
             'password' => 'hashed',
             'last_login_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Mengambil plain password yang tersimpan untuk dilihat Superadmin
+     */
+    public function getPlainPasswordAttribute(): ?string
+    {
+        if (empty($this->password_display)) {
+            // Default fallback mapping untuk user demo
+            $defaults = [
+                'admin' => 'admin',
+                'dinsos' => 'dinsos123',
+                'bappeda' => 'bappeda123',
+                'admin1' => 'admin123',
+                'admin2' => 'admin123',
+            ];
+            return $defaults[$this->username] ?? '••••••••';
+        }
+
+        try {
+            return \Illuminate\Support\Facades\Crypt::decryptString($this->password_display);
+        } catch (\Exception $e) {
+            return $this->password_display;
+        }
+    }
+
+    /**
+     * Set password sekaligus menyimpan versi terenkripsi untuk superadmin
+     */
+    public function setPlainPassword(string $plainPassword): void
+    {
+        $this->password = \Illuminate\Support\Facades\Hash::make($plainPassword);
+        $this->password_display = \Illuminate\Support\Facades\Crypt::encryptString($plainPassword);
+    }
+
+    public function isSuperAdminOnly(): bool
+    {
+        return $this->role === 'superadmin' || $this->username === 'admin';
     }
 
     public function isSuperAdmin(): bool

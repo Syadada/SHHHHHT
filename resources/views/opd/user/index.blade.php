@@ -14,7 +14,26 @@
         <span class="current">User</span>
     </nav>
 
-    <!-- Header Banner Read-Only -->
+    <!-- Flash Messages -->
+    @if(session('success'))
+        <div style="background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; padding: 12px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 13.5px; display: flex; align-items: center; gap: 10px;">
+            <i class="fi fi-rr-check"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if(isset($errors) && $errors->any())
+        <div style="background: #fef2f2; color: #991b1b; border: 1.5px solid #fecaca; padding: 12px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 13.5px;">
+            <div style="font-weight: 700; margin-bottom: 4px;"><i class="fi fi-rr-cross-circle"></i> Periksa Isian Anda:</div>
+            <ul style="margin: 0; padding-left: 20px;">
+                @foreach($errors->all() as $err)
+                    <li>{{ $err }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <!-- Header Banner -->
     <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);">
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
             <div style="display: flex; align-items: center; gap: 16px;">
@@ -37,9 +56,10 @@
             </div>
 
             <div>
-                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 20px; font-size: 12px; font-weight: 600; color: #475569;">
-                    <i class="fi fi-rr-eye" style="color: #0b57d0;"></i> Mode Lihat Saja (Read-Only)
-                </span>
+                <a href="#formUbahPassword" class="btn-pill-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 13px; text-decoration: none;">
+                    <i class="fi fi-rr-key"></i>
+                    <span>Reset Kata Sandi</span>
+                </a>
             </div>
         </div>
     </div>
@@ -123,12 +143,48 @@
 
     </div>
 
-    <!-- Informasi Catatan Pengelolaan Terpusat -->
-    <div style="margin-top: 20px; padding: 16px 20px; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 14px; display: flex; align-items: flex-start; gap: 14px;">
-        <i class="fi fi-rr-info" style="font-size: 20px; color: #0b57d0; margin-top: 2px;"></i>
-        <div style="font-size: 12.5px; color: #475569; line-height: 1.5;">
-            <strong>Catatan Kebijakan Akun:</strong> Akun ini merupakan akun resmi kedinasan Perangkat Daerah (OPD). Untuk menjaga keamanan data dan tata kelola SPBE, perubahan nama instansi, email resmi, atau penambahan hak akses dikelola secara terpusat oleh Tim Administrator Walidata Diskominfo.
+    <!-- Kartu Reset Kata Sandi Akun -->
+    <div id="formUbahPassword" style="margin-top: 24px; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #f1f5f9;">
+            <i class="fi fi-rr-key" style="font-size: 18px; color: #0b57d0;"></i>
+            <h3 style="font-size: 15px; font-weight: 700; color: #0f172a; margin: 0;">Reset Kata Sandi Akun</h3>
         </div>
+
+        <form action="{{ route('opd.user.update-password') }}" method="POST">
+            @csrf
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 18px;">
+                <div>
+                    <label class="form-group-label" style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">
+                        Kata Sandi Baru <span class="form-required">*</span>
+                    </label>
+                    <input type="password" 
+                           name="password" 
+                           class="form-text-input" 
+                           placeholder="Minimal 4 karakter" 
+                           required 
+                           style="padding: 9px 14px; font-size: 13px;">
+                </div>
+
+                <div>
+                    <label class="form-group-label" style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px; display: block;">
+                        Konfirmasi Kata Sandi Baru <span class="form-required">*</span>
+                    </label>
+                    <input type="password" 
+                           name="password_confirmation" 
+                           class="form-text-input" 
+                           placeholder="Ulangi kata sandi baru" 
+                           required 
+                           style="padding: 9px 14px; font-size: 13px;">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn-pill-primary" style="padding: 9px 22px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="fi fi-rr-check"></i>
+                    <span>Simpan Kata Sandi Baru</span>
+                </button>
+            </div>
+        </form>
     </div>
 
 </div>

@@ -82,20 +82,135 @@ class AuthController extends Controller
                 ['user_id' => $user->id, 'device_id' => $deviceId]
             );
 
+            // Reset counter login gagal jika berhasil login
+            $attemptKey = 'login_failed_attempts_' . md5(strtolower($loginInput));
+            $request->session()->forget($attemptKey);
+
             return redirect()->route('opd.dashboard')
                 ->with('success', "Selamat datang, {$user->name}! Silakan pantau tiket dan data riwayat bagi pakai DTSEN instansi Anda.");
         }
 
+        // Hitung percobaan login gagal
+        $attemptKey = 'login_failed_attempts_' . md5(strtolower($loginInput));
+        $attempts = (int) $request->session()->get($attemptKey, 0) + 1;
+        $request->session()->put($attemptKey, $attempts);
+
+        $showForgot = ($attempts >= 3);
+
         AuditLogger::log(
             'AUTH_FAILED_OPD',
-            "Percobaan login OPD gagal dengan identitas '{$loginInput}'",
+            "Percobaan login OPD gagal dengan identitas '{$loginInput}' (percobaan ke-{$attempts})",
             'FAILED',
-            ['input' => $loginInput]
+            ['input' => $loginInput, 'attempts' => $attempts]
         );
 
+        $errorMsg = 'Kredensial login tidak cocok. Pastikan email/username dan kata sandi benar.';
+        if ($showForgot) {
+            $errorMsg = 'Anda telah 3 kali salah memasukkan kata sandi.';
+        }
+
         return back()->withErrors([
-            'login' => 'Kredensial login tidak cocok. Pastikan email/username dan kata sandi benar.',
+            'login' => $errorMsg,
+        ])->with([
+            'show_forgot_password' => $showForgot,
+            'failed_username' => $loginInput,
         ])->withInput($request->only('login'));
+    }
+
+    /**
+     * Pengajuan Lupa Password oleh User/OPD ke Superadmin
+     */
+    public function requestResetPassword(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+        ], [
+            'username.required' => 'Username atau email wajib diisi.',
+        ]);
+
+        $input = trim($request->input('username'));
+        $user = User::where('username', $input)
+            ->orWhere('email', $input)
+            ->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'login' => 'Akun dengan username atau email tersebut tidak ditemukan.',
+            ])->with([
+                'show_forgot_password' => true,
+                'failed_username' => $input,
+            ]);
+        }
+
+        // Buat permintaan reset password untuk Superadmin
+        \App\Models\PasswordResetRequest::create([
+            'user_id' => $user->id,
+            'username' => $user->username,
+            'nama_instansi' => $user->nama_instansi ?: $user->name,
+            'ip_address' => $request->ip() ?? '127.0.0.1',
+            'status' => 'MENUNGGU',
+        ]);
+
+        AuditLogger::log(
+            'AUTH_PASSWORD_RESET_REQUESTED',
+            "Pengguna {$user->username} ({$user->nama_instansi}) mengajukan permintaan reset kata sandi ke Superadmin.",
+            'WARNING',
+            ['user_id' => $user->id, 'ip' => $request->ip()]
+        );
+
+        return back()->with('success', "Permintaan reset kata sandi untuk akun {$user->username} telah dikirim ke Superadmin. Silakan hubungi atau tunggu konfirmasi Superadmin.");
+    }
+
+    /**
+     * Reset Password Mandiri oleh User Sekarang (Dengan Verifikasi Email Resmi)
+     */
+    public function resetPasswordMandiri(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string',
+            'email' => 'required|email',
+            'password' => 'required|string|min:4|confirmed',
+        ], [
+            'username.required' => 'Username wajib diisi.',
+            'email.required' => 'Email resmi instansi wajib diisi.',
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi baru minimal 4 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        $username = trim($request->input('username'));
+        $email = trim($request->input('email'));
+
+        $user = User::where('username', $username)
+            ->where('email', $email)
+            ->first();
+
+        if (!$user) {
+            return back()->withErrors([
+                'login' => 'Kombinasi username dan email resmi instansi tidak cocok.',
+            ])->with([
+                'show_forgot_password' => true,
+                'failed_username' => $username,
+            ]);
+        }
+
+        $user->setPlainPassword($request->password);
+        $user->save();
+
+        // Bersihkan counter login gagal
+        if ($request->hasSession()) {
+            $attemptKey = 'login_failed_attempts_' . md5(strtolower($username));
+            $request->session()->forget($attemptKey);
+        }
+
+        AuditLogger::log(
+            'AUTH_PASSWORD_RESET_SELF',
+            "Pengguna {$user->username} ({$user->nama_instansi}) berhasil mereset kata sandi secara mandiri.",
+            'SUCCESS',
+            ['user_id' => $user->id]
+        );
+
+        return back()->with('success', "Kata sandi akun {$user->username} berhasil direset! Silakan login dengan kata sandi baru Anda.");
     }
 
     /**

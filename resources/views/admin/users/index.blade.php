@@ -23,6 +23,44 @@
 <!-- DAFTAR AKUN PENGGUNA TERDAFTAR (USER MANAGEMENT)              -->
 <!-- ============================================================== -->
 <div id="panel-users" style="display: block;">
+    @if(session('success'))
+        <div style="background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; padding: 12px 18px; border-radius: 12px; margin-bottom: 20px; font-size: 13.5px; display: flex; align-items: center; gap: 10px;">
+            <i class="fi fi-rr-check"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    <!-- Banner Notifikasi Permintaan Reset Password (Khusus Superadmin) -->
+    @if(isset($pendingResetRequests) && $pendingResetRequests->count() > 0 && auth()->user()->isSuperAdminOnly())
+        <div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 38px; height: 38px; border-radius: 8px; background: #fef3c7; color: #b45309; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                        <i class="fi fi-rr-bell"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 14px; font-weight: 700; color: #92400e;">
+                            {{ $pendingResetRequests->count() }} Permintaan Reset Password Masuk
+                        </div>
+                        <div style="font-size: 12.5px; color: #b45309;">
+                            Pengguna salah memasukkan password 3 kali dan meminta bantuan reset kata sandi ke Superadmin.
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    @foreach($pendingResetRequests as $req)
+                        <form action="{{ route('admin.reset-requests.approve', $req->id) }}" method="POST" onsubmit="return confirm('Reset kata sandi akun {{ $req->username }} menjadi: opd123 ?');" style="margin: 0;">
+                            @csrf
+                            <button type="submit" class="btn-pill-primary" style="background: #b45309; border-color: #b45309; padding: 6px 14px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+                                <i class="fi fi-rr-refresh"></i> Reset <strong>{{ $req->username }}</strong> ({{ $req->nama_instansi }})
+                            </button>
+                        </form>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Ringkasan Statistik Pengguna -->
     <div class="admin-stats-grid">
         <div class="admin-stat-card">
@@ -62,6 +100,7 @@
                         <th>Nama Instansi / Perangkat Daerah</th>
                         <th>Akun Pengguna (Username)</th>
                         <th class="table-col-nowrap">Role / Hak Akses</th>
+                        <th class="table-col-nowrap">Kata Sandi</th>
                         <th class="table-col-nowrap">Terakhir Login</th>
                         <th class="table-col-action">Aksi</th>
                     </tr>
@@ -108,7 +147,35 @@
                                 @endif
                             </td>
 
-                            <!-- 4. Terakhir Login -->
+                            <!-- 4. Kata Sandi (Hanya Superadmin yang berhak melihat & mereset) -->
+                            <td class="table-col-nowrap">
+                                @if(auth()->user()->isSuperAdminOnly())
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span id="pwd-val-{{ $u->id }}" style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #0f172a; min-width: 70px;">••••••••</span>
+                                        <button type="button" 
+                                                class="btn-pill-outline" 
+                                                style="padding: 2px 7px; font-size: 11px; border-color: #cbd5e1; color: #475569;" 
+                                                onclick="togglePasswordVisibility('pwd-val-{{ $u->id }}', '{{ addslashes($u->plain_password) }}', this)" 
+                                                title="Lihat / Sembunyikan Kata Sandi">
+                                            <i class="fi fi-rr-eye"></i>
+                                        </button>
+                                        <button type="button" 
+                                                class="btn-pill-outline" 
+                                                style="padding: 2px 7px; font-size: 11px; color: #b91c1c; border-color: #fca5a5; background: #fff5f5;" 
+                                                onclick="promptResetPassword('{{ $u->id }}', '{{ $u->username }}')" 
+                                                title="Reset Kata Sandi Akun Ini">
+                                            <i class="fi fi-rr-key"></i>
+                                        </button>
+                                    </div>
+                                @else
+                                    <div style="display: flex; align-items: center; gap: 4px; color: #94a3b8; font-size: 11.5px;">
+                                        <i class="fi fi-rr-lock"></i>
+                                        <span>Terkunci</span>
+                                    </div>
+                                @endif
+                            </td>
+
+                            <!-- 5. Terakhir Login -->
                             <td class="table-col-nowrap">
                                 @if($u->last_login_at)
                                     <div class="user-title-name">{{ \Carbon\Carbon::parse($u->last_login_at)->format('d M Y') }}</div>
@@ -118,7 +185,7 @@
                                 @endif
                             </td>
 
-                            <!-- 5. Aksi (Edit Akses, Hapus) -->
+                            <!-- 6. Aksi (Edit Akses, Hapus) -->
                             <td class="table-col-action">
                                 <div style="display: inline-flex; align-items: center; gap: 6px; justify-content: flex-end;">
                                     <!-- Tombol Edit Hak Akses -->
@@ -248,4 +315,34 @@
     @endif
 </div>
 @endif
+
+<!-- Form Tersembunyi Reset Password Superadmin -->
+<form id="formSuperadminReset" method="POST" style="display: none;">
+    @csrf
+    <input type="hidden" name="password" id="inputResetNewPassword">
+</form>
+
+<script>
+function togglePasswordVisibility(elId, plainPwd, btn) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (el.innerText === '••••••••') {
+        el.innerText = plainPwd;
+        btn.innerHTML = '<i class="fi fi-rr-eye-crossed"></i>';
+    } else {
+        el.innerText = '••••••••';
+        btn.innerHTML = '<i class="fi fi-rr-eye"></i>';
+    }
+}
+
+function promptResetPassword(userId, username) {
+    const newPwd = prompt(`Masukkan kata sandi baru untuk akun ${username}:`, 'opd123');
+    if (newPwd && newPwd.trim() !== '') {
+        const form = document.getElementById('formSuperadminReset');
+        form.action = `{{ url('admin/users') }}/${userId}/reset-password`;
+        document.getElementById('inputResetNewPassword').value = newPwd.trim();
+        form.submit();
+    }
+}
+</script>
 @endsection

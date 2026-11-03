@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\TiketDtsen;
 use App\Models\RiwayatBagiDataDtsen;
+use App\Services\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -186,12 +187,40 @@ class ProfileController extends Controller
     }
 
     /**
-     * 6. Halaman User OPD (Hanya Bisa Lihat / Read-Only Akun Instansi)
+     * 6. Halaman User OPD & Reset Password
      */
     public function userProfile()
     {
         $user = Auth::user();
         return view('opd.user.index', compact('user'));
+    }
+
+    /**
+     * User OPD Mereset Kata Sandi Akunnya Sekarang
+     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'password' => 'required|string|min:4|confirmed',
+        ], [
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi baru minimal 4 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
+        ]);
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->setPlainPassword($request->password);
+        $user->save();
+
+        AuditLogger::log(
+            'AUTH_PASSWORD_CHANGED',
+            "Pengguna {$user->name} ({$user->nama_instansi}) berhasil memperbarui kata sandi akun.",
+            'SUCCESS',
+            ['user_id' => $user->id]
+        );
+
+        return back()->with('success', 'Kata sandi akun Anda berhasil diperbarui!');
     }
 
     /**

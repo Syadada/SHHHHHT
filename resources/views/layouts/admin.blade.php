@@ -86,6 +86,7 @@
 
                     @php
                         $isUserActive = request()->routeIs('admin.users.*') || request()->routeIs('admin.logs.*') || request()->routeIs('admin.profile');
+                        $pendingResetCount = \Illuminate\Support\Facades\Schema::hasTable('password_reset_requests') ? \App\Models\PasswordResetRequest::where('status', 'MENUNGGU')->count() : 0;
                     @endphp
                     <!-- 4. User (Dropdown Flyout WordPress Style) -->
                     <li class="app-nav-dropdown {{ $isUserActive ? 'active' : '' }}">
@@ -93,6 +94,9 @@
                             <div class="app-nav-item-left">
                                 <i class="fi fi-rr-users app-nav-icon"></i>
                                 <span>User</span>
+                                @if($pendingResetCount > 0 && auth()->user()->isSuperAdminOnly())
+                                    <span style="background: #f59e0b; color: #ffffff; font-size: 10px; font-weight: 800; border-radius: 9999px; padding: 1px 6px; margin-left: 6px;">{{ $pendingResetCount }}</span>
+                                @endif
                             </div>
                             <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
                         </a>
@@ -101,6 +105,9 @@
                                 <a href="{{ route('admin.users.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.index') || request()->routeIs('admin.users.show') ? 'active' : '' }}">
                                     <i class="fi fi-rr-users-alt"></i>
                                     <span>User Management</span>
+                                    @if($pendingResetCount > 0 && auth()->user()->isSuperAdminOnly())
+                                        <span style="background: #f59e0b; color: #ffffff; font-size: 9.5px; font-weight: 800; border-radius: 9999px; padding: 1px 5px; margin-left: auto;">{{ $pendingResetCount }}</span>
+                                    @endif
                                 </a>
                             </li>
                             <li>

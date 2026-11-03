@@ -103,6 +103,34 @@
                     <div class="user-modal-field-value">{{ $user->nama_instansi ?: 'Pemerintah Daerah' }}</div>
                 </div>
                 <div class="user-modal-card-item">
+                    <div class="user-modal-field-label">Kata Sandi Akun</div>
+                    <div class="user-modal-field-value">
+                        @if(auth()->user()->isSuperAdminOnly())
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <span id="pwd-detail-val" style="font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: #0f172a;">••••••••</span>
+                                <button type="button" 
+                                        class="btn-pill-outline" 
+                                        style="padding: 2px 8px; font-size: 11px; border-color: #cbd5e1; color: #475569;" 
+                                        onclick="toggleDetailPwd('pwd-detail-val', '{{ addslashes($user->plain_password) }}', this)" 
+                                        title="Lihat / Sembunyikan Kata Sandi">
+                                    <i class="fi fi-rr-eye"></i>
+                                </button>
+                                <button type="button" 
+                                        class="btn-pill-outline" 
+                                        style="padding: 2px 8px; font-size: 11px; color: #b91c1c; border-color: #fca5a5; background: #fff5f5;" 
+                                        onclick="promptResetDetail('{{ $user->id }}', '{{ $user->username }}')" 
+                                        title="Reset Kata Sandi">
+                                    <i class="fi fi-rr-key"></i> Reset
+                                </button>
+                            </div>
+                        @else
+                            <span style="color: #94a3b8; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="fi fi-rr-lock"></i> Terkunci (Hanya Superadmin)
+                            </span>
+                        @endif
+                    </div>
+                </div>
+                <div class="user-modal-card-item">
                     <div class="user-modal-field-label">Tanggal Akun Diterbitkan</div>
                     <div class="user-modal-field-value">
                         {{ $user->created_at ? \Carbon\Carbon::parse($user->created_at)->format('d M Y, H:i') . ' WIB' : '-' }}
@@ -313,6 +341,36 @@
             </table>
         </div>
     </div>
+
+    <!-- Form Tersembunyi Reset Password Superadmin -->
+    <form id="formSuperadminResetDetail" method="POST" style="display: none;">
+        @csrf
+        <input type="hidden" name="password" id="inputResetDetailNewPassword">
+    </form>
+
+    <script>
+    function toggleDetailPwd(elId, plainPwd, btn) {
+        const el = document.getElementById(elId);
+        if (!el) return;
+        if (el.innerText === '••••••••') {
+            el.innerText = plainPwd;
+            btn.innerHTML = '<i class="fi fi-rr-eye-crossed"></i>';
+        } else {
+            el.innerText = '••••••••';
+            btn.innerHTML = '<i class="fi fi-rr-eye"></i>';
+        }
+    }
+
+    function promptResetDetail(userId, username) {
+        const newPwd = prompt(`Masukkan kata sandi baru untuk akun ${username}:`, 'opd123');
+        if (newPwd && newPwd.trim() !== '') {
+            const form = document.getElementById('formSuperadminResetDetail');
+            form.action = `{{ url('admin/users') }}/${userId}/reset-password`;
+            document.getElementById('inputResetDetailNewPassword').value = newPwd.trim();
+            form.submit();
+        }
+    }
+    </script>
 
 </div>
 @endsection
