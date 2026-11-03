@@ -45,49 +45,16 @@
                         <i class="fi fi-rr-key"></i> Lupa Kata Sandi?
                     </div>
                     <div style="font-size: 12.5px; color: #78350f; line-height: 1.5; margin-bottom: 12px;">
-                        Anda telah salah memasukkan kata sandi 3 kali. Silakan minta reset ke Superadmin atau lakukan reset kata sandi sekarang.
+                        Anda telah salah memasukkan kata sandi 3 kali. Klik tombol di bawah untuk meminta bantuan reset kata sandi ke Superadmin.
                     </div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <!-- Tombol Kirim Notif ke Superadmin -->
-                        <form action="{{ route('password.request-reset') }}" method="POST" style="margin: 0;">
-                            @csrf
-                            <input type="hidden" name="username" value="{{ session('failed_username', old('login')) }}">
-                            <button type="submit" class="btn-pill-primary" style="background: #b45309; border-color: #b45309; font-size: 12px; padding: 6px 14px; display: inline-flex; align-items: center; gap: 6px;">
-                                <i class="fi fi-rr-bell"></i> Minta Reset ke Superadmin
-                            </button>
-                        </form>
-
-                        <!-- Tombol Reset Sekarang -->
-                        <button type="button" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; border-color: #d97706; color: #92400e; background: #ffffff; display: inline-flex; align-items: center; gap: 5px;" onclick="document.getElementById('boxResetMandiri').style.display = document.getElementById('boxResetMandiri').style.display === 'none' ? 'block' : 'none';">
-                            <i class="fi fi-rr-refresh"></i> Reset Password Sekarang
+                    <!-- Tombol Kirim Permintaan ke Superadmin -->
+                    <form action="{{ route('password.request-reset') }}" method="POST" style="margin: 0;">
+                        @csrf
+                        <input type="hidden" name="username" value="{{ session('failed_username', old('login')) }}">
+                        <button type="submit" class="btn-pill-primary" style="background: #b45309; border-color: #b45309; font-size: 12.5px; padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;">
+                            <i class="fi fi-rr-bell"></i> Minta Reset Kata Sandi ke Superadmin
                         </button>
-                    </div>
-
-                    <!-- Form Reset Mandiri -->
-                    <div id="boxResetMandiri" style="display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed #fcd34d;">
-                        <form action="{{ route('password.reset-mandiri') }}" method="POST">
-                            @csrf
-                            <div class="form-group form-group-mb-12">
-                                <label class="form-label" style="font-size: 12px;">Username Akun <span class="form-required">*</span></label>
-                                <input type="text" name="username" value="{{ session('failed_username', old('login')) }}" class="form-control" required style="font-size: 13px; padding: 8px 12px;">
-                            </div>
-                            <div class="form-group form-group-mb-12">
-                                <label class="form-label" style="font-size: 12px;">Email Resmi Terdaftar <span class="form-required">*</span></label>
-                                <input type="email" name="email" class="form-control" placeholder="Contoh: dinsos@pemda.go.id" required style="font-size: 13px; padding: 8px 12px;">
-                            </div>
-                            <div class="form-group form-group-mb-12">
-                                <label class="form-label" style="font-size: 12px;">Kata Sandi Baru <span class="form-required">*</span></label>
-                                <input type="password" name="password" class="form-control" placeholder="Minimal 4 karakter" required style="font-size: 13px; padding: 8px 12px;">
-                            </div>
-                            <div class="form-group form-group-mb-16">
-                                <label class="form-label" style="font-size: 12px;">Konfirmasi Kata Sandi Baru <span class="form-required">*</span></label>
-                                <input type="password" name="password_confirmation" class="form-control" placeholder="Ulangi kata sandi baru" required style="font-size: 13px; padding: 8px 12px;">
-                            </div>
-                            <button type="submit" class="btn-pill-primary" style="background: #059669; border-color: #059669; font-size: 12.5px; padding: 8px 16px; width: 100%;">
-                                <i class="fi fi-rr-check"></i> Simpan Kata Sandi Baru
-                            </button>
-                        </form>
-                    </div>
+                    </form>
                 </div>
             @endif
 

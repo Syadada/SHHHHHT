@@ -31,9 +31,8 @@ Route::middleware('guest')->group(function () {
         return redirect()->route('login');
     });
 
-    // Fitur Lupa Password & Reset Password
+    // Fitur Pengajuan Lupa Password ke Superadmin
     Route::post('/lupa-password', [AuthController::class, 'requestResetPassword'])->name('password.request-reset');
-    Route::post('/reset-password-mandiri', [AuthController::class, 'resetPasswordMandiri'])->name('password.reset-mandiri');
 });
 
 // Logout Sesi Pengguna (Mendukung GET & POST untuk OPD maupun Administrator)

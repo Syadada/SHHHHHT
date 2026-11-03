@@ -29,3 +29,4 @@ class PasswordResetRequest extends Model
         return $this->belongsTo(User::class, 'reset_by');
     }
 }
+

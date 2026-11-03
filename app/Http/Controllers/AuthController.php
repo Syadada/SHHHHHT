@@ -162,58 +162,6 @@ class AuthController extends Controller
     }
 
     /**
-     * Reset Password Mandiri oleh User Sekarang (Dengan Verifikasi Email Resmi)
-     */
-    public function resetPasswordMandiri(Request $request)
-    {
-        $request->validate([
-            'username' => 'required|string',
-            'email' => 'required|email',
-            'password' => 'required|string|min:4|confirmed',
-        ], [
-            'username.required' => 'Username wajib diisi.',
-            'email.required' => 'Email resmi instansi wajib diisi.',
-            'password.required' => 'Kata sandi baru wajib diisi.',
-            'password.min' => 'Kata sandi baru minimal 4 karakter.',
-            'password.confirmed' => 'Konfirmasi kata sandi baru tidak cocok.',
-        ]);
-
-        $username = trim($request->input('username'));
-        $email = trim($request->input('email'));
-
-        $user = User::where('username', $username)
-            ->where('email', $email)
-            ->first();
-
-        if (!$user) {
-            return back()->withErrors([
-                'login' => 'Kombinasi username dan email resmi instansi tidak cocok.',
-            ])->with([
-                'show_forgot_password' => true,
-                'failed_username' => $username,
-            ]);
-        }
-
-        $user->setPlainPassword($request->password);
-        $user->save();
-
-        // Bersihkan counter login gagal
-        if ($request->hasSession()) {
-            $attemptKey = 'login_failed_attempts_' . md5(strtolower($username));
-            $request->session()->forget($attemptKey);
-        }
-
-        AuditLogger::log(
-            'AUTH_PASSWORD_RESET_SELF',
-            "Pengguna {$user->username} ({$user->nama_instansi}) berhasil mereset kata sandi secara mandiri.",
-            'SUCCESS',
-            ['user_id' => $user->id]
-        );
-
-        return back()->with('success', "Kata sandi akun {$user->username} berhasil direset! Silakan login dengan kata sandi baru Anda.");
-    }
-
-    /**
      * 2. Halaman Login Khusus Administrator Walidata - URL Rahasia: /dkisp-secret
      */
     public function showAdminLogin()
