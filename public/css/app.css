@@ -1993,9 +1993,10 @@ nav[role="navigation"] svg,
     position: sticky;
     top: 0;
     height: 100vh;
-    z-index: 50;
+    z-index: 1000;
     flex-shrink: 0;
     box-shadow: 2px 0 8px rgba(0, 0, 0, 0.02);
+    overflow: visible !important;
 }
 
 .opd-sidebar-header {
@@ -2045,7 +2046,7 @@ nav[role="navigation"] svg,
 /* Sidebar Navigasi */
 .opd-sidebar-body {
     flex: 1;
-    overflow-y: auto;
+    overflow: visible !important;
     padding: 20px 14px;
     display: flex;
     flex-direction: column;

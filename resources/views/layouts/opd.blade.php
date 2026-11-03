@@ -32,24 +32,28 @@
                 </a>
             </div>
 
-            <!-- Menu Navigasi -->
-            <div class="opd-sidebar-body">
+            <!-- Menu Navigasi (Identik dengan Admin) -->
+            <div class="opd-sidebar-body" style="overflow: visible !important;">
                 <div class="opd-nav-section-title">Menu Utama</div>
 
-                <!-- 1. Dashboard Clean (Halaman Utama) -->
-                <a href="{{ route('opd.dashboard') }}" class="opd-nav-link {{ request()->routeIs('opd.dashboard') ? 'active' : '' }}">
-                    <i class="fi fi-rr-apps"></i>
-                    <span>Dashboard</span>
-                </a>
+                <!-- 1. Dashboard -->
+                <div>
+                    <a href="{{ route('opd.dashboard') }}" class="app-nav-item {{ request()->routeIs('opd.dashboard') ? 'active' : '' }}">
+                        <div class="app-nav-item-left">
+                            <i class="fi fi-rr-apps app-nav-icon"></i>
+                            <span>Dashboard</span>
+                        </div>
+                    </a>
+                </div>
 
                 @php
                     $isLayananActive = request()->routeIs('opd.tiket.*') || request()->routeIs('opd.layanan.*') || request()->routeIs('formulir.*') || request()->routeIs('opd.layanan-bagi-pakai');
                 @endphp
-                <!-- 2. Layanan (Satu kata persis seperti di Admin dengan Dropdown Submenu) -->
-                <div class="app-nav-dropdown {{ $isLayananActive ? 'active' : '' }}" style="position: relative;">
-                    <a href="{{ route('opd.tiket.index') }}" class="opd-nav-link app-nav-dropdown-toggle {{ $isLayananActive ? 'active' : '' }}" style="justify-content: space-between;" title="Layanan Bagi Pakai DTSEN">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <i class="fi fi-rr-layers" style="font-size: 18px;"></i>
+                <!-- 2. Layanan (Flyout Dropdown sama persis dengan Admin) -->
+                <div class="app-nav-dropdown {{ $isLayananActive ? 'active' : '' }}">
+                    <a href="{{ route('opd.tiket.index') }}" class="app-nav-dropdown-toggle" title="Layanan Bagi Pakai DTSEN">
+                        <div class="app-nav-item-left">
+                            <i class="fi fi-rr-layers app-nav-icon"></i>
                             <span>Layanan</span>
                         </div>
                         <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
