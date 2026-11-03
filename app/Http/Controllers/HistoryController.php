@@ -347,6 +347,7 @@ class HistoryController extends Controller
         $request->validate([
             'keputusan' => 'required|in:APPROVE,REJECT',
             'catatan_admin' => 'nullable|string|max:1000',
+            'items_revisi' => 'nullable|array',
         ]);
 
         $keputusan = $request->input('keputusan');
@@ -357,6 +358,7 @@ class HistoryController extends Controller
             $tiket->status = 'DIPROSES';
             $tiket->step1_done = true;
             $tiket->step1_at = now();
+            $tiket->items_revisi = null; // Bersihkan penanda revisi
             $tiket->catatan_admin = $catatan ?: 'Berkas KAK dan Surat Permohonan telah diverifikasi dan dinyatakan BENAR (Lolos Verifikasi). Melanjutkan ke proses pemenuhan dokumen dan pengolahan data DTSEN.';
             $tiket->save();
 
@@ -369,20 +371,25 @@ class HistoryController extends Controller
 
             return back()->with('success', "Berkas tiket [{$tiket->nomor_tiket}] disetujui (Lolos Verifikasi). Proses 1 Pemenuhan Dokumen telah diselesaikan.");
         } else {
-            // Berkas ada yang salah -> Reject / Minta submit ulang KAK atau Surat Permohonan
+            // Berkas ada yang salah -> Reject / Minta submit ulang
             $tiket->status = 'PERLU_PERBAIKAN';
             $tiket->step1_done = false;
-            $tiket->catatan_admin = $catatan ?: 'Berkas KAK atau Surat Permohonan belum sesuai/belum benar. Silakan submit ulang berkas yang benar.';
+            $itemsRevisi = array_filter((array) $request->input('items_revisi', []));
+            $tiket->items_revisi = array_values($itemsRevisi);
+            $tiket->catatan_admin = $catatan ?: 'Berkas atau rincian permohonan belum sesuai. Silakan periksa dokumen/bagian yang ditandai dan submit ulang perbaikan yang benar.';
             $tiket->save();
+
+            $itemCount = count($tiket->items_revisi ?? []);
+            $itemInfo = $itemCount > 0 ? " ({$itemCount} bagian ditandai perbaikan)" : '';
 
             AuditLogger::log(
                 'TIKET_BERKAS_REJECTED',
-                "Admin menolak / meminta perbaikan berkas tiket [{$tiket->nomor_tiket}] ({$tiket->nama_instansi}). Catatan: {$tiket->catatan_admin}",
+                "Admin menolak / meminta perbaikan berkas tiket [{$tiket->nomor_tiket}] ({$tiket->nama_instansi}){$itemInfo}. Catatan: {$tiket->catatan_admin}",
                 'WARNING',
                 ['nomor_tiket' => $tiket->nomor_tiket]
             );
 
-            return back()->with('info', "Tiket [{$tiket->nomor_tiket}] ditandai PERLU PERBAIKAN. OPD diminta submit ulang berkas KAK / Surat Permohonan yang benar.");
+            return back()->with('info', "Tiket [{$tiket->nomor_tiket}] ditandai PERLU PERBAIKAN{$itemInfo}. OPD dapat melihat highlight dokumen yang harus diperbaiki.");
         }
     }
 

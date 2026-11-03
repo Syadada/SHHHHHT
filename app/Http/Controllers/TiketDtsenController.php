@@ -243,6 +243,7 @@ class TiketDtsenController extends Controller
 
         // KUNCI KEMBALI FORM & KEMBALIKAN STATUS KE PENDING
         $tiket->status = 'PENDING';
+        $tiket->items_revisi = null; // Reset penanda revisi karena sudah diperbaiki
         $catatanOpd = trim((string) $request->input('catatan_opd'));
         $catatanHistori = 'Berkas dan data permohonan telah diperbaiki dan dikirim ulang oleh ' . ($user->nama_instansi ?: $user->name) . ' pada ' . now()->format('d/m/Y H:i') . ' WIB.' . ($catatanOpd ? ' Catatan OPD: ' . $catatanOpd : '');
         $tiket->catatan_admin = $catatanHistori;

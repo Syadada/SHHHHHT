@@ -52,6 +52,17 @@
                                 <strong style="color: #b91c1c;"><i class="fi fi-rr-comment-alt"></i> Catatan Koreksi Walidata:</strong><br>
                                 {{ $tiket->catatan_admin }}
                             </div>
+
+                            @if(!empty($tiket->items_revisi))
+                                <div style="margin-top: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                                    <strong style="font-size: 12px; color: #991b1b;"><i class="fi fi-rr-flag"></i> Bagian yang Ditandai Perlu Perbaikan:</strong>
+                                    @foreach($tiket->items_revisi as $itemKey)
+                                        <span class="dtsen-badge-flag-revisi">
+                                            ⚠️ {{ \App\Models\TiketDtsen::getLabelItemRevisi($itemKey) }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Tombol Buka Halaman Edit Permohonan Penuh (Opsi A) -->
@@ -204,9 +215,15 @@
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;">
                 <!-- Surat KAK -->
-                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 4px;">
-                        Surat KAK (Wajib)
+                @php $isRevKak = $tiket->isItemRevisi('kak'); @endphp
+                <div style="padding: 12px; background: {{ $isRevKak ? '#fff5f5' : '#f8fafc' }}; border: {{ $isRevKak ? '1.5px solid #ef4444' : '1px solid #e2e8f0' }}; border-radius: 10px; {{ $isRevKak ? 'box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);' : '' }}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase;">
+                            Surat KAK (Wajib)
+                        </div>
+                        @if($isRevKak)
+                            <span class="dtsen-badge-flag-revisi" style="font-size: 9.5px; padding: 1px 5px;">⚠️ Revisi</span>
+                        @endif
                     </div>
                     @if($tiket->file_kak)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'kak']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
@@ -218,9 +235,15 @@
                 </div>
 
                 <!-- Surat Permohonan -->
-                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 4px;">
-                        Surat Permohonan (Wajib)
+                @php $isRevSurat = $tiket->isItemRevisi('surat_permohonan'); @endphp
+                <div style="padding: 12px; background: {{ $isRevSurat ? '#fff5f5' : '#f8fafc' }}; border: {{ $isRevSurat ? '1.5px solid #ef4444' : '1px solid #e2e8f0' }}; border-radius: 10px; {{ $isRevSurat ? 'box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);' : '' }}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase;">
+                            Surat Permohonan (Wajib)
+                        </div>
+                        @if($isRevSurat)
+                            <span class="dtsen-badge-flag-revisi" style="font-size: 9.5px; padding: 1px 5px;">⚠️ Revisi</span>
+                        @endif
                     </div>
                     @if($tiket->file_surat_permohonan || $tiket->file_surat)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'surat_permohonan']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
@@ -232,9 +255,15 @@
                 </div>
 
                 <!-- ROPA -->
-                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">
-                        ROPA (Opsional)
+                @php $isRevRopa = $tiket->isItemRevisi('ropa'); @endphp
+                <div style="padding: 12px; background: {{ $isRevRopa ? '#fff5f5' : '#f8fafc' }}; border: {{ $isRevRopa ? '1.5px solid #ef4444' : '1px solid #e2e8f0' }}; border-radius: 10px; {{ $isRevRopa ? 'box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);' : '' }}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
+                            ROPA (Opsional)
+                        </div>
+                        @if($isRevRopa)
+                            <span class="dtsen-badge-flag-revisi" style="font-size: 9.5px; padding: 1px 5px;">⚠️ Revisi</span>
+                        @endif
                     </div>
                     @if($tiket->file_ropa)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'ropa']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
@@ -246,9 +275,15 @@
                 </div>
 
                 <!-- DPIA -->
-                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">
-                        DPIA (Opsional)
+                @php $isRevDpia = $tiket->isItemRevisi('dpia'); @endphp
+                <div style="padding: 12px; background: {{ $isRevDpia ? '#fff5f5' : '#f8fafc' }}; border: {{ $isRevDpia ? '1.5px solid #ef4444' : '1px solid #e2e8f0' }}; border-radius: 10px; {{ $isRevDpia ? 'box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);' : '' }}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
+                            DPIA (Opsional)
+                        </div>
+                        @if($isRevDpia)
+                            <span class="dtsen-badge-flag-revisi" style="font-size: 9.5px; padding: 1px 5px;">⚠️ Revisi</span>
+                        @endif
                     </div>
                     @if($tiket->file_dpia)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'dpia']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
@@ -260,9 +295,15 @@
                 </div>
 
                 <!-- SKTM -->
-                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">
-                        SKTM (Opsional)
+                @php $isRevSktm = $tiket->isItemRevisi('sktm'); @endphp
+                <div style="padding: 12px; background: {{ $isRevSktm ? '#fff5f5' : '#f8fafc' }}; border: {{ $isRevSktm ? '1.5px solid #ef4444' : '1px solid #e2e8f0' }}; border-radius: 10px; {{ $isRevSktm ? 'box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);' : '' }}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
+                            SK Tim Pelaksana (Opsional)
+                        </div>
+                        @if($isRevSktm)
+                            <span class="dtsen-badge-flag-revisi" style="font-size: 9.5px; padding: 1px 5px;">⚠️ Revisi</span>
+                        @endif
                     </div>
                     @if($tiket->file_sktm)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'sktm']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
@@ -274,9 +315,15 @@
                 </div>
 
                 <!-- Klasifikasi DTSEN -->
-                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">
-                        Klasifikasi DTSEN (Opsional)
+                @php $isRevKlas = $tiket->isItemRevisi('klasifikasi_dtsen'); @endphp
+                <div style="padding: 12px; background: {{ $isRevKlas ? '#fff5f5' : '#f8fafc' }}; border: {{ $isRevKlas ? '1.5px solid #ef4444' : '1px solid #e2e8f0' }}; border-radius: 10px; {{ $isRevKlas ? 'box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);' : '' }}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
+                            Klasifikasi DTSEN (Opsional)
+                        </div>
+                        @if($isRevKlas)
+                            <span class="dtsen-badge-flag-revisi" style="font-size: 9.5px; padding: 1px 5px;">⚠️ Revisi</span>
+                        @endif
                     </div>
                     @if($tiket->file_klasifikasi_dtsen)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'klasifikasi_dtsen']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
@@ -288,9 +335,15 @@
                 </div>
 
                 <!-- Hak Akses -->
-                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
-                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">
-                        Hak Akses (Opsional)
+                @php $isRevHak = $tiket->isItemRevisi('hak_akses'); @endphp
+                <div style="padding: 12px; background: {{ $isRevHak ? '#fff5f5' : '#f8fafc' }}; border: {{ $isRevHak ? '1.5px solid #ef4444' : '1px solid #e2e8f0' }}; border-radius: 10px; {{ $isRevHak ? 'box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);' : '' }}">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                        <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">
+                            Hak Akses (Opsional)
+                        </div>
+                        @if($isRevHak)
+                            <span class="dtsen-badge-flag-revisi" style="font-size: 9.5px; padding: 1px 5px;">⚠️ Revisi</span>
+                        @endif
                     </div>
                     @if($tiket->file_hak_akses)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'hak_akses']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">

@@ -53,6 +53,7 @@ class TiketDtsen extends Model
         'step5_done',
         'status',
         'catatan_admin',
+        'items_revisi',
         'step1_at',
         'step2_at',
         'step3_at',
@@ -81,6 +82,7 @@ class TiketDtsen extends Model
 
     protected $casts = [
         'variabel_dtsen' => 'array',
+        'items_revisi' => 'array',
         'data_sop_extra' => 'array',
         'tgl_permintaan' => 'date',
         'tgl_surat_permohonan' => 'date',
@@ -346,6 +348,36 @@ class TiketDtsen extends Model
     public function riwayatBagiData()
     {
         return $this->hasMany(RiwayatBagiDataDtsen::class, 'tiket_dtsen_id');
+    }
+
+    /**
+     * Memeriksa apakah suatu item/dokumen ditandai revisi oleh admin
+     */
+    public function isItemRevisi(string $key): bool
+    {
+        if ($this->status !== 'PERLU_PERBAIKAN') {
+            return false;
+        }
+        return in_array($key, (array) ($this->items_revisi ?? []));
+    }
+
+    /**
+     * Label representasi teks untuk item revisi
+     */
+    public static function getLabelItemRevisi(string $key): string
+    {
+        $map = [
+            'surat_permohonan' => 'Surat Permohonan',
+            'kak' => 'Berkas KAK',
+            'sktm' => 'SK Tim Pelaksana',
+            'ropa' => 'Berkas ROPA',
+            'dpia' => 'Berkas DPIA',
+            'klasifikasi_dtsen' => 'Klasifikasi DTSEN',
+            'hak_akses' => 'Hak Akses',
+            'variabel_dtsen' => 'Variabel DTSEN',
+            'narahubung' => 'Kontak Narahubung',
+        ];
+        return $map[$key] ?? ucfirst(str_replace('_', ' ', $key));
     }
 }
 

@@ -204,24 +204,85 @@
 
         <form action="{{ route('admin.tiket.verifikasi-berkas', $tiket->id) }}" method="POST">
             @csrf
-            <div style="display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: flex-end; flex-wrap: wrap;">
-                <div>
-                    <label class="ticket-field-label">Catatan Hasil Pemeriksaan Berkas (Untuk OPD):</label>
-                    <input type="text" 
-                           name="catatan_admin" 
-                           value="{{ $tiket->catatan_admin }}" 
-                           class="form-input ticket-field-input" 
-                           placeholder="Contoh: Berkas KAK belum ditandatangani kepala dinas, mohon upload ulang berkas yang telah bertanda tangan resmi...">
+            <div>
+                <label class="ticket-field-label">Catatan Hasil Pemeriksaan Berkas (Untuk OPD):</label>
+                <input type="text" 
+                       name="catatan_admin" 
+                       value="{{ $tiket->catatan_admin }}" 
+                       class="form-input ticket-field-input" 
+                       placeholder="Contoh: Berkas KAK belum ditandatangani kepala dinas, mohon upload ulang berkas yang telah bertanda tangan resmi...">
+            </div>
+
+            <!-- Checklist Pilihan Highlight Berkas yang Bermasalah (Jika Reject) -->
+            <div style="margin-top: 14px; padding: 14px 16px; background: #fff5f5; border: 1.5px solid #fecaca; border-radius: 10px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; flex-wrap: wrap; gap: 6px;">
+                    <label style="font-size: 12.5px; font-weight: 700; color: #991b1b; display: flex; align-items: center; gap: 6px; margin: 0;">
+                        <i class="fi fi-rr-flag"></i> Centang Dokumen / Bagian yang Perlu Diperbaiki oleh OPD (Jika Reject):
+                    </label>
+                    <span style="font-size: 11px; color: #7f1d1d;">
+                        <em>(Item yang dicentang akan otomatis ter-highlight merah di formulir OPD)</em>
+                    </span>
                 </div>
 
-                <div style="display: flex; gap: 8px;">
-                    <button type="submit" name="keputusan" value="APPROVE" class="btn-pill-primary" style="font-size: 13px; padding: 8px 16px; background: #059669; border-color: #059669;">
-                        <i class="fi fi-rr-check"></i> Berkas Benar & Lanjut
-                    </button>
-                    <button type="submit" name="keputusan" value="REJECT" class="btn-pill-outline" style="font-size: 13px; padding: 8px 16px; color: #dc2626; border-color: #fca5a5; background: #fff1f2;">
-                        <i class="fi fi-rr-cross-circle"></i> Reject / Minta Submit Ulang
-                    </button>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;">
+                    @php
+                        $curRevisi = (array) ($tiket->items_revisi ?? []);
+                    @endphp
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="surat_permohonan" {{ in_array('surat_permohonan', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Surat Permohonan</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="kak" {{ in_array('kak', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Berkas KAK</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="sktm" {{ in_array('sktm', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">SK Tim Pelaksana</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="ropa" {{ in_array('ropa', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Berkas ROPA</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="dpia" {{ in_array('dpia', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Berkas DPIA</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="klasifikasi_dtsen" {{ in_array('klasifikasi_dtsen', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Klasifikasi DTSEN</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="hak_akses" {{ in_array('hak_akses', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Hak Akses</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="variabel_dtsen" {{ in_array('variabel_dtsen', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Variabel DTSEN</span>
+                    </label>
+
+                    <label style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #1e293b; cursor: pointer; background: #ffffff; padding: 6px 10px; border: 1px solid #fed7d7; border-radius: 6px;">
+                        <input type="checkbox" name="items_revisi[]" value="narahubung" {{ in_array('narahubung', $curRevisi) ? 'checked' : '' }}>
+                        <span style="font-weight: 600;">Kontak Narahubung</span>
+                    </label>
                 </div>
+            </div>
+
+            <!-- Tombol Keputusan -->
+            <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;">
+                <button type="submit" name="keputusan" value="APPROVE" class="btn-pill-primary" style="font-size: 13px; padding: 8px 18px; background: #059669; border-color: #059669;">
+                    <i class="fi fi-rr-check"></i> Berkas Benar & Lanjut
+                </button>
+                <button type="submit" name="keputusan" value="REJECT" class="btn-pill-outline" style="font-size: 13px; padding: 8px 18px; color: #dc2626; border-color: #fca5a5; background: #fff1f2;">
+                    <i class="fi fi-rr-cross-circle"></i> Reject / Minta Submit Ulang
+                </button>
             </div>
         </form>
     </div>

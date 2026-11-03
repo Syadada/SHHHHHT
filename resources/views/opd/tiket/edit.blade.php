@@ -29,6 +29,20 @@
                     <strong style="color: #b91c1c;"><i class="fi fi-rr-comment-alt"></i> Catatan Koreksi Walidata:</strong><br>
                     {{ $tiket->catatan_admin }}
                 </div>
+                @if(!empty($tiket->items_revisi) && is_array($tiket->items_revisi))
+                    <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #fecdd3;">
+                        <div style="font-size: 12px; font-weight: 700; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
+                            <i class="fi fi-rr-flag"></i> Bagian yang Ditandai Perlu Koreksi ({{ count($tiket->items_revisi) }} Item):
+                        </div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            @foreach($tiket->items_revisi as $it)
+                                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #dc2626; color: #ffffff; font-size: 12px; font-weight: 700; border-radius: 9999px; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);">
+                                    <i class="fi fi-rr-cross-circle"></i> {{ $tiket->getLabelItemRevisi($it) }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
@@ -52,7 +66,7 @@
         @method('PUT')
 
         <!-- 1. IDENTITAS INSTANSI & NARAHUBUNG -->
-        <div class="form-section-card">
+        <div class="form-section-card {{ $tiket->isItemRevisi('narahubung') ? 'is-item-revisi' : '' }}">
             <div class="section-head-box">
                 <div class="section-head-icon">
                     <i class="fi fi-rr-building"></i>
@@ -61,6 +75,19 @@
                     <h2 class="section-head-title">Identitas Instansi & Narahubung</h2>
                     <p class="section-head-desc">Identitas pemohon resmi dan kontak narahubung yang bertanggung jawab</p>
                 </div>
+                @if($tiket->isItemRevisi('narahubung'))
+                    <div style="margin-left: auto;">
+                        <span class="dtsen-badge-flag-revisi">
+                            <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                        </span>
+                    </div>
+                @elseif(!empty($tiket->items_revisi))
+                    <div style="margin-left: auto;">
+                        <span class="dtsen-badge-flag-ok">
+                            <i class="fi fi-rr-check"></i> Sudah Sesuai
+                        </span>
+                    </div>
+                @endif
             </div>
 
             <!-- Nama Instansi (Auto-filled & Readonly) -->
@@ -122,12 +149,21 @@
             <div class="dtsen-filebox-grid">
                 
                 <!-- 1. Surat Permohonan (File Box & Input Fields) - Spans Full Width at Top -->
-                <div class="dtsen-filebox-card dtsen-filebox-permohonan">
+                <div class="dtsen-filebox-card dtsen-filebox-permohonan {{ $tiket->isItemRevisi('surat_permohonan') ? 'is-item-revisi' : '' }}">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             Surat Permohonan
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            @if($tiket->isItemRevisi('surat_permohonan'))
+                                <span class="dtsen-badge-flag-revisi">
+                                    <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                                </span>
+                            @elseif(!empty($tiket->items_revisi))
+                                <span class="dtsen-badge-flag-ok">
+                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
+                                </span>
+                            @endif
                             <button type="button" 
                                     id="btnDelPermohonan" 
                                     class="dtsen-file-delete-btn" 
@@ -203,12 +239,21 @@
                 </div>
 
                 <!-- 2. KAK (File Box) -->
-                <div class="dtsen-filebox-card">
+                <div class="dtsen-filebox-card {{ $tiket->isItemRevisi('kak') ? 'is-item-revisi' : '' }}">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             KAK
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            @if($tiket->isItemRevisi('kak'))
+                                <span class="dtsen-badge-flag-revisi">
+                                    <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                                </span>
+                            @elseif(!empty($tiket->items_revisi))
+                                <span class="dtsen-badge-flag-ok">
+                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
+                                </span>
+                            @endif
                             <button type="button" 
                                     id="btnDelKak" 
                                     class="dtsen-file-delete-btn" 
@@ -240,12 +285,21 @@
                 </div>
 
                 <!-- 3. SK Tim Pelaksana (File Box) Opsional -->
-                <div class="dtsen-filebox-card">
+                <div class="dtsen-filebox-card {{ $tiket->isItemRevisi('sktm') ? 'is-item-revisi' : '' }}">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             SK Tim Pelaksana
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            @if($tiket->isItemRevisi('sktm'))
+                                <span class="dtsen-badge-flag-revisi">
+                                    <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                                </span>
+                            @elseif(!empty($tiket->items_revisi))
+                                <span class="dtsen-badge-flag-ok">
+                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
+                                </span>
+                            @endif
                             <button type="button" 
                                     id="btnDelSktm" 
                                     class="dtsen-file-delete-btn" 
@@ -287,12 +341,21 @@
                 </div>
 
                 <!-- 4. ROPA (File Box) Opsional -->
-                <div class="dtsen-filebox-card">
+                <div class="dtsen-filebox-card {{ $tiket->isItemRevisi('ropa') ? 'is-item-revisi' : '' }}">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             ROPA
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            @if($tiket->isItemRevisi('ropa'))
+                                <span class="dtsen-badge-flag-revisi">
+                                    <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                                </span>
+                            @elseif(!empty($tiket->items_revisi))
+                                <span class="dtsen-badge-flag-ok">
+                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
+                                </span>
+                            @endif
                             <button type="button" 
                                     id="btnDelRopa" 
                                     class="dtsen-file-delete-btn" 
@@ -334,12 +397,21 @@
                 </div>
 
                 <!-- 5. DPIA (File Box) Opsional -->
-                <div class="dtsen-filebox-card">
+                <div class="dtsen-filebox-card {{ $tiket->isItemRevisi('dpia') ? 'is-item-revisi' : '' }}">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             DPIA
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            @if($tiket->isItemRevisi('dpia'))
+                                <span class="dtsen-badge-flag-revisi">
+                                    <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                                </span>
+                            @elseif(!empty($tiket->items_revisi))
+                                <span class="dtsen-badge-flag-ok">
+                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
+                                </span>
+                            @endif
                             <button type="button" 
                                     id="btnDelDpia" 
                                     class="dtsen-file-delete-btn" 
@@ -381,12 +453,21 @@
                 </div>
 
                 <!-- 6. Klasifikasi DTSEN (File Box) Opsional -->
-                <div class="dtsen-filebox-card">
+                <div class="dtsen-filebox-card {{ $tiket->isItemRevisi('klasifikasi_dtsen') ? 'is-item-revisi' : '' }}">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             Klasifikasi DTSEN
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            @if($tiket->isItemRevisi('klasifikasi_dtsen'))
+                                <span class="dtsen-badge-flag-revisi">
+                                    <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                                </span>
+                            @elseif(!empty($tiket->items_revisi))
+                                <span class="dtsen-badge-flag-ok">
+                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
+                                </span>
+                            @endif
                             <button type="button" 
                                     id="btnDelKlasifikasi" 
                                     class="dtsen-file-delete-btn" 
@@ -428,12 +509,21 @@
                 </div>
 
                 <!-- 7. Hak Akses (File Box) Opsional -->
-                <div class="dtsen-filebox-card">
+                <div class="dtsen-filebox-card {{ $tiket->isItemRevisi('hak_akses') ? 'is-item-revisi' : '' }}">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             Hak Akses
                         </div>
                         <div style="display: flex; align-items: center; gap: 8px;">
+                            @if($tiket->isItemRevisi('hak_akses'))
+                                <span class="dtsen-badge-flag-revisi">
+                                    <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                                </span>
+                            @elseif(!empty($tiket->items_revisi))
+                                <span class="dtsen-badge-flag-ok">
+                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
+                                </span>
+                            @endif
                             <button type="button" 
                                     id="btnDelHakAkses" 
                                     class="dtsen-file-delete-btn" 
@@ -478,7 +568,7 @@
         </div>
 
         <!-- 3. VARIABEL DTSEN YANG DIMINTA -->
-        <div class="form-section-card">
+        <div class="form-section-card {{ $tiket->isItemRevisi('variabel_dtsen') ? 'is-item-revisi' : '' }}">
             <div class="section-head-box">
                 <div class="section-head-icon">
                     <i class="fi fi-rr-list-check"></i>
@@ -487,6 +577,19 @@
                     <h2 class="section-head-title">Variabel DTSEN</h2>
                     <p class="section-head-desc">Sesuaikan variabel data mikro yang diajukan sesuai kebutuhan instansi</p>
                 </div>
+                @if($tiket->isItemRevisi('variabel_dtsen'))
+                    <div style="margin-left: auto;">
+                        <span class="dtsen-badge-flag-revisi">
+                            <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
+                        </span>
+                    </div>
+                @elseif(!empty($tiket->items_revisi))
+                    <div style="margin-left: auto;">
+                        <span class="dtsen-badge-flag-ok">
+                            <i class="fi fi-rr-check"></i> Sudah Sesuai
+                        </span>
+                    </div>
+                @endif
             </div>
 
             @include('partials.selector_variabel_dtsen', ['selectedVars' => old('variabel_dtsen', $tiket->variabel_dtsen ?? [])])
