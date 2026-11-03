@@ -342,6 +342,34 @@
                         <span style="font-size: 12px; color: #94a3b8;">- Tidak ada berkas -</span>
                     @endif
                 </div>
+
+                <!-- Klasifikasi DTSEN -->
+                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">
+                        Klasifikasi DTSEN (Opsional)
+                    </div>
+                    @if($tiket->file_klasifikasi_dtsen)
+                        <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'klasifikasi_dtsen']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
+                            <i class="fi fi-rr-download"></i> Unduh Klasifikasi
+                        </a>
+                    @else
+                        <span style="font-size: 12px; color: #94a3b8;">- Tidak ada berkas -</span>
+                    @endif
+                </div>
+
+                <!-- Hak Akses -->
+                <div style="padding: 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 4px;">
+                        Hak Akses (Opsional)
+                    </div>
+                    @if($tiket->file_hak_akses)
+                        <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'hak_akses']) }}" class="btn-pill-outline" style="font-size: 11.5px; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; text-decoration: none;">
+                            <i class="fi fi-rr-download"></i> Unduh Hak Akses
+                        </a>
+                    @else
+                        <span style="font-size: 12px; color: #94a3b8;">- Tidak ada berkas -</span>
+                    @endif
+                </div>
             </div>
         </div>
 

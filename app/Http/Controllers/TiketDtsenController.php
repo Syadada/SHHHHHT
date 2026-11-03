@@ -97,6 +97,8 @@ class TiketDtsenController extends Controller
             'file_ropa' => 'nullable|file|max:51200',
             'file_dpia' => 'nullable|file|max:51200',
             'file_sktm' => 'nullable|file|max:51200',
+            'file_klasifikasi_dtsen' => 'nullable|file|max:51200',
+            'file_hak_akses' => 'nullable|file|max:51200',
             'variabel_dtsen' => 'nullable|array',
         ], [
             'nama_instansi.required' => 'Nama Instansi pemohon wajib terisi.',
@@ -144,6 +146,12 @@ class TiketDtsenController extends Controller
 
         // 5. SKTM (Opsional)
         [$pathSktm, $nameSktm] = $saveFile('file_sktm');
+
+        // 6. Klasifikasi DTSEN (Opsional)
+        [$pathKlasifikasi, $nameKlasifikasi] = $saveFile('file_klasifikasi_dtsen');
+
+        // 7. Hak Akses (Opsional)
+        [$pathHakAkses, $nameHakAkses] = $saveFile('file_hak_akses');
 
         // Formatted size & hash untuk berkas utama surat permohonan
         $formattedSize = null;
@@ -196,6 +204,10 @@ class TiketDtsenController extends Controller
             'nama_file_dpia' => $nameDpia,
             'file_sktm' => $pathSktm,
             'nama_file_sktm' => $nameSktm,
+            'file_klasifikasi_dtsen' => $pathKlasifikasi,
+            'nama_file_klasifikasi_dtsen' => $nameKlasifikasi,
+            'file_hak_akses' => $pathHakAkses,
+            'nama_file_hak_akses' => $nameHakAkses,
             // Legacy file surat columns
             'file_surat' => $pathSurat,
             'nama_file_asli' => $nameSurat,
@@ -266,6 +278,14 @@ class TiketDtsenController extends Controller
             'sktm' => [
                 'path' => $tiket->file_sktm,
                 'name' => $tiket->nama_file_sktm ?: "Dokumen_SKTM_{$tiket->nomor_tiket}.pdf"
+            ],
+            'klasifikasi_dtsen' => [
+                'path' => $tiket->file_klasifikasi_dtsen,
+                'name' => $tiket->nama_file_klasifikasi_dtsen ?: "Dokumen_Klasifikasi_DTSEN_{$tiket->nomor_tiket}.pdf"
+            ],
+            'hak_akses' => [
+                'path' => $tiket->file_hak_akses,
+                'name' => $tiket->nama_file_hak_akses ?: "Dokumen_Hak_Akses_{$tiket->nomor_tiket}.pdf"
             ],
         ];
 

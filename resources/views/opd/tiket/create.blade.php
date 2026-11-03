@@ -243,6 +243,48 @@
                     </div>
                 </div>
 
+                <!-- 6. Klasifikasi DTSEN (File Box) Opsional -->
+                <div class="dtsen-filebox-card">
+                    <div class="dtsen-filebox-header">
+                        <div class="dtsen-filebox-title">
+                            Klasifikasi DTSEN
+                        </div>
+                        <span class="dtsen-badge-opt">Opsional</span>
+                    </div>
+                    <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKlasifikasi').click()">
+                        <i class="fi fi-rr-folder dtsen-dropzone-icon"></i>
+                        <div class="dtsen-dropzone-title" id="klasifikasiTitle">Pilih Berkas Klasifikasi DTSEN</div>
+                        <div class="dtsen-dropzone-sub" id="klasifikasiSub">PDF, DOC, DOCX, XLSX (Maks 50MB)</div>
+                        <input type="file" 
+                               name="file_klasifikasi_dtsen" 
+                               id="inputKlasifikasi" 
+                               class="d-none" 
+                               accept=".pdf,.doc,.docx,.xlsx,.xls" 
+                               onchange="handleFileChange(this, 'klasifikasiTitle', 'klasifikasiSub')">
+                    </div>
+                </div>
+
+                <!-- 7. Hak Akses (File Box) Opsional -->
+                <div class="dtsen-filebox-card">
+                    <div class="dtsen-filebox-header">
+                        <div class="dtsen-filebox-title">
+                            Hak Akses
+                        </div>
+                        <span class="dtsen-badge-opt">Opsional</span>
+                    </div>
+                    <div class="dtsen-file-dropzone" onclick="document.getElementById('inputHakAkses').click()">
+                        <i class="fi fi-rr-key dtsen-dropzone-icon"></i>
+                        <div class="dtsen-dropzone-title" id="hakAksesTitle">Pilih Berkas Hak Akses</div>
+                        <div class="dtsen-dropzone-sub" id="hakAksesSub">PDF, DOC, DOCX (Maks 50MB)</div>
+                        <input type="file" 
+                               name="file_hak_akses" 
+                               id="inputHakAkses" 
+                               class="d-none" 
+                               accept=".pdf,.doc,.docx" 
+                               onchange="handleFileChange(this, 'hakAksesTitle', 'hakAksesSub')">
+                    </div>
+                </div>
+
             </div>
         </div>
 
