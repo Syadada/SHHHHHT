@@ -36,104 +36,34 @@
     <!-- 1. Progress Status Permohonan Bagi Pakai DTSEN (Sisi OPD: 4 Tahap) -->
     <div class="progress-card">
         @if($tiket->status === 'PERLU_PERBAIKAN')
-            <!-- Warning Banner: Verifikasi Mengharuskan Perbaikan Berkas atau Variabel -->
-            <div class="revisi-banner" style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 20px; margin-bottom: 24px;">
-                <div style="display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
-                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+            <!-- Warning Banner: Verifikasi Mengharuskan Perbaikan Berkas atau Formulir -->
+            <div class="revisi-banner" style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 22px 24px; margin-bottom: 24px;">
+                <div style="display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
                         <i class="fi fi-rr-exclamation"></i>
                     </div>
                     <div style="flex: 1; min-width: 280px;">
-                        <div style="font-size: 15px; font-weight: 800; color: #991b1b; margin-bottom: 4px;">
+                        <div style="font-size: 16px; font-weight: 800; color: #991b1b; margin-bottom: 4px;">
                             PERBAIKAN PERMOHONAN DIPERLUKAN (CATATAN ADMIN WALIDATA)
                         </div>
                         <div style="font-size: 13px; color: #475569; line-height: 1.5; margin-bottom: 12px;">
-                            Admin Walidata meminta perbaikan berkas atau rincian permohonan pada tiket <strong>#{{ $tiket->nomor_tiket }}</strong>.
-                            <div style="margin-top: 8px; padding: 10px 14px; background: #ffffff; border: 1px solid #fda4af; border-radius: 8px; font-size: 13px; color: #b91c1c;">
-                                <strong>Catatan Walidata:</strong><br>
+                            Admin Walidata meminta perbaikan berkas atau rincian permohonan pada tiket <strong>#{{ $tiket->nomor_tiket }}</strong>. Formulir permohonan kini telah dibuka kembali agar Anda dapat memperbarui data atau mengunggah berkas yang benar.
+                            <div style="margin-top: 10px; padding: 12px 16px; background: #ffffff; border: 1px solid #fda4af; border-radius: 10px; font-size: 13.5px; color: #991b1b; line-height: 1.5;">
+                                <strong style="color: #b91c1c;"><i class="fi fi-rr-comment-alt"></i> Catatan Koreksi Walidata:</strong><br>
                                 {{ $tiket->catatan_admin }}
                             </div>
                         </div>
 
-                        <!-- Form Re-Upload Berkas yang Benar -->
-                        <form action="{{ route('tiket.revisi-berkas', $tiket->id) }}" method="POST" enctype="multipart/form-data" style="margin-top: 14px; padding-top: 14px; border-top: 1px dashed #fecdd3;">
-                            @csrf
-                            <div style="font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
-                                Silakan unggah berkas KAK / Surat Permohonan yang telah diperbaiki:
-                            </div>
-
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 14px;">
-                                <div>
-                                    <label style="font-size: 12px; font-weight: 600; color: #334155; display: block; margin-bottom: 4px;">
-                                        Unggah Ulang Surat KAK yang Benar:
-                                    </label>
-                                    <input type="file" name="file_kak" class="form-text-input" accept=".pdf,.doc,.docx" style="font-size: 12px; padding: 6px;">
-                                </div>
-                                <div>
-                                    <label style="font-size: 12px; font-weight: 600; color: #334155; display: block; margin-bottom: 4px;">
-                                        Unggah Ulang Surat Permohonan yang Benar:
-                                    </label>
-                                    <input type="file" name="file_surat_permohonan" class="form-text-input" accept=".pdf,.doc,.docx" style="font-size: 12px; padding: 6px;">
-                                </div>
-                            </div>
-
-                            <div style="margin-bottom: 14px;">
-                                <label style="font-size: 12px; font-weight: 600; color: #334155; display: block; margin-bottom: 4px;">
-                                    Catatan Tambahan dari Perangkat Daerah (Opsional):
-                                </label>
-                                <input type="text" name="catatan_opd" class="form-text-input" placeholder="Tuliskan keterangan perbaikan berkas...">
-                            </div>
-
-                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-                                <button type="submit" class="btn-pill-primary" style="background: #dc2626; border-color: #dc2626;">
-                                    <i class="fi fi-rr-paper-plane"></i> Kirim Ulang Berkas Perbaikan ke Walidata
-                                </button>
-                                <button type="button" onclick="toggleRevisiForm()" class="btn-pill-outline" style="font-size: 12px;">
-                                    <i class="fi fi-rr-edit"></i> Perbaiki Variabel DTSEN
-                                </button>
-                            </div>
-                        </form>
+                        <!-- Tombol Buka Halaman Edit Permohonan Penuh (Opsi A) -->
+                        <div style="margin-top: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <a href="{{ route('opd.tiket.edit', $tiket->id) }}" class="btn-pill-primary" style="background: #dc2626; border-color: #dc2626; padding: 10px 22px; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                                <i class="fi fi-rr-edit"></i> Buka & Perbaiki Formulir Permohonan
+                            </a>
+                            <span style="font-size: 12px; color: #64748b;">
+                                <em>Formulir akan otomatis terkunci kembali setelah dikirim ulang ke Walidata.</em>
+                            </span>
+                        </div>
                     </div>
-                </div>
-
-                <!-- Collapsible Form Edit / Revisi Variabel -->
-                <div id="boxRevisiVariabel" class="revisi-form-collapsible" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #fecdd3;">
-                    <form action="{{ route('tiket.update-variabel', $tiket->id) }}" method="POST">
-                        @csrf
-                        <div class="revisi-form-title">
-                            Silakan sesuaikan daftar variabel DTSEN berikut:
-                        </div>
-                        <div class="revisi-form-hint">
-                            Pastikan variabel yang Anda inputkan tercantum pada lampiran Surat Edaran resmi.
-                        </div>
-
-                        <div id="revisiVarContainer" class="revisi-vars-stack">
-                            @php
-                                $curVars = $tiket->variabel_dtsen ?? [];
-                                if (empty($curVars)) $curVars = [''];
-                            @endphp
-                            @foreach($curVars as $idx => $v)
-                                <div class="revisi-row">
-                                    <span class="revisi-label">Variabel {{ $idx + 1 }}:</span>
-                                    <input type="text" name="variabel_dtsen[]" value="{{ $v }}" class="form-input ticket-field-input" placeholder="Contoh: NIK, Nama, Alamat, Status Kesejahteraan..." required>
-                                    <button type="button" onclick="hapusBarisRevisi(this)" class="btn-pill-outline revisi-btn-remove" title="Hapus baris variabel ini">✕</button>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="ticket-top-actions">
-                            <button type="button" onclick="tambahKolomRevisi()" class="btn-pill-outline revisi-btn-add">
-                                + Tambah Kolom Variabel
-                            </button>
-                            <div class="ticket-filter-form">
-                                <button type="button" onclick="toggleRevisiForm()" class="btn-pill-outline revisi-btn-close">
-                                    Tutup
-                                </button>
-                                <button type="submit" class="btn-pill-primary revisi-btn-submit">
-                                    <i class="fi fi-rr-disk"></i> Simpan & Ajukan Ulang ke Walidata
-                                </button>
-                            </div>
-                        </div>
-                    </form>
                 </div>
             </div>
         @endif

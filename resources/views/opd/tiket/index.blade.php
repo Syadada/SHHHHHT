@@ -138,9 +138,16 @@
                             <!-- 3. Status Tiket -->
                             <td>
                                 @if($t->status === 'PERLU_PERBAIKAN')
-                                    <span class="ticket-badge ticket-badge-warning">
-                                        <i class="fi fi-rr-exclamation"></i> Perlu Perbaikan Berkas
-                                    </span>
+                                    <div>
+                                        <span class="ticket-badge ticket-badge-warning">
+                                            <i class="fi fi-rr-exclamation"></i> Perlu Perbaikan Berkas
+                                        </span>
+                                    </div>
+                                    <div style="margin-top: 4px;">
+                                        <a href="{{ route('opd.tiket.edit', $t->id) }}" class="btn-pill-outline" style="font-size: 11px; padding: 2px 8px; color: #dc2626; border-color: #fca5a5; background: #fff1f2; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                                            <i class="fi fi-rr-edit"></i> Perbaiki Form
+                                        </a>
+                                    </div>
                                 @elseif($t->status === 'PENDING')
                                     <span class="ticket-badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
                                         <i class="fi fi-rr-time-forward"></i> Pending Verifikasi Berkas

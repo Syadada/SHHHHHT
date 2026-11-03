@@ -74,6 +74,178 @@ class TiketDtsenController extends Controller
     }
 
     /**
+     * Halaman Edit Formulir Permohonan (Khusus Status PERLU_PERBAIKAN)
+     * KUNCI FORM: Sebelum di-reject oleh admin, OPD tidak dapat mengedit formulir ini.
+     */
+    public function edit($id)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+        $user = auth()->user();
+
+        // Validasi hak akses kepemilikan jika bukan super admin
+        if (!$user->isSuperAdmin() && !str_contains(strtolower($tiket->nama_instansi), strtolower($user->nama_instansi ?: '')) && $tiket->email_pemohon !== $user->email) {
+            return redirect()->route('opd.tiket.index')
+                ->with('error', 'Anda tidak memiliki hak untuk mengedit permohonan instansi lain.');
+        }
+
+        // KUNCI FORM: Hanya status PERLU_PERBAIKAN yang boleh diedit
+        if ($tiket->status !== 'PERLU_PERBAIKAN') {
+            return redirect()->route('opd.tiket.show', $tiket->id)
+                ->with('error', 'Permohonan sedang dalam proses resmi dan tidak dapat diedit sebelum ada permintaan perbaikan dari Admin Walidata.');
+        }
+
+        return view('opd.tiket.edit', compact('tiket'));
+    }
+
+    /**
+     * Submit Ulang Hasil Perbaikan Formulir & Berkas oleh OPD
+     * Status dikembalikan ke PENDING dan form otomatis terkunci kembali.
+     */
+    public function update(Request $request, $id)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+        $user = auth()->user();
+
+        // Validasi hak akses kepemilikan jika bukan super admin
+        if (!$user->isSuperAdmin() && !str_contains(strtolower($tiket->nama_instansi), strtolower($user->nama_instansi ?: '')) && $tiket->email_pemohon !== $user->email) {
+            return redirect()->route('opd.tiket.index')
+                ->with('error', 'Anda tidak memiliki hak untuk mengedit permohonan instansi lain.');
+        }
+
+        // KUNCI FORM: Hanya status PERLU_PERBAIKAN yang boleh diupdate
+        if ($tiket->status !== 'PERLU_PERBAIKAN') {
+            return redirect()->route('opd.tiket.show', $tiket->id)
+                ->with('error', 'Permohonan tidak dapat diubah karena tidak dalam status perbaikan.');
+        }
+
+        // Validasi Form Perbaikan
+        $request->validate([
+            'no_surat_permohonan' => 'nullable|string|max:150',
+            'tgl_surat_permohonan' => 'nullable|date',
+            'perihal' => 'nullable|string|max:500',
+            'nama_narahubung' => 'required|string|max:150',
+            'no_narahubung' => 'required|string|max:100',
+            'file_kak' => 'nullable|file|max:51200',
+            'file_surat_permohonan' => 'nullable|file|max:51200',
+            'file_ropa' => 'nullable|file|max:51200',
+            'file_dpia' => 'nullable|file|max:51200',
+            'file_sktm' => 'nullable|file|max:51200',
+            'file_klasifikasi_dtsen' => 'nullable|file|max:51200',
+            'file_hak_akses' => 'nullable|file|max:51200',
+            'variabel_dtsen' => 'nullable|array',
+            'catatan_opd' => 'nullable|string|max:1000',
+        ], [
+            'nama_narahubung.required' => 'Nama Narahubung wajib diisi.',
+            'no_narahubung.required' => 'Nomor Narahubung wajib diisi.',
+            'file_kak.max' => 'Ukuran berkas Surat KAK tidak boleh melebihi 50MB.',
+            'file_surat_permohonan.max' => 'Ukuran berkas Surat Permohonan tidak boleh melebihi 50MB.',
+        ]);
+
+        // Helper simpan berkas baru
+        $saveFile = function($fieldName) use ($request) {
+            if ($request->hasFile($fieldName)) {
+                $file = $request->file($fieldName);
+                $originalName = $file->getClientOriginalName();
+                $path = $file->store('dokumen_dtsen', 'public');
+                return [$path, $originalName];
+            }
+            return [null, null];
+        };
+
+        // Perbarui data identitas & surat
+        if ($request->filled('no_surat_permohonan')) {
+            $tiket->no_surat_permohonan = trim($request->input('no_surat_permohonan'));
+            $tiket->no_surat_edaran = $tiket->no_surat_permohonan;
+        }
+        if ($request->filled('tgl_surat_permohonan')) {
+            $tiket->tgl_surat_permohonan = $request->input('tgl_surat_permohonan');
+            $tiket->tgl_permintaan = $tiket->tgl_surat_permohonan;
+        }
+        if ($request->filled('perihal')) {
+            $tiket->perihal = trim($request->input('perihal'));
+        }
+        $tiket->nama_narahubung = trim($request->input('nama_narahubung'));
+        $tiket->no_narahubung = trim($request->input('no_narahubung'));
+        $tiket->nama_pemohon = $tiket->nama_narahubung;
+        $tiket->kontak_pemohon = $tiket->no_narahubung;
+
+        // Perbarui berkas hanya jika OPD mengunggah berkas baru
+        if ($request->hasFile('file_kak')) {
+            [$pathKak, $nameKak] = $saveFile('file_kak');
+            $tiket->file_kak = $pathKak;
+            $tiket->nama_file_kak = $nameKak;
+        }
+
+        if ($request->hasFile('file_surat_permohonan')) {
+            [$pathSurat, $nameSurat] = $saveFile('file_surat_permohonan');
+            $tiket->file_surat_permohonan = $pathSurat;
+            $tiket->nama_file_surat_permohonan = $nameSurat;
+            $tiket->file_surat = $pathSurat;
+            $tiket->nama_file_asli = $nameSurat;
+            $primaryFile = $request->file('file_surat_permohonan');
+            $tiket->ekstensi_file = strtolower($primaryFile->getClientOriginalExtension() ?: 'pdf');
+            $sizeBytes = $primaryFile->getSize();
+            $tiket->ukuran_file = ($sizeBytes >= 1048576) 
+                ? round($sizeBytes / 1048576, 2) . ' MB' 
+                : round($sizeBytes / 1024, 2) . ' KB';
+            $tiket->hash_sha256 = hash_file('sha256', $primaryFile->getRealPath());
+        }
+
+        if ($request->hasFile('file_ropa')) {
+            [$pathRopa, $nameRopa] = $saveFile('file_ropa');
+            $tiket->file_ropa = $pathRopa;
+            $tiket->nama_file_ropa = $nameRopa;
+        }
+
+        if ($request->hasFile('file_dpia')) {
+            [$pathDpia, $nameDpia] = $saveFile('file_dpia');
+            $tiket->file_dpia = $pathDpia;
+            $tiket->nama_file_dpia = $nameDpia;
+        }
+
+        if ($request->hasFile('file_sktm')) {
+            [$pathSktm, $nameSktm] = $saveFile('file_sktm');
+            $tiket->file_sktm = $pathSktm;
+            $tiket->nama_file_sktm = $nameSktm;
+        }
+
+        if ($request->hasFile('file_klasifikasi_dtsen')) {
+            [$pathKlasifikasi, $nameKlasifikasi] = $saveFile('file_klasifikasi_dtsen');
+            $tiket->file_klasifikasi_dtsen = $pathKlasifikasi;
+            $tiket->nama_file_klasifikasi_dtsen = $nameKlasifikasi;
+        }
+
+        if ($request->hasFile('file_hak_akses')) {
+            [$pathHakAkses, $nameHakAkses] = $saveFile('file_hak_akses');
+            $tiket->file_hak_akses = $pathHakAkses;
+            $tiket->nama_file_hak_akses = $nameHakAkses;
+        }
+
+        // Perbarui variabel DTSEN
+        if ($request->has('variabel_dtsen')) {
+            $variabelInput = array_filter(array_map('trim', (array) $request->input('variabel_dtsen', [])));
+            $tiket->variabel_dtsen = array_values($variabelInput);
+        }
+
+        // KUNCI KEMBALI FORM & KEMBALIKAN STATUS KE PENDING
+        $tiket->status = 'PENDING';
+        $catatanOpd = trim((string) $request->input('catatan_opd'));
+        $catatanHistori = 'Berkas dan data permohonan telah diperbaiki dan dikirim ulang oleh ' . ($user->nama_instansi ?: $user->name) . ' pada ' . now()->format('d/m/Y H:i') . ' WIB.' . ($catatanOpd ? ' Catatan OPD: ' . $catatanOpd : '');
+        $tiket->catatan_admin = $catatanHistori;
+        $tiket->save();
+
+        AuditLogger::log(
+            'TIKET_FORM_REVISED',
+            "Instansi {$tiket->nama_instansi} telah mengedit dan mengirim ulang formulir permohonan tiket [{$tiket->nomor_tiket}]. Status kembali PENDING.",
+            'SUCCESS',
+            ['nomor_tiket' => $tiket->nomor_tiket]
+        );
+
+        return redirect()->route('opd.tiket.show', $tiket->id)
+            ->with('success', "Permohonan tiket #{$tiket->nomor_tiket} berhasil diperbaiki dan dikirim ulang ke Walidata! Status kini kembali PENDING menunggu verifikasi.");
+    }
+
+    /**
      * Buat Tiket Permintaan Bagi Pakai DTSEN Baru
      */
     public function store(Request $request)

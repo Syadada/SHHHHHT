@@ -72,6 +72,9 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/opd/tiket', [ProfileController::class, 'daftarTiket'])->name('opd.tiket.index');
         Route::get('/opd/layanan', [ProfileController::class, 'daftarTiket'])->name('opd.layanan.index');
         Route::get('/opd/tiket/{id}', [ProfileController::class, 'showTiket'])->whereNumber('id')->name('opd.tiket.show');
+        Route::get('/opd/tiket/{id}/edit', [TiketDtsenController::class, 'edit'])->whereNumber('id')->name('opd.tiket.edit');
+        Route::put('/opd/tiket/{id}', [TiketDtsenController::class, 'update'])->whereNumber('id')->name('opd.tiket.update');
+        Route::post('/opd/tiket/{id}/update', [TiketDtsenController::class, 'update'])->whereNumber('id');
         Route::get('/opd/tiket/{id}/formulir', [BagiPakaiDtsenController::class, 'formulir'])->whereNumber('id')->name('opd.tiket.formulir');
         Route::get('/opd/tiket/{id}/download-docx', [BagiPakaiDtsenController::class, 'downloadDocx'])->whereNumber('id')->name('opd.tiket.download-docx');
 
