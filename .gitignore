@@ -41,3 +41,5 @@ venv/
 
 /storage/app/public/formulir_generated/*
 !/storage/app/public/formulir_generated/.gitkeep
+/storage/app/public/dokumen_dtsen/*
+!/storage/app/public/dokumen_dtsen/.gitkeep
