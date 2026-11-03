@@ -94,16 +94,12 @@ class TiketDtsenController extends Controller
             'file_ropa' => 'nullable|file|max:51200',
             'file_dpia' => 'nullable|file|max:51200',
             'file_sktm' => 'nullable|file|max:51200',
-            'email_pemohon' => 'nullable|email|max:150',
-            'tujuan_pemanfaatan' => 'nullable|string',
-            'variabel_dtsen' => 'required|array|min:1',
+            'variabel_dtsen' => 'nullable|array',
         ], [
-            'nama_instansi.required' => 'Nama Instansi / Lembaga pemohon wajib diisi.',
-            'nama_narahubung.required' => 'Nama Narahubung wajib diisi.',
-            'no_narahubung.required' => 'Nomor Narahubung wajib diisi.',
+            'nama_instansi.required' => 'Nama Instansi pemohon wajib terisi.',
+            'nama_narahubung.required' => 'Nama Narahubung wajib diisi (Required).',
+            'no_narahubung.required' => 'Nomor Narahubung wajib diisi (Required).',
             'file_kak.required' => 'Berkas Surat KAK wajib diunggah (Required).',
-            'variabel_dtsen.required' => 'Minimal salah satu variabel DTSEN harus dipilih.',
-            'variabel_dtsen.min' => 'Silakan centang variabel DTSEN yang diminta.',
             'file_kak.max' => 'Ukuran berkas Surat KAK tidak boleh melebihi 50MB.',
             'file_surat_permohonan.max' => 'Ukuran berkas Surat Permohonan tidak boleh melebihi 50MB.',
         ]);
@@ -115,14 +111,8 @@ class TiketDtsenController extends Controller
             ]);
         }
 
-        // Bersihkan variabel kosong dan trim
-        $variabelInput = array_filter(array_map('trim', (array) $request->input('variabel_dtsen')));
-        
-        if (empty($variabelInput)) {
-            return back()->withInput()->withErrors([
-                'variabel_dtsen' => 'Mohon pilih dan centang setidaknya satu variabel DTSEN yang Anda butuhkan.'
-            ]);
-        }
+        // Variabel DTSEN dibuat opsional (bisa diisi atau dikosongkan dahulu)
+        $variabelInput = array_filter(array_map('trim', (array) $request->input('variabel_dtsen', [])));
 
         // Helper simpan berkas
         $saveFile = function($fieldName) use ($request) {

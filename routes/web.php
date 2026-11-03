@@ -80,7 +80,10 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/opd/riwayat-bagi-data/{id}', [ProfileController::class, 'showRiwayatBagiData'])->whereNumber('id')->name('opd.riwayat-bagi-data.show');
         Route::get('/profile', [ProfileController::class, 'layananBagiPakai'])->name('profile'); // Dukungan alias
 
-        // 5. Unduh Dokumen, Surat & Revisi Variabel
+        // 5. Halaman Profil Pengguna / User (Hanya Bisa Lihat / Read-Only)
+        Route::get('/opd/user', [ProfileController::class, 'userProfile'])->name('opd.user.index');
+
+        // 6. Unduh Dokumen, Surat & Revisi Variabel
         Route::get('/tiket/{id}/surat', [TiketDtsenController::class, 'downloadSurat'])->name('tiket.download-surat');
         Route::get('/tiket/{id}/download-dokumen/{tipe}', [TiketDtsenController::class, 'downloadDokumen'])->name('tiket.download-dokumen');
         Route::post('/tiket/{id}/update-variabel', [TiketDtsenController::class, 'updateVariabel'])->name('tiket.update-variabel');

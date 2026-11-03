@@ -188,23 +188,17 @@ if exist "%PROJECT_DIR%composer.phar" (
 )
 
 echo [INFO] Mengunduh composer.phar resmi dari getcomposer.org...
-powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%php\composer.phar')" >nul 2>&1
+curl.exe -s -L -o "%PROJECT_DIR%php\composer.phar" "https://getcomposer.org/composer-stable.phar" >nul 2>&1
 
 if exist "%PROJECT_DIR%php\composer.phar" (
     "%PHP_EXE%" "%PROJECT_DIR%php\composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
     goto :check_vendor_result
 )
 
-powershell -NoProfile -Command "[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; (New-Object System.Net.WebClient).DownloadFile('https://getcomposer.org/composer-stable.phar', '%PROJECT_DIR%composer.phar')" >nul 2>&1
-
-if exist "%PROJECT_DIR%composer.phar" (
-    "%PHP_EXE%" "%PROJECT_DIR%composer.phar" install --no-interaction --prefer-dist --ignore-platform-reqs
-    goto :check_vendor_result
-)
-
 where composer >nul 2>&1
 if %errorlevel% equ 0 (
     echo [INFO] Menjalankan Composer dari System PATH...
+    set "COMPOSER_DISABLE_TLS=1"
     composer install --no-interaction --prefer-dist --ignore-platform-reqs
 )
 
@@ -301,9 +295,22 @@ if defined PYTHON_EXE (
     echo [OK] Python Backend aktif di http://127.0.0.1:%PYTHON_PORT%/
 )
 
-rem Deteksi IP LAN Server untuk akses laptop lain
+rem Deteksi IP LAN Server untuk akses laptop lain tanpa PowerShell
 set "SERVER_IP="
-for /f "delims=" %%i in ('powershell -Command "(Get-CimInstance Win32_NetworkAdapterConfiguration | Where-Object IPEnabled | Select-Object -ExpandProperty IPAddress)[0]" 2^>nul') do set "SERVER_IP=%%i"
+if defined PYTHON_EXE (
+    for /f "delims=" %%i in ('"%PYTHON_EXE%" -c "import socket; print(socket.gethostbyname(socket.gethostname()))" 2^>nul') do (
+        if not "%%i"=="127.0.0.1" set "SERVER_IP=%%i"
+    )
+)
+if not defined SERVER_IP (
+    for /f "tokens=2 delims=:" %%a in ('ipconfig ^| findstr /c:"IPv4" /c:"Alamat IPv4" 2^>nul') do (
+        if not defined SERVER_IP (
+            set "temp_ip=%%a"
+            set "temp_ip=!temp_ip: =!"
+            if not "!temp_ip!"=="" if not "!temp_ip!"=="127.0.0.1" set "SERVER_IP=!temp_ip!"
+        )
+    )
+)
 
 echo.
 echo =======================================================================
@@ -328,11 +335,7 @@ echo =======================================================================
 echo.
 
 echo [7/8] Membuka peramban (browser) otomatis ke Portal OPD...
-if defined PYTHON_EXE (
-    start "" /b "%PYTHON_EXE%" -c "import time, webbrowser; time.sleep(2); webbrowser.open('http://127.0.0.1:%LARAVEL_PORT%/login')" >nul 2>&1
-) else (
-    start "" http://127.0.0.1:%LARAVEL_PORT%/login
-)
+start "" "http://127.0.0.1:%LARAVEL_PORT%/login"
 
 echo [8/8] SERVER SEDANG AKTIF DI PORT %LARAVEL_PORT% (0.0.0.0)...
 echo.

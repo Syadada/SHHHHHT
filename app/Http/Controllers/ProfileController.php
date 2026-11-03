@@ -186,6 +186,15 @@ class ProfileController extends Controller
     }
 
     /**
+     * 6. Halaman User OPD (Hanya Bisa Lihat / Read-Only Akun Instansi)
+     */
+    public function userProfile()
+    {
+        $user = Auth::user();
+        return view('opd.user.index', compact('user'));
+    }
+
+    /**
      * Alias untuk rute lama /profile agar kompatibel
      */
     public function index()

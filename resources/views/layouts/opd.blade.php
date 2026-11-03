@@ -11,14 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
     <!-- Unified Master Stylesheet (Single CSS + Flaticon UIcons) -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}?v={{ file_exists(public_path('css/app.css')) ? filemtime(public_path('css/app.css')) : time() }}">
     <script src="{{ asset('js/app.js') }}" defer></script>
     @yield('styles')
 </head>
 <body>
     <div class="opd-layout">
         <!-- 1. SIDEBAR NAVIGASI OPD -->
-        <aside class="opd-sidebar">
+        <aside class="opd-sidebar" style="overflow: visible !important;">
             <!-- Header Brand -->
             <div class="opd-sidebar-header">
                 <a href="{{ route('opd.dashboard') }}" class="opd-brand-box">
@@ -72,6 +72,16 @@
                             </a>
                         </li>
                     </ul>
+                </div>
+
+                <!-- 3. User (Hanya Bisa Lihat / Read-Only Akun Instansi) -->
+                <div>
+                    <a href="{{ route('opd.user.index') }}" class="app-nav-item {{ request()->routeIs('opd.user.*') ? 'active' : '' }}">
+                        <div class="app-nav-item-left">
+                            <i class="fi fi-rr-user app-nav-icon"></i>
+                            <span>User</span>
+                        </div>
+                    </a>
                 </div>
 
             </div>
@@ -149,6 +159,21 @@
         </div>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.app-nav-dropdown').forEach(function(item) {
+                item.classList.remove('open');
+                item.addEventListener('mouseleave', function() {
+                    item.classList.remove('open');
+                    const sub = item.querySelector('.app-nav-submenu');
+                    if (sub) {
+                        sub.style.display = 'none';
+                        setTimeout(() => { sub.style.display = ''; }, 30);
+                    }
+                });
+            });
+        });
+    </script>
     @yield('scripts')
     @include('partials.idle_session_timer')
 </body>

@@ -24,7 +24,7 @@
     <form action="{{ route('formulir.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        <!-- 1. IDENTITAS INSTANSI & NARAHUBUNG -->
+        <!-- 1. IDENTITAS INSTANSI & NARAHUBUNG (TANPA FIELD TAMBAHAN) -->
         <div class="form-section-card">
             <div class="section-head-box">
                 <div class="section-head-icon">
@@ -32,41 +32,26 @@
                 </div>
                 <div>
                     <h2 class="section-head-title">Identitas Instansi & Narahubung</h2>
-                    <p class="section-head-desc">Informasi instansi pemohon dan kontak narahubung penanggung jawab</p>
+                    <p class="section-head-desc">Identitas pemohon resmi dan kontak narahubung yang bertanggung jawab</p>
                 </div>
             </div>
 
-            <div class="form-2col-grid">
-                <!-- Nama Instansi (Auto-filled) -->
-                <div>
-                    <label class="form-group-label">
-                        Nama Instansi / Lembaga Pemohon <span class="form-required">*</span>
-                    </label>
-                    <input type="text" 
-                           name="nama_instansi" 
-                           class="form-text-input" 
-                           value="{{ old('nama_instansi', Auth::user()->nama_instansi ?: Auth::user()->name) }}" 
-                           required>
-                    <div class="form-help-hint">Otomatis terisi sesuai akun dinas login Anda.</div>
-                </div>
-
-                <!-- No Surat Permohonan -->
-                <div>
-                    <label class="form-group-label">
-                        Nomor Surat Permohonan Resmi <span class="form-required">*</span>
-                    </label>
-                    <input type="text" 
-                           name="no_surat_edaran" 
-                           class="form-text-input" 
-                           value="{{ old('no_surat_edaran') }}" 
-                           placeholder="Contoh: 000.7.3/124/DINSOS/2026" 
-                           required>
-                    <div class="form-help-hint">Nomor surat dinas resmi yang diajukan ke Walidata.</div>
-                </div>
+            <!-- Nama Instansi (Auto-filled) -->
+            <div class="form-group-mb-16">
+                <label class="form-group-label">
+                    Nama Instansi / Lembaga Pemohon
+                </label>
+                <input type="text" 
+                       name="nama_instansi" 
+                       class="form-text-input" 
+                       value="{{ old('nama_instansi', Auth::user()->nama_instansi ?: Auth::user()->name) }}" 
+                       readonly 
+                       style="background: #f8fafc; font-weight: 700; color: #0f172a; cursor: not-allowed;">
+                <div class="form-help-hint">Terisi otomatis sesuai akun kedinasan Anda.</div>
             </div>
 
-            <!-- NARAHUBUNG (REQUIRED) -->
-            <div class="form-2col-grid form-group-mb-16" style="margin-top: 18px;">
+            <!-- 6 & 7. NARAHUBUNG (REQUIRED) -->
+            <div class="form-2col-grid" style="margin-top: 14px;">
                 <!-- 6. Nama Narahubung -->
                 <div>
                     <label class="form-group-label">
@@ -76,9 +61,9 @@
                            name="nama_narahubung" 
                            class="form-text-input" 
                            value="{{ old('nama_narahubung') }}" 
-                           placeholder="Nama lengkap narahubung / person in charge" 
+                           placeholder="Nama lengkap narahubung pemohon" 
                            required>
-                    <div class="form-help-hint">Nama person in charge (narahubung) yang memproses data permohonan.</div>
+                    <div class="form-help-hint">Nama person in charge (narahubung) yang bertanggung jawab atas permohonan.</div>
                 </div>
 
                 <!-- 7. No Narahubung -->
@@ -92,64 +77,20 @@
                            value="{{ old('no_narahubung') }}" 
                            placeholder="Contoh: 081234567890" 
                            required>
-                    <div class="form-help-hint">Nomor telepon atau WhatsApp aktif narahubung.</div>
-                </div>
-            </div>
-
-            <!-- Email Resmi & Tujuan Pemanfaatan -->
-            <div class="form-2col-grid" style="margin-top: 18px;">
-                <div>
-                    <label class="form-group-label">Alamat Email Resmi Instansi</label>
-                    <input type="email" 
-                           name="email_pemohon" 
-                           class="form-text-input" 
-                           value="{{ old('email_pemohon', Auth::user()->email) }}" 
-                           placeholder="instansi@pemda.go.id">
-                </div>
-
-                <div>
-                    <label class="form-group-label">Tujuan Pemanfaatan Data DTSEN</label>
-                    <input type="text" 
-                           name="tujuan_pemanfaatan" 
-                           class="form-text-input" 
-                           value="{{ old('tujuan_pemanfaatan') }}" 
-                           placeholder="Contoh: Perencanaan program bantuan sosial terpadu">
+                    <div class="form-help-hint">Nomor WhatsApp atau telepon aktif narahubung.</div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. VARIABEL DTSEN YANG DIMINTA (DUAL-BOX CHECKLIST COMPONENT) -->
-        <div class="form-section-card">
-            <div class="section-head-box-tight" style="margin-bottom: 4px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <div class="section-head-icon">
-                        <i class="fi fi-rr-list-check"></i>
-                    </div>
-                    <div>
-                        <h2 class="section-head-title">
-                            Variabel DTSEN yang Diminta <span class="form-required">*</span>
-                        </h2>
-                        <p class="section-head-desc">Centang tema dataset di kotak kiri dan klik Terapkan, lalu centang variabel di kotak kanan</p>
-                    </div>
-                </div>
-            </div>
-
-            <p style="font-size: 13px; color: #475569; margin-bottom: 12px; line-height: 1.5;">
-                Pilih tema dataset di kotak sebelah kiri, lalu beri tanda centang (checklist) pada atribut data mikro DTSEN yang Anda butuhkan sesuai lampiran Surat Permohonan resmi:
-            </p>
-
-            @include('partials.selector_variabel_dtsen', ['selectedVars' => old('variabel_dtsen', [])])
-        </div>
-
-        <!-- 3. UNGGAH BERKAS DOKUMEN PERMINTAAN (FILE BOX 1 - 5) -->
+        <!-- 2. BERKAS DOKUMEN PERMINTAAN (FILE BOX 1 - 5) -->
         <div class="form-section-card">
             <div class="section-head-box">
                 <div class="section-head-icon">
                     <i class="fi fi-rr-document"></i>
                 </div>
                 <div>
-                    <h2 class="section-head-title">Berkas Dokumen Permintaan Bagi Pakai</h2>
-                    <p class="section-head-desc">Unggah berkas kelengkapan administrasi dan tata kelola permohonan data</p>
+                    <h2 class="section-head-title">Berkas Dokumen Permintaan</h2>
+                    <p class="section-head-desc">Unggah berkas kelengkapan administrasi permohonan layanan bagi pakai</p>
                 </div>
             </div>
 
@@ -189,7 +130,7 @@
                         <span class="dtsen-badge-req">Wajib</span>
                     </div>
                     <div class="dtsen-filebox-desc">
-                        Scan surat dinas resmi bertanda tangan pimpinan instansi.
+                        Scan surat dinas permohonan resmi pimpinan instansi.
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputPermohonan').click()">
                         <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
@@ -214,7 +155,7 @@
                         <span class="dtsen-badge-opt">Opsional</span>
                     </div>
                     <div class="dtsen-filebox-desc">
-                        Record of Processing Activities (Dokumen Inventarisasi Pemrosesan UU PDP).
+                        Record of Processing Activities (Inventarisasi Pemrosesan Data UU PDP).
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputRopa').click()">
                         <i class="fi fi-rr-document dtsen-dropzone-icon"></i>
@@ -238,7 +179,7 @@
                         <span class="dtsen-badge-opt">Opsional</span>
                     </div>
                     <div class="dtsen-filebox-desc">
-                        Data Protection Impact Assessment (Penilaian Dampak & Mitigasi Risiko).
+                        Data Protection Impact Assessment (Kajian Dampak & Mitigasi Risiko Data).
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputDpia').click()">
                         <i class="fi fi-rr-shield-check dtsen-dropzone-icon"></i>
@@ -262,7 +203,7 @@
                         <span class="dtsen-badge-opt">Opsional</span>
                     </div>
                     <div class="dtsen-filebox-desc">
-                        Surat Keterangan Tidak Mampu atau Berkas Pendukung Kriteria Sasaran.
+                        Surat Keterangan Tidak Mampu / Berkas Pendukung Kriteria Sasaran.
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
                         <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
@@ -278,6 +219,37 @@
                 </div>
 
             </div>
+        </div>
+
+        <!-- 3. VARIABEL DTSEN YANG DIMINTA (DIPISAHKAN & OPSIONAL) -->
+        <div class="form-section-card">
+            <div class="section-head-box-tight" style="margin-bottom: 6px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div class="section-head-icon">
+                            <i class="fi fi-rr-list-check"></i>
+                        </div>
+                        <div>
+                            <h2 class="section-head-title">
+                                Rincian Variabel DTSEN yang Diminta
+                            </h2>
+                            <p class="section-head-desc">Pilihan atribut data mikro keluarga dan anggota keluarga</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span style="font-size: 11px; font-weight: 700; background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; border: 1px solid #cbd5e1;">
+                            Opsional (Dapat Dilengkapi Nanti)
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin: 8px 0 14px; padding: 12px 16px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 12.5px; color: #1e40af; line-height: 1.5; display: flex; align-items: center; gap: 10px;">
+                <i class="fi fi-rr-info" style="font-size: 16px; flex-shrink: 0;"></i>
+                <span><strong>Catatan Opsional:</strong> Pemilihan variabel bersifat opsional. Anda dapat mencentang variabel sekarang, atau dapat langsung mengajukan permohonan terlebih dahulu dan melengkapi variabel nanti saat verifikasi bersama Walidata.</span>
+            </div>
+
+            @include('partials.selector_variabel_dtsen', ['selectedVars' => old('variabel_dtsen', [])])
         </div>
 
         <!-- TOMBOL AKSI SUBMIT -->
