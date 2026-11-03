@@ -100,7 +100,17 @@
                         <div class="dtsen-filebox-title">
                             Surat Permohonan
                         </div>
-                        <span class="dtsen-badge-req">Wajib</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelPermohonan" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearFile('inputPermohonan', 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan', 'Pilih Berkas Surat Permohonan', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    title="Hapus berkas yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Hapus
+                            </button>
+                            <span class="dtsen-badge-req">Wajib</span>
+                        </div>
                     </div>
                     <div class="dtsen-permohonan-body">
                         <!-- File Dropzone Permohonan -->
@@ -114,7 +124,7 @@
                                    class="d-none" 
                                    accept=".pdf,.doc,.docx" 
                                    required
-                                   onchange="handleFileChange(this, 'permohonanTitle', 'permohonanSub')">
+                                   onchange="handleFileChange(this, 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan')">
                         </div>
 
                         <!-- 3 Input Surat Permohonan: Nomor Surat, Tanggal, Perihal (Tanpa Nomor) -->
@@ -164,7 +174,17 @@
                         <div class="dtsen-filebox-title">
                             KAK
                         </div>
-                        <span class="dtsen-badge-req">Wajib</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelKak" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearFile('inputKak', 'kakTitle', 'kakSub', 'btnDelKak', 'Pilih Berkas KAK', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    title="Hapus berkas yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Hapus
+                            </button>
+                            <span class="dtsen-badge-req">Wajib</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKak').click()">
                         <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
@@ -176,7 +196,7 @@
                                class="d-none" 
                                accept=".pdf,.doc,.docx" 
                                required
-                               onchange="handleFileChange(this, 'kakTitle', 'kakSub')">
+                               onchange="handleFileChange(this, 'kakTitle', 'kakSub', 'btnDelKak')">
                     </div>
                 </div>
 
@@ -186,7 +206,17 @@
                         <div class="dtsen-filebox-title">
                             SK Tim Pelaksana
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelSktm" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearFile('inputSktm', 'sktmTitle', 'sktmSub', 'btnDelSktm', 'Pilih Berkas SK Tim Pelaksana', 'PDF, DOC, DOCX, ZIP (Maks 50MB)')" 
+                                    title="Hapus berkas yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Hapus
+                            </button>
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
                         <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
@@ -197,7 +227,7 @@
                                id="inputSktm" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.zip" 
-                               onchange="handleFileChange(this, 'sktmTitle', 'sktmSub')">
+                               onchange="handleFileChange(this, 'sktmTitle', 'sktmSub', 'btnDelSktm')">
                     </div>
                 </div>
 
@@ -207,7 +237,17 @@
                         <div class="dtsen-filebox-title">
                             ROPA
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelRopa" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearFile('inputRopa', 'ropaTitle', 'ropaSub', 'btnDelRopa', 'Pilih Berkas ROPA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    title="Hapus berkas yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Hapus
+                            </button>
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputRopa').click()">
                         <i class="fi fi-rr-document dtsen-dropzone-icon"></i>
@@ -218,7 +258,7 @@
                                id="inputRopa" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.xlsx,.xls" 
-                               onchange="handleFileChange(this, 'ropaTitle', 'ropaSub')">
+                               onchange="handleFileChange(this, 'ropaTitle', 'ropaSub', 'btnDelRopa')">
                     </div>
                 </div>
 
@@ -228,7 +268,17 @@
                         <div class="dtsen-filebox-title">
                             DPIA
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelDpia" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearFile('inputDpia', 'dpiaTitle', 'dpiaSub', 'btnDelDpia', 'Pilih Berkas DPIA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    title="Hapus berkas yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Hapus
+                            </button>
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputDpia').click()">
                         <i class="fi fi-rr-shield-check dtsen-dropzone-icon"></i>
@@ -239,7 +289,7 @@
                                id="inputDpia" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.xlsx,.xls" 
-                               onchange="handleFileChange(this, 'dpiaTitle', 'dpiaSub')">
+                               onchange="handleFileChange(this, 'dpiaTitle', 'dpiaSub', 'btnDelDpia')">
                     </div>
                 </div>
 
@@ -249,7 +299,17 @@
                         <div class="dtsen-filebox-title">
                             Klasifikasi DTSEN
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelKlasifikasi" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearFile('inputKlasifikasi', 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi', 'Pilih Berkas Klasifikasi DTSEN', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    title="Hapus berkas yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Hapus
+                            </button>
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKlasifikasi').click()">
                         <i class="fi fi-rr-folder dtsen-dropzone-icon"></i>
@@ -260,7 +320,7 @@
                                id="inputKlasifikasi" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.xlsx,.xls" 
-                               onchange="handleFileChange(this, 'klasifikasiTitle', 'klasifikasiSub')">
+                               onchange="handleFileChange(this, 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi')">
                     </div>
                 </div>
 
@@ -270,7 +330,17 @@
                         <div class="dtsen-filebox-title">
                             Hak Akses
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelHakAkses" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearFile('inputHakAkses', 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses', 'Pilih Berkas Hak Akses', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    title="Hapus berkas yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Hapus
+                            </button>
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputHakAkses').click()">
                         <i class="fi fi-rr-key dtsen-dropzone-icon"></i>
@@ -281,7 +351,7 @@
                                id="inputHakAkses" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx" 
-                               onchange="handleFileChange(this, 'hakAksesTitle', 'hakAksesSub')">
+                               onchange="handleFileChange(this, 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses')">
                     </div>
                 </div>
 
@@ -319,18 +389,41 @@
 </div>
 
 <script>
-function handleFileChange(input, titleId, subId) {
+function handleFileChange(input, titleId, subId, btnDelId) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
         const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
         const titleEl = document.getElementById(titleId);
         const subEl = document.getElementById(subId);
+        const btnDel = btnDelId ? document.getElementById(btnDelId) : null;
         if (titleEl) {
-            titleEl.innerHTML = `<span style="color: #0b57d0;">${file.name}</span>`;
+            titleEl.innerHTML = `<span style="color: #0b57d0; font-weight: 700;">${file.name}</span>`;
         }
         if (subEl) {
             subEl.innerHTML = `<span class="dtsen-ready-badge">✓ Berkas terpilih (${sizeMb} MB)</span>`;
         }
+        if (btnDel) {
+            btnDel.style.display = 'inline-flex';
+        }
+    }
+}
+
+function clearFile(inputId, titleId, subId, btnDelId, defaultTitle, defaultSub) {
+    const input = document.getElementById(inputId);
+    const titleEl = document.getElementById(titleId);
+    const subEl = document.getElementById(subId);
+    const btnDel = document.getElementById(btnDelId);
+    if (input) {
+        input.value = '';
+    }
+    if (titleEl) {
+        titleEl.innerHTML = defaultTitle;
+    }
+    if (subEl) {
+        subEl.innerHTML = defaultSub;
+    }
+    if (btnDel) {
+        btnDel.style.display = 'none';
     }
 }
 </script>

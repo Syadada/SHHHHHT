@@ -107,7 +107,7 @@
             </div>
         </div>
 
-        <!-- 2. BERKAS DOKUMEN PERMINTAAN (Bisa Unggah Pengganti atau Pertahankan Berkas Lama) -->
+        <!-- 2. BERKAS DOKUMEN PERMINTAAN (Bisa Unggah Pengganti, Hapus, atau Pertahankan Berkas Lama) -->
         <div class="form-section-card">
             <div class="section-head-box">
                 <div class="section-head-icon">
@@ -127,7 +127,17 @@
                         <div class="dtsen-filebox-title">
                             Surat Permohonan
                         </div>
-                        <span class="dtsen-badge-req">Wajib</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelPermohonan" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearNewFile('inputPermohonan', 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan', 'permohonan', 'Pilih Berkas Surat Permohonan', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    title="Batalkan berkas baru yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Batal Ganti
+                            </button>
+                            <span class="dtsen-badge-req">Wajib</span>
+                        </div>
                     </div>
                     <div class="dtsen-permohonan-body">
                         <!-- File Dropzone Permohonan -->
@@ -148,7 +158,7 @@
                                    id="inputPermohonan" 
                                    class="d-none" 
                                    accept=".pdf,.doc,.docx" 
-                                   onchange="handleFileChange(this, 'permohonanTitle', 'permohonanSub')">
+                                   onchange="handleFileChange(this, 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan', 'permohonan')">
                         </div>
 
                         <!-- 3 Input Surat Permohonan: Nomor Surat, Tanggal, Perihal -->
@@ -198,7 +208,17 @@
                         <div class="dtsen-filebox-title">
                             KAK
                         </div>
-                        <span class="dtsen-badge-req">Wajib</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelKak" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearNewFile('inputKak', 'kakTitle', 'kakSub', 'btnDelKak', 'kak', 'Pilih Berkas KAK', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    title="Batalkan berkas baru yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Batal Ganti
+                            </button>
+                            <span class="dtsen-badge-req">Wajib</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKak').click()">
                         <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
@@ -215,7 +235,7 @@
                                id="inputKak" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx" 
-                               onchange="handleFileChange(this, 'kakTitle', 'kakSub')">
+                               onchange="handleFileChange(this, 'kakTitle', 'kakSub', 'btnDelKak', 'kak')">
                     </div>
                 </div>
 
@@ -225,7 +245,27 @@
                         <div class="dtsen-filebox-title">
                             SK Tim Pelaksana
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelSktm" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearNewFile('inputSktm', 'sktmTitle', 'sktmSub', 'btnDelSktm', 'sktm', 'Pilih Berkas SK Tim Pelaksana', 'PDF, DOC, DOCX, ZIP (Maks 50MB)')" 
+                                    title="Batalkan berkas baru yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Batal Ganti
+                            </button>
+                            @if($tiket->file_sktm)
+                                <button type="button" 
+                                        id="btnHapusSktm" 
+                                        class="dtsen-file-delete-btn" 
+                                        onclick="toggleHapusServerFile('sktm', 'hapus_file_sktm', 'sktmTitle', 'sktmSub', 'btnHapusSktm')" 
+                                        title="Hapus berkas ini dari permohonan">
+                                    <i class="fi fi-rr-trash"></i> Hapus Berkas
+                                </button>
+                                <input type="hidden" name="hapus_file_sktm" id="hapus_file_sktm" value="0">
+                            @endif
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
                         <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
@@ -242,7 +282,7 @@
                                id="inputSktm" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.zip" 
-                               onchange="handleFileChange(this, 'sktmTitle', 'sktmSub')">
+                               onchange="handleFileChange(this, 'sktmTitle', 'sktmSub', 'btnDelSktm', 'sktm')">
                     </div>
                 </div>
 
@@ -252,7 +292,27 @@
                         <div class="dtsen-filebox-title">
                             ROPA
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelRopa" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearNewFile('inputRopa', 'ropaTitle', 'ropaSub', 'btnDelRopa', 'ropa', 'Pilih Berkas ROPA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    title="Batalkan berkas baru yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Batal Ganti
+                            </button>
+                            @if($tiket->file_ropa)
+                                <button type="button" 
+                                        id="btnHapusRopa" 
+                                        class="dtsen-file-delete-btn" 
+                                        onclick="toggleHapusServerFile('ropa', 'hapus_file_ropa', 'ropaTitle', 'ropaSub', 'btnHapusRopa')" 
+                                        title="Hapus berkas ini dari permohonan">
+                                    <i class="fi fi-rr-trash"></i> Hapus Berkas
+                                </button>
+                                <input type="hidden" name="hapus_file_ropa" id="hapus_file_ropa" value="0">
+                            @endif
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputRopa').click()">
                         <i class="fi fi-rr-document dtsen-dropzone-icon"></i>
@@ -269,7 +329,7 @@
                                id="inputRopa" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.xlsx,.xls" 
-                               onchange="handleFileChange(this, 'ropaTitle', 'ropaSub')">
+                               onchange="handleFileChange(this, 'ropaTitle', 'ropaSub', 'btnDelRopa', 'ropa')">
                     </div>
                 </div>
 
@@ -279,7 +339,27 @@
                         <div class="dtsen-filebox-title">
                             DPIA
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelDpia" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearNewFile('inputDpia', 'dpiaTitle', 'dpiaSub', 'btnDelDpia', 'dpia', 'Pilih Berkas DPIA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    title="Batalkan berkas baru yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Batal Ganti
+                            </button>
+                            @if($tiket->file_dpia)
+                                <button type="button" 
+                                        id="btnHapusDpia" 
+                                        class="dtsen-file-delete-btn" 
+                                        onclick="toggleHapusServerFile('dpia', 'hapus_file_dpia', 'dpiaTitle', 'dpiaSub', 'btnHapusDpia')" 
+                                        title="Hapus berkas ini dari permohonan">
+                                    <i class="fi fi-rr-trash"></i> Hapus Berkas
+                                </button>
+                                <input type="hidden" name="hapus_file_dpia" id="hapus_file_dpia" value="0">
+                            @endif
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputDpia').click()">
                         <i class="fi fi-rr-shield-check dtsen-dropzone-icon"></i>
@@ -296,7 +376,7 @@
                                id="inputDpia" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.xlsx,.xls" 
-                               onchange="handleFileChange(this, 'dpiaTitle', 'dpiaSub')">
+                               onchange="handleFileChange(this, 'dpiaTitle', 'dpiaSub', 'btnDelDpia', 'dpia')">
                     </div>
                 </div>
 
@@ -306,7 +386,27 @@
                         <div class="dtsen-filebox-title">
                             Klasifikasi DTSEN
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelKlasifikasi" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearNewFile('inputKlasifikasi', 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi', 'klasifikasi', 'Pilih Berkas Klasifikasi DTSEN', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    title="Batalkan berkas baru yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Batal Ganti
+                            </button>
+                            @if($tiket->file_klasifikasi_dtsen)
+                                <button type="button" 
+                                        id="btnHapusKlasifikasi" 
+                                        class="dtsen-file-delete-btn" 
+                                        onclick="toggleHapusServerFile('klasifikasi', 'hapus_file_klasifikasi', 'klasifikasiTitle', 'klasifikasiSub', 'btnHapusKlasifikasi')" 
+                                        title="Hapus berkas ini dari permohonan">
+                                    <i class="fi fi-rr-trash"></i> Hapus Berkas
+                                </button>
+                                <input type="hidden" name="hapus_file_klasifikasi_dtsen" id="hapus_file_klasifikasi" value="0">
+                            @endif
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKlasifikasi').click()">
                         <i class="fi fi-rr-folder dtsen-dropzone-icon"></i>
@@ -323,7 +423,7 @@
                                id="inputKlasifikasi" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx,.xlsx,.xls" 
-                               onchange="handleFileChange(this, 'klasifikasiTitle', 'klasifikasiSub')">
+                               onchange="handleFileChange(this, 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi', 'klasifikasi')">
                     </div>
                 </div>
 
@@ -333,7 +433,27 @@
                         <div class="dtsen-filebox-title">
                             Hak Akses
                         </div>
-                        <span class="dtsen-badge-opt">Opsional</span>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <button type="button" 
+                                    id="btnDelHakAkses" 
+                                    class="dtsen-file-delete-btn" 
+                                    style="display: none;" 
+                                    onclick="clearNewFile('inputHakAkses', 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses', 'hakAkses', 'Pilih Berkas Hak Akses', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    title="Batalkan berkas baru yang dipilih">
+                                <i class="fi fi-rr-trash"></i> Batal Ganti
+                            </button>
+                            @if($tiket->file_hak_akses)
+                                <button type="button" 
+                                        id="btnHapusHakAkses" 
+                                        class="dtsen-file-delete-btn" 
+                                        onclick="toggleHapusServerFile('hakAkses', 'hapus_file_hak_akses', 'hakAksesTitle', 'hakAksesSub', 'btnHapusHakAkses')" 
+                                        title="Hapus berkas ini dari permohonan">
+                                    <i class="fi fi-rr-trash"></i> Hapus Berkas
+                                </button>
+                                <input type="hidden" name="hapus_file_hak_akses" id="hapus_file_hak_akses" value="0">
+                            @endif
+                            <span class="dtsen-badge-opt">Opsional</span>
+                        </div>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputHakAkses').click()">
                         <i class="fi fi-rr-key dtsen-dropzone-icon"></i>
@@ -350,7 +470,7 @@
                                id="inputHakAkses" 
                                class="d-none" 
                                accept=".pdf,.doc,.docx" 
-                               onchange="handleFileChange(this, 'hakAksesTitle', 'hakAksesSub')">
+                               onchange="handleFileChange(this, 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses', 'hakAkses')">
                     </div>
                 </div>
 
@@ -410,20 +530,103 @@
 </div>
 
 <script>
-function handleFileChange(input, titleId, subId) {
+// Data berkas server awal
+const serverFiles = {
+    permohonan: "{{ $tiket->nama_file_surat_permohonan ?: ($tiket->nama_file_asli ?: '') }}",
+    kak: "{{ $tiket->nama_file_kak ?: '' }}",
+    sktm: "{{ $tiket->nama_file_sktm ?: '' }}",
+    ropa: "{{ $tiket->nama_file_ropa ?: '' }}",
+    dpia: "{{ $tiket->nama_file_dpia ?: '' }}",
+    klasifikasi: "{{ $tiket->nama_file_klasifikasi_dtsen ?: '' }}",
+    hakAkses: "{{ $tiket->nama_file_hak_akses ?: '' }}"
+};
+
+function handleFileChange(input, titleId, subId, btnDelId, key) {
     if (input.files && input.files[0]) {
         const file = input.files[0];
         const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
         const titleEl = document.getElementById(titleId);
         const subEl = document.getElementById(subId);
+        const btnDel = btnDelId ? document.getElementById(btnDelId) : null;
         if (titleEl) {
             titleEl.innerHTML = `<span style="color: #0b57d0; font-weight: 700;">✓ Berkas Baru: ${file.name}</span>`;
         }
         if (subEl) {
             subEl.innerHTML = `<span class="dtsen-ready-badge">Berkas pengganti terpilih (${sizeMb} MB)</span>`;
         }
+        if (btnDel) {
+            btnDel.style.display = 'inline-flex';
+        }
+    }
+}
+
+function clearNewFile(inputId, titleId, subId, btnDelId, key, defaultTitle, defaultSub) {
+    const input = document.getElementById(inputId);
+    const titleEl = document.getElementById(titleId);
+    const subEl = document.getElementById(subId);
+    const btnDel = document.getElementById(btnDelId);
+    if (input) {
+        input.value = '';
+    }
+    if (btnDel) {
+        btnDel.style.display = 'none';
+    }
+    const serverName = serverFiles[key];
+    if (serverName && serverName !== '') {
+        if (titleEl) {
+            titleEl.innerHTML = `<span style="color: #059669; font-weight: 700;">✓ Berkas Ada: ${serverName}</span>`;
+        }
+        if (subEl) {
+            subEl.innerHTML = `Klik di sini untuk mengunggah berkas pengganti (PDF, DOC, DOCX Maks 50MB)`;
+        }
+    } else {
+        if (titleEl) {
+            titleEl.innerHTML = defaultTitle;
+        }
+        if (subEl) {
+            subEl.innerHTML = defaultSub;
+        }
+    }
+}
+
+function toggleHapusServerFile(key, inputHapusId, titleId, subId, btnHapusId) {
+    const inputHapus = document.getElementById(inputHapusId);
+    const titleEl = document.getElementById(titleId);
+    const subEl = document.getElementById(subId);
+    const btnHapus = document.getElementById(btnHapusId);
+    const serverName = serverFiles[key];
+
+    if (!inputHapus) return;
+
+    if (inputHapus.value === '0') {
+        inputHapus.value = '1';
+        if (titleEl) {
+            titleEl.innerHTML = `<span style="color: #dc2626; font-weight: 700;">✕ Berkas akan dihapus saat disimpan</span>`;
+        }
+        if (subEl) {
+            subEl.innerHTML = `<span style="color: #e11d48; font-size: 11.5px;">Klik "Batal Hapus" jika ingin mempertahankan berkas ini</span>`;
+        }
+        if (btnHapus) {
+            btnHapus.innerHTML = `<i class="fi fi-rr-undo"></i> Batal Hapus`;
+            btnHapus.style.background = '#f1f5f9';
+            btnHapus.style.color = '#334155';
+            btnHapus.style.borderColor = '#cbd5e1';
+        }
+    } else {
+        inputHapus.value = '0';
+        if (titleEl) {
+            titleEl.innerHTML = `<span style="color: #059669; font-weight: 700;">✓ Berkas Ada: ${serverName}</span>`;
+        }
+        if (subEl) {
+            subEl.innerHTML = `Klik untuk ganti berkas (PDF, DOC, DOCX Maks 50MB)`;
+        }
+        if (btnHapus) {
+            btnHapus.innerHTML = `<i class="fi fi-rr-trash"></i> Hapus Berkas`;
+            btnHapus.style.background = '#fff1f2';
+            btnHapus.style.color = '#e11d48';
+            btnHapus.style.borderColor = '#fecdd3';
+        }
     }
 }
 </script>
 @endsection
-

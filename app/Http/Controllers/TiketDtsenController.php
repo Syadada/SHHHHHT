@@ -221,6 +221,20 @@ class TiketDtsenController extends Controller
             $tiket->nama_file_hak_akses = $nameHakAkses;
         }
 
+        // Hapus berkas jika ditandai hapus oleh OPD (hanya berkas opsional)
+        $fieldsHapus = ['file_ropa', 'file_dpia', 'file_sktm', 'file_klasifikasi_dtsen', 'file_hak_akses'];
+        foreach ($fieldsHapus as $f) {
+            $keyHapus = 'hapus_' . $f;
+            if ($request->input($keyHapus) == '1') {
+                if ($tiket->$f && Storage::disk('public')->exists($tiket->$f)) {
+                    Storage::disk('public')->delete($tiket->$f);
+                }
+                $tiket->$f = null;
+                $namaCol = 'nama_' . $f;
+                $tiket->$namaCol = null;
+            }
+        }
+
         // Perbarui variabel DTSEN
         if ($request->has('variabel_dtsen')) {
             $variabelInput = array_filter(array_map('trim', (array) $request->input('variabel_dtsen', [])));
