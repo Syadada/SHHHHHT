@@ -11,45 +11,6 @@
     
     <!-- Unified Master Stylesheet -->
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <style>
-        .device-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 5px 11px;
-            border-radius: 6px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 11px;
-            font-weight: 600;
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #e5e7eb;
-            white-space: nowrap;
-        }
-
-        .data-table th {
-            padding: 16px 20px !important;
-            font-size: 12px !important;
-            font-weight: 700 !important;
-            color: #4b5563 !important;
-            background: #f8fafc !important;
-            border-bottom: 2px solid #e2e8f0 !important;
-            letter-spacing: 0.3px;
-            vertical-align: middle;
-        }
-
-        .data-table td {
-            padding: 18px 20px !important;
-            vertical-align: middle !important;
-            border-bottom: 1px solid #edf2f7 !important;
-            color: #1f2937 !important;
-            line-height: 1.45;
-        }
-
-        .data-table tbody tr:hover {
-            background-color: #f8fafc !important;
-        }
-    </style>
 </head>
 <body class="form-page">
 

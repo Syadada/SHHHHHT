@@ -1,25 +1,5 @@
 @extends('layouts.admin')
 
-@section('styles')
-<style>
-    .instansi-title-link {
-        font-weight: 700;
-        color: #0b57d0;
-        text-decoration: none;
-        font-size: 14px;
-        line-height: 1.4;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        transition: all 0.2s ease;
-    }
-    .instansi-title-link:hover {
-        color: #0842a0;
-        text-decoration: underline;
-    }
-</style>
-@endsection
-
 @section('content')
 @php
     $activeTab = $activeTab ?? 'laptop';

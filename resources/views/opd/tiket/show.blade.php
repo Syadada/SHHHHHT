@@ -370,9 +370,6 @@
         @endif
     </div>
 
-    <!-- 4. Tata Kelola Data & Kepatuhan UU PDP (ROPA, DPIA, Pengolahan & Pengamanan) -->
-    @include('partials.governance_cards')
-
 </div>
 @endsection
 
