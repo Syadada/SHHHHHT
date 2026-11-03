@@ -246,10 +246,13 @@
             </div>
 
             <div class="ticket-detail-item">
-                <div class="ticket-detail-label">Nomor Surat / Rujukan:</div>
-                <div class="ticket-detail-val">{{ $tiket->no_surat_edaran }}</div>
+                <div class="ticket-detail-label">Surat Permohonan:</div>
+                <div class="ticket-detail-val">{{ $tiket->no_surat_permohonan ?: ($tiket->no_surat_edaran ?: '-') }}</div>
                 <div class="ticket-detail-sub">
-                    Tanggal Diajukan: {{ $tiket->created_at ? $tiket->created_at->format('d/m/Y H:i') : '-' }} WIB
+                    <strong>Tanggal:</strong> {{ $tiket->tgl_surat_permohonan ? $tiket->tgl_surat_permohonan->format('d/m/Y') : ($tiket->created_at ? $tiket->created_at->format('d/m/Y') : '-') }}
+                    @if($tiket->perihal)
+                        &bull; <strong>Perihal:</strong> {{ $tiket->perihal }}
+                    @endif
                 </div>
             </div>
         </div>

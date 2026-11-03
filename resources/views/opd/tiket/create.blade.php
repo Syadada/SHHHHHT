@@ -98,13 +98,13 @@
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
-                            Surat KAK
+                            KAK
                         </div>
                         <span class="dtsen-badge-req">Wajib</span>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKak').click()">
                         <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
-                        <div class="dtsen-dropzone-title" id="kakTitle">Pilih Berkas Surat KAK</div>
+                        <div class="dtsen-dropzone-title" id="kakTitle">Pilih Berkas  KAK</div>
                         <div class="dtsen-dropzone-sub" id="kakSub">PDF, DOC, DOCX (Maks 50MB)</div>
                         <input type="file" 
                                name="file_kak" 
@@ -116,25 +116,67 @@
                     </div>
                 </div>
 
-                <!-- Surat Permohonan (File Box) Required -->
-                <div class="dtsen-filebox-card">
+                <!-- Surat Permohonan (File Box & Input Fields) Required -->
+                <div class="dtsen-filebox-card dtsen-filebox-permohonan">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
                             Surat Permohonan
                         </div>
                         <span class="dtsen-badge-req">Wajib</span>
                     </div>
-                    <div class="dtsen-file-dropzone" onclick="document.getElementById('inputPermohonan').click()">
-                        <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
-                        <div class="dtsen-dropzone-title" id="permohonanTitle">Pilih Berkas Surat Permohonan</div>
-                        <div class="dtsen-dropzone-sub" id="permohonanSub">PDF, DOC, DOCX (Maks 50MB)</div>
-                        <input type="file" 
-                               name="file_surat_permohonan" 
-                               id="inputPermohonan" 
-                               class="d-none" 
-                               accept=".pdf,.doc,.docx" 
-                               required
-                               onchange="handleFileChange(this, 'permohonanTitle', 'permohonanSub')">
+                    <div class="dtsen-permohonan-body">
+                        <!-- File Dropzone Permohonan -->
+                        <div class="dtsen-file-dropzone" onclick="document.getElementById('inputPermohonan').click()">
+                            <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
+                            <div class="dtsen-dropzone-title" id="permohonanTitle">Pilih Berkas Surat Permohonan</div>
+                            <div class="dtsen-dropzone-sub" id="permohonanSub">PDF, DOC, DOCX (Maks 50MB)</div>
+                            <input type="file" 
+                                   name="file_surat_permohonan" 
+                                   id="inputPermohonan" 
+                                   class="d-none" 
+                                   accept=".pdf,.doc,.docx" 
+                                   required
+                                   onchange="handleFileChange(this, 'permohonanTitle', 'permohonanSub')">
+                        </div>
+
+                        <!-- 3 Input Surat Permohonan: Nomor Surat, Tanggal, Perihal (Tanpa Nomor) -->
+                        <div class="dtsen-permohonan-meta-inputs">
+                            <div style="margin-bottom: 8px;">
+                                <label class="form-group-label" style="font-size: 12px; margin-bottom: 4px;">
+                                    Nomor Surat
+                                </label>
+                                <input type="text" 
+                                       name="no_surat_permohonan" 
+                                       class="form-text-input" 
+                                       value="{{ old('no_surat_permohonan', old('no_surat_edaran')) }}" 
+                                       placeholder="Nomor surat permohonan resmi"
+                                       style="padding: 8px 12px; font-size: 13px;">
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                                <div>
+                                    <label class="form-group-label" style="font-size: 12px; margin-bottom: 4px;">
+                                        Tanggal Surat
+                                    </label>
+                                    <input type="date" 
+                                           name="tgl_surat_permohonan" 
+                                           class="form-text-input" 
+                                           value="{{ old('tgl_surat_permohonan', date('Y-m-d')) }}"
+                                           style="padding: 8px 12px; font-size: 13px;">
+                                </div>
+                                <div>
+                                    <label class="form-group-label" style="font-size: 12px; margin-bottom: 4px;">
+                                        Perihal
+                                    </label>
+                                    <input type="text" 
+                                           name="perihal" 
+                                           class="form-text-input" 
+                                           value="{{ old('perihal') }}" 
+                                           placeholder="Perihal surat permohonan"
+                                           style="padding: 8px 12px; font-size: 13px;">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -184,13 +226,13 @@
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
-                            SKTM
+                            SK Tim Pelaksana
                         </div>
                         <span class="dtsen-badge-opt">Opsional</span>
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
                         <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
-                        <div class="dtsen-dropzone-title" id="sktmTitle">Pilih Berkas SKTM</div>
+                        <div class="dtsen-dropzone-title" id="sktmTitle">Pilih Berkas SK Tim Pelaksana</div>
                         <div class="dtsen-dropzone-sub" id="sktmSub">PDF, DOC, DOCX, ZIP (Maks 50MB)</div>
                         <input type="file" 
                                name="file_sktm" 
@@ -204,32 +246,15 @@
             </div>
         </div>
 
-        <!-- Variabel DTSEN yang Diminta (Dipisahkan & Opsional) -->
+        <!-- Variabel DTSEN yang Diminta -->
         <div class="form-section-card">
-            <div class="section-head-box-tight" style="margin-bottom: 6px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="section-head-icon">
-                            <i class="fi fi-rr-list-check"></i>
-                        </div>
-                        <div>
-                            <h2 class="section-head-title">
-                                Rincian Variabel DTSEN yang Diminta
-                            </h2>
-                            <p class="section-head-desc">Pilihan atribut data mikro keluarga dan anggota keluarga</p>
-                        </div>
-                    </div>
-                    <div>
-                        <span style="font-size: 11px; font-weight: 700; background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 20px; border: 1px solid #cbd5e1;">
-                            Opsional (Dapat Dilengkapi Nanti)
-                        </span>
-                    </div>
+            <div class="section-head-box">
+                <div class="section-head-icon">
+                    <i class="fi fi-rr-list-check"></i>
                 </div>
-            </div>
-
-            <div style="margin: 8px 0 14px; padding: 12px 16px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; font-size: 12.5px; color: #1e40af; line-height: 1.5; display: flex; align-items: center; gap: 10px;">
-                <i class="fi fi-rr-info" style="font-size: 16px; flex-shrink: 0;"></i>
-                <span><strong>Catatan Opsional:</strong> Pemilihan variabel bersifat opsional. Anda dapat mencentang variabel sekarang, atau dapat langsung mengajukan permohonan terlebih dahulu dan melengkapi variabel nanti saat verifikasi bersama Walidata.</span>
+                <div>
+                    <h2 class="section-head-title">Variabel DTSEN</h2>
+                </div>
             </div>
 
             @include('partials.selector_variabel_dtsen', ['selectedVars' => old('variabel_dtsen', [])])
@@ -336,6 +361,29 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
+}
+@media (min-width: 860px) {
+    .dtsen-filebox-permohonan {
+        grid-column: span 2;
+    }
+    .dtsen-permohonan-body {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        align-items: center;
+    }
+}
+@media (max-width: 859px) {
+    .dtsen-permohonan-body {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+}
+.dtsen-permohonan-meta-inputs {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 </style>
 

@@ -85,7 +85,10 @@ class TiketDtsenController extends Controller
         // Validasi Field Permintaan Bagi Pakai dari Sisi OPD
         $request->validate([
             'nama_instansi' => 'required|string|max:200',
+            'no_surat_permohonan' => 'nullable|string|max:150',
             'no_surat_edaran' => 'nullable|string|max:150',
+            'tgl_surat_permohonan' => 'nullable|date',
+            'perihal' => 'nullable|string|max:500',
             'nama_narahubung' => 'required|string|max:150',
             'no_narahubung' => 'required|string|max:100',
             'file_kak' => 'required|file|max:51200',
@@ -161,18 +164,26 @@ class TiketDtsenController extends Controller
 
         $namaNarahubung = trim($request->input('nama_narahubung'));
         $noNarahubung = trim($request->input('no_narahubung'));
-        $noSuratEdaran = $request->input('no_surat_edaran') ?: ('SP/' . date('Ymd') . '/' . strtoupper(substr(uniqid(), -4)));
+        $noSuratPermohonan = trim((string) $request->input('no_surat_permohonan'));
+        $tglSuratPermohonan = $request->input('tgl_surat_permohonan');
+        $perihal = trim((string) $request->input('perihal'));
+
+        $noSuratEdaran = $noSuratPermohonan ?: ($request->input('no_surat_edaran') ?: ('SP/' . date('Ymd') . '/' . strtoupper(substr(uniqid(), -4))));
 
         $tiket = TiketDtsen::create([
             'nomor_tiket' => $nomorTiket,
             'nama_instansi' => $request->input('nama_instansi'),
+            'no_surat_permohonan' => $noSuratPermohonan ?: $noSuratEdaran,
+            'tgl_surat_permohonan' => $tglSuratPermohonan ?: now()->toDateString(),
+            'perihal' => $perihal ?: 'Permohonan bagi pakai data DTSEN',
             'no_surat_edaran' => $noSuratEdaran,
+            'tgl_permintaan' => $tglSuratPermohonan ?: now()->toDateString(),
             'nama_narahubung' => $namaNarahubung,
             'no_narahubung' => $noNarahubung,
             'nama_pemohon' => $namaNarahubung, // Fallback backward compatibility
             'kontak_pemohon' => $noNarahubung,  // Fallback backward compatibility
             'email_pemohon' => $request->input('email_pemohon') ?: (auth()->user()->email ?? null),
-            'tujuan_pemanfaatan' => $request->input('tujuan_pemanfaatan') ?: 'Permohonan bagi pakai data DTSEN untuk kebutuhan program instansi.',
+            'tujuan_pemanfaatan' => $perihal ?: ($request->input('tujuan_pemanfaatan') ?: 'Permohonan bagi pakai data DTSEN untuk kebutuhan program instansi.'),
             'variabel_dtsen' => array_values($variabelInput),
             // Berkas Dokumen
             'file_kak' => $pathKak,

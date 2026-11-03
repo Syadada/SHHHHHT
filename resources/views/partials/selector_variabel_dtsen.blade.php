@@ -857,9 +857,6 @@
                             <code class="dtsen-code-tag">${escapeHtml(item.nama_variabel || '-')}</code>
                             <span class="dtsen-type-tag">${escapeHtml(item.tipe_data || 'varchar')}</span>
                         </div>
-
-                        ${item.definisi ? `<div class="dtsen-var-desc">${escapeHtml(item.definisi)}</div>` : ''}
-                        ${item.keterangan ? `<div class="dtsen-var-notes">${escapeHtml(item.keterangan)}</div>` : ''}
                     </div>
                 </div>
             `;
