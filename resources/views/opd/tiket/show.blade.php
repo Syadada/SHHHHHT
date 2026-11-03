@@ -36,43 +36,30 @@
     <!-- 1. Progress Status Permohonan Bagi Pakai DTSEN (Sisi OPD: 4 Tahap) -->
     <div class="progress-card">
         @if($tiket->status === 'PERLU_PERBAIKAN')
-            <!-- Warning Banner: Verifikasi Mengharuskan Perbaikan Berkas atau Formulir -->
-            <div class="revisi-banner" style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 22px 24px; margin-bottom: 24px;">
-                <div style="display: flex; align-items: flex-start; gap: 16px; flex-wrap: wrap;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
-                        <i class="fi fi-rr-exclamation"></i>
+            <!-- Warning Banner: Catatan Koreksi Walidata -->
+            <div class="revisi-banner" style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 18px 22px; margin-bottom: 24px;">
+                <div style="display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
+                    <div style="width: 42px; height: 42px; border-radius: 10px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+                        <i class="fi fi-rr-comment-alt"></i>
                     </div>
                     <div style="flex: 1; min-width: 280px;">
-                        <div style="font-size: 16px; font-weight: 800; color: #991b1b; margin-bottom: 4px;">
-                            PERBAIKAN PERMOHONAN DIPERLUKAN (CATATAN ADMIN WALIDATA)
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
+                            <span style="font-size: 15px; font-weight: 800; color: #991b1b;">
+                                Catatan Koreksi Walidata
+                            </span>
+                            <span class="ticket-tag-chip" style="background: #fee2e2; color: #991b1b; font-weight: 700; border: 1px solid #fca5a5; font-size: 11.5px;">
+                                #{{ $tiket->nomor_tiket }}
+                            </span>
                         </div>
-                        <div style="font-size: 13px; color: #475569; line-height: 1.5; margin-bottom: 12px;">
-                            Admin Walidata meminta perbaikan berkas atau rincian permohonan pada tiket <strong>#{{ $tiket->nomor_tiket }}</strong>. Formulir permohonan kini telah dibuka kembali agar Anda dapat memperbarui data atau mengunggah berkas yang benar.
-                            <div style="margin-top: 10px; padding: 12px 16px; background: #ffffff; border: 1px solid #fda4af; border-radius: 10px; font-size: 13.5px; color: #991b1b; line-height: 1.5;">
-                                <strong style="color: #b91c1c;"><i class="fi fi-rr-comment-alt"></i> Catatan Koreksi Walidata:</strong><br>
-                                {{ $tiket->catatan_admin }}
-                            </div>
-
-                            @if(!empty($tiket->items_revisi))
-                                <div style="margin-top: 12px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-                                    <strong style="font-size: 12px; color: #991b1b;"><i class="fi fi-rr-flag"></i> Bagian yang Ditandai Perlu Perbaikan:</strong>
-                                    @foreach($tiket->items_revisi as $itemKey)
-                                        <span class="dtsen-badge-flag-revisi">
-                                            ⚠️ {{ \App\Models\TiketDtsen::getLabelItemRevisi($itemKey) }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                            @endif
+                        <div style="padding: 12px 16px; background: #ffffff; border: 1px solid #fda4af; border-radius: 10px; font-size: 13.5px; color: #991b1b; line-height: 1.55; font-weight: 500;">
+                            {{ $tiket->catatan_admin ?: 'Silakan perbaiki dokumen atau data permohonan yang ditandai merah.' }}
                         </div>
 
-                        <!-- Tombol Buka Halaman Edit Permohonan Penuh (Opsi A) -->
-                        <div style="margin-top: 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-                            <a href="{{ route('opd.tiket.edit', $tiket->id) }}" class="btn-pill-primary" style="background: #dc2626; border-color: #dc2626; padding: 10px 22px; font-size: 13.5px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                        <!-- Tombol Buka Halaman Edit Permohonan Penuh -->
+                        <div style="margin-top: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                            <a href="{{ route('opd.tiket.edit', $tiket->id) }}" class="btn-pill-primary" style="background: #dc2626; border-color: #dc2626; padding: 8px 18px; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
                                 <i class="fi fi-rr-edit"></i> Buka & Perbaiki Formulir Permohonan
                             </a>
-                            <span style="font-size: 12px; color: #64748b;">
-                                <em>Formulir akan otomatis terkunci kembali setelah dikirim ulang ke Walidata.</em>
-                            </span>
                         </div>
                     </div>
                 </div>

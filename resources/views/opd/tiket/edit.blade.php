@@ -7,42 +7,24 @@
 @section('content')
 <div class="form-create-shell">
 
-    <!-- Banner Pemberitahuan Status Perbaikan & Catatan Admin Walidata -->
-    <div style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 20px 24px; margin-bottom: 24px;">
-        <div style="display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
-            <div style="width: 44px; height: 44px; border-radius: 12px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
-                <i class="fi fi-rr-exclamation"></i>
+    <!-- Banner Catatan Koreksi Walidata -->
+    <div style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 18px 22px; margin-bottom: 24px;">
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+            <div style="width: 42px; height: 42px; border-radius: 10px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+                <i class="fi fi-rr-comment-alt"></i>
             </div>
-            <div style="flex: 1; min-width: 280px;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px; flex-wrap: wrap;">
-                    <span style="font-size: 16px; font-weight: 800; color: #991b1b;">
-                        PERBAIKAN PERMOHONAN DIPERLUKAN
+            <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
+                    <span style="font-size: 15px; font-weight: 800; color: #991b1b;">
+                        Catatan Koreksi Walidata
                     </span>
-                    <span class="ticket-tag-chip" style="background: #fee2e2; color: #991b1b; font-weight: 700; border: 1px solid #fca5a5;">
+                    <span class="ticket-tag-chip" style="background: #fee2e2; color: #991b1b; font-weight: 700; border: 1px solid #fca5a5; font-size: 11.5px;">
                         #{{ $tiket->nomor_tiket }}
                     </span>
                 </div>
-                <div style="font-size: 13px; color: #475569; line-height: 1.5; margin-bottom: 12px;">
-                    Admin Walidata meminta perbaikan pada kelengkapan berkas atau data permohonan tiket Anda. Silakan baca catatan koreksi di bawah, lakukan perbaikan isian formulir atau unggah berkas pengganti yang telah disesuaikan, kemudian klik <strong>Kirim Ulang Permohonan ke Walidata</strong>.
+                <div style="padding: 12px 16px; background: #ffffff; border: 1px solid #fda4af; border-radius: 10px; font-size: 13.5px; color: #991b1b; line-height: 1.55; font-weight: 500;">
+                    {{ $tiket->catatan_admin ?: 'Silakan periksa dan perbaiki berkas atau data yang ditandai garis merah di bawah ini.' }}
                 </div>
-                <div style="padding: 12px 16px; background: #ffffff; border: 1px solid #fda4af; border-radius: 10px; font-size: 13px; color: #991b1b; line-height: 1.5;">
-                    <strong style="color: #b91c1c;"><i class="fi fi-rr-comment-alt"></i> Catatan Koreksi Walidata:</strong><br>
-                    {{ $tiket->catatan_admin }}
-                </div>
-                @if(!empty($tiket->items_revisi) && is_array($tiket->items_revisi))
-                    <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed #fecdd3;">
-                        <div style="font-size: 12px; font-weight: 700; color: #991b1b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">
-                            <i class="fi fi-rr-flag"></i> Bagian yang Ditandai Perlu Koreksi ({{ count($tiket->items_revisi) }} Item):
-                        </div>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                            @foreach($tiket->items_revisi as $it)
-                                <span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: #dc2626; color: #ffffff; font-size: 12px; font-weight: 700; border-radius: 9999px; box-shadow: 0 1px 3px rgba(220, 38, 38, 0.25);">
-                                    <i class="fi fi-rr-cross-circle"></i> {{ $tiket->getLabelItemRevisi($it) }}
-                                </span>
-                            @endforeach
-                        </div>
-                    </div>
-                @endif
             </div>
         </div>
     </div>
@@ -79,12 +61,6 @@
                     <div style="margin-left: auto;">
                         <span class="dtsen-badge-flag-revisi">
                             <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
-                        </span>
-                    </div>
-                @elseif(!empty($tiket->items_revisi))
-                    <div style="margin-left: auto;">
-                        <span class="dtsen-badge-flag-ok">
-                            <i class="fi fi-rr-check"></i> Sudah Sesuai
                         </span>
                     </div>
                 @endif
@@ -158,10 +134,6 @@
                             @if($tiket->isItemRevisi('surat_permohonan'))
                                 <span class="dtsen-badge-flag-revisi">
                                     <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
-                                </span>
-                            @elseif(!empty($tiket->items_revisi))
-                                <span class="dtsen-badge-flag-ok">
-                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
                                 </span>
                             @endif
                             <button type="button" 
@@ -249,10 +221,6 @@
                                 <span class="dtsen-badge-flag-revisi">
                                     <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
                                 </span>
-                            @elseif(!empty($tiket->items_revisi))
-                                <span class="dtsen-badge-flag-ok">
-                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
-                                </span>
                             @endif
                             <button type="button" 
                                     id="btnDelKak" 
@@ -294,10 +262,6 @@
                             @if($tiket->isItemRevisi('sktm'))
                                 <span class="dtsen-badge-flag-revisi">
                                     <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
-                                </span>
-                            @elseif(!empty($tiket->items_revisi))
-                                <span class="dtsen-badge-flag-ok">
-                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
                                 </span>
                             @endif
                             <button type="button" 
@@ -351,10 +315,6 @@
                                 <span class="dtsen-badge-flag-revisi">
                                     <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
                                 </span>
-                            @elseif(!empty($tiket->items_revisi))
-                                <span class="dtsen-badge-flag-ok">
-                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
-                                </span>
                             @endif
                             <button type="button" 
                                     id="btnDelRopa" 
@@ -406,10 +366,6 @@
                             @if($tiket->isItemRevisi('dpia'))
                                 <span class="dtsen-badge-flag-revisi">
                                     <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
-                                </span>
-                            @elseif(!empty($tiket->items_revisi))
-                                <span class="dtsen-badge-flag-ok">
-                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
                                 </span>
                             @endif
                             <button type="button" 
@@ -463,10 +419,6 @@
                                 <span class="dtsen-badge-flag-revisi">
                                     <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
                                 </span>
-                            @elseif(!empty($tiket->items_revisi))
-                                <span class="dtsen-badge-flag-ok">
-                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
-                                </span>
                             @endif
                             <button type="button" 
                                     id="btnDelKlasifikasi" 
@@ -518,10 +470,6 @@
                             @if($tiket->isItemRevisi('hak_akses'))
                                 <span class="dtsen-badge-flag-revisi">
                                     <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
-                                </span>
-                            @elseif(!empty($tiket->items_revisi))
-                                <span class="dtsen-badge-flag-ok">
-                                    <i class="fi fi-rr-check"></i> Sudah Sesuai
                                 </span>
                             @endif
                             <button type="button" 
@@ -583,37 +531,10 @@
                             <i class="fi fi-rr-exclamation"></i> HARUS DIPERBAIKI
                         </span>
                     </div>
-                @elseif(!empty($tiket->items_revisi))
-                    <div style="margin-left: auto;">
-                        <span class="dtsen-badge-flag-ok">
-                            <i class="fi fi-rr-check"></i> Sudah Sesuai
-                        </span>
-                    </div>
                 @endif
             </div>
 
             @include('partials.selector_variabel_dtsen', ['selectedVars' => old('variabel_dtsen', $tiket->variabel_dtsen ?? [])])
-        </div>
-
-        <!-- 4. CATATAN TINDAK LANJUT PERBAIKAN DARI OPD (Opsional) -->
-        <div class="form-section-card">
-            <div class="section-head-box">
-                <div class="section-head-icon">
-                    <i class="fi fi-rr-comment-alt-check"></i>
-                </div>
-                <div>
-                    <h2 class="section-head-title">Catatan Perbaikan dari Perangkat Daerah</h2>
-                    <p class="section-head-desc">Sampaikan penjelasan singkat mengenai perbaikan yang telah dilakukan untuk Admin Walidata</p>
-                </div>
-            </div>
-
-            <div>
-                <textarea name="catatan_opd" 
-                          rows="3" 
-                          class="form-text-input" 
-                          placeholder="Contoh: Berkas KAK telah ditandatangani ulang oleh Kepala Dinas, dan nomor surat permohonan telah dikoreksi."
-                          style="resize: vertical; font-size: 13px; line-height: 1.5;">{{ old('catatan_opd') }}</textarea>
-            </div>
         </div>
 
         <!-- TOMBOL AKSI SUBMIT PERBAIKAN -->

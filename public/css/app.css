@@ -4988,9 +4988,19 @@ nav[role="navigation"] svg,
 /* Penanda Item Revisi (Highlight Berkas & Input Bermasalah) */
 .dtsen-filebox-card.is-item-revisi,
 .form-section-card.is-item-revisi {
-    border: 2px solid #ef4444 !important;
-    background: #fffafa !important;
-    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.12) !important;
+    border: 2px solid #dc2626 !important;
+    background: #fffbfa !important;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.1) !important;
+}
+.dtsen-filebox-card.is-item-revisi .dtsen-filebox-title {
+    color: #991b1b !important;
+}
+.dtsen-filebox-card.is-item-revisi .dtsen-file-dropzone {
+    border: 1.5px dashed #f87171 !important;
+    background: #ffffff !important;
+}
+.dtsen-filebox-card.is-item-revisi .dtsen-dropzone-icon {
+    color: #dc2626 !important;
 }
 .dtsen-badge-flag-revisi {
     font-size: 10.5px;
