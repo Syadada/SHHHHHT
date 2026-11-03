@@ -139,15 +139,19 @@
                             <td>
                                 @if($t->status === 'PERLU_PERBAIKAN')
                                     <span class="ticket-badge ticket-badge-warning">
-                                        <i class="fi fi-rr-exclamation"></i> Perlu Perbaikan OPD
+                                        <i class="fi fi-rr-exclamation"></i> Perlu Perbaikan Berkas
                                     </span>
-                                @elseif($t->step5_done)
+                                @elseif($t->status === 'PENDING')
+                                    <span class="ticket-badge" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; font-size: 11px; padding: 4px 8px; border-radius: 6px; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                        <i class="fi fi-rr-time-forward"></i> Pending Verifikasi Berkas
+                                    </span>
+                                @elseif($t->isOpdStepDone(4))
                                     <span class="ticket-badge ticket-badge-success">
                                         <i class="fi fi-rr-check"></i> Selesai (100%)
                                     </span>
                                 @else
                                     <span class="ticket-badge ticket-badge-progress">
-                                        <i class="fi fi-rr-time-forward"></i> {{ $t->current_status_label }}
+                                        <i class="fi fi-rr-time-forward"></i> {{ $t->current_opd_status_label }}
                                     </span>
                                 @endif
                             </td>

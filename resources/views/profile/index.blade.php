@@ -269,15 +269,16 @@
                 </div>
             </div>
 
-            <!-- 5-Step Process Flow: Progress 1, Progress 2, Progress 3, dst. -->
+            <!-- 4-Step Process Flow Sisi OPD: 1. Pengajuan, 2. Pengolahan, 3. Transfer, 4. Selesai -->
             <div class="step-flow">
-                @foreach(\App\Models\TiketDtsen::$stepsDefinition as $stepNum => $stepDef)
+                @foreach(\App\Models\TiketDtsen::$opdStepsDefinition as $stepNum => $stepDef)
                     @php
-                        $isDone = $selectedTiket ? $selectedTiket->isStepDone($stepNum) : ($stepNum === 1);
-                        $isActive = $selectedTiket ? $selectedTiket->isStepActive($stepNum) : ($stepNum === 2);
+                        $isDone = $selectedTiket ? $selectedTiket->isOpdStepDone($stepNum) : ($stepNum === 1);
+                        $isActive = $selectedTiket ? $selectedTiket->isOpdStepActive($stepNum) : ($stepNum === 2);
                         $nodeClass = $isDone ? 'is-done' : ($isActive ? 'is-active' : 'is-pending');
-                        $stepColAt = "step{$stepNum}_at";
-                        $timeDone = $selectedTiket ? $selectedTiket->$stepColAt : null;
+                        if ($stepNum === 1 && $selectedTiket && $selectedTiket->status === 'PERLU_PERBAIKAN') {
+                            $nodeClass = 'is-revisi';
+                        }
                     @endphp
                     
                     <div class="step-node {{ $nodeClass }}">
@@ -287,8 +288,8 @@
                                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                     <polyline points="20 6 9 17 4 12"></polyline>
                                 </svg>
-                            @elseif($isActive)
-                                <span>{{ $stepNum }}</span>
+                            @elseif($stepNum === 1 && $selectedTiket && $selectedTiket->status === 'PERLU_PERBAIKAN')
+                                <i class="fi fi-rr-exclamation"></i>
                             @else
                                 <span>{{ $stepNum }}</span>
                             @endif
@@ -296,16 +297,19 @@
 
                         <div class="step-node-content">
                             <div class="step-node-title" style="font-size: 14px; font-weight: 700; color: #0f172a;">
-                                Progress {{ $stepNum }}
+                                {{ $stepNum }}. {{ $stepDef['title'] }}
+                            </div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+                                {{ $stepDef['desc'] }}
                             </div>
 
                             @if($isDone)
                                 <span class="step-badge-status" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;">
-                                    ✓ Selesai {{ $timeDone ? '(' . $timeDone->format('d/m H:i') . ')' : '' }}
+                                    ✓ Selesai
                                 </span>
                             @elseif($stepNum === 1 && $selectedTiket && $selectedTiket->status === 'PERLU_PERBAIKAN')
                                 <span class="step-badge-status" style="background: #fffbeb; color: #92400e; border: 1px solid #fde68a;">
-                                    ⚠️ Perlu Perbaikan
+                                    ⚠️ Perlu Perbaikan Berkas
                                 </span>
                             @elseif($isActive)
                                 <span class="step-badge-status" style="background: #eef2fa; color: #0b57d0; border: 1px solid #d2e3fc;">

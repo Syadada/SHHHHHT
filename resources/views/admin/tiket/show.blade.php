@@ -31,7 +31,7 @@
         </div>
     </div>
 
-    <!-- 1. Card Visual Progress 5 Tahapan DTSEN -->
+    <!-- 1. Card Alur Kerja & Progress Tahapan Admin (Proses 1 & Proses 2) -->
     <div class="progress-card">
         <div class="progress-top-info">
             <div>
@@ -39,48 +39,43 @@
                     <span class="ticket-tag-chip">#{{ $tiket->nomor_tiket }}</span>
                     @if($tiket->status === 'PERLU_PERBAIKAN')
                         <span class="badge-status badge-status-revisi"><i class="fi fi-rr-exclamation"></i> STATUS: PERLU PERBAIKAN OPD</span>
-                    @elseif($tiket->step5_done)
-                        <span class="badge-status success badge-status-selesai"><i class="fi fi-rr-check"></i> SELESAI (Semua Progress Selesai)</span>
+                    @elseif($tiket->status === 'PENDING')
+                        <span class="badge-status pending badge-status-pending-sm"><i class="fi fi-rr-time-forward"></i> STATUS: PENDING (MENUNGGU VERIFIKASI BERKAS)</span>
+                    @elseif($tiket->isOpdStepDone(4))
+                        <span class="badge-status success badge-status-selesai"><i class="fi fi-rr-check"></i> SELESAI (100%)</span>
                     @else
-                        <span class="badge-status pending badge-status-pending-sm">⏳ SEDANG DIPROSES</span>
+                        <span class="badge-status pending badge-status-pending-sm">● SEDANG DIPROSES</span>
                     @endif
                 </div>
                 <h2 class="ticket-heading-title">
-                    Progress Status Permohonan Bagi Pakai DTSEN
+                    Alur Kerja Walidata DTSEN — Pemeriksaan & Pengolahan Data
                 </h2>
                 <div class="ticket-heading-meta">
-                    Instansi: <strong>{{ $tiket->nama_instansi }}</strong> | No SE: <strong>{{ $tiket->no_surat_edaran }}</strong> | Waktu Buat: {{ $tiket->created_at->format('d/m/Y H:i') }} WIB
+                    Instansi: <strong>{{ $tiket->nama_instansi }}</strong> | No Rujukan/SE: <strong>{{ $tiket->no_surat_edaran ?: '-' }}</strong> | Diajukan: {{ $tiket->created_at->format('d/m/Y H:i') }} WIB
                 </div>
             </div>
 
             <div class="ticket-status-summary">
                 <span class="ticket-status-summary-label">Status Terkini:</span>
-                <div class="ticket-status-summary-value {{ ($tiket->status === 'PERLU_PERBAIKAN') ? 'color-status-revisi' : (($tiket->step5_done) ? 'color-status-done' : 'color-status-progress') }}">
-                    {{ $tiket->current_status_label }}
+                <div class="ticket-status-summary-value {{ ($tiket->status === 'PERLU_PERBAIKAN') ? 'color-status-revisi' : (($tiket->step1_done && $tiket->step2_done) ? 'color-status-done' : 'color-status-progress') }}">
+                    @if($tiket->status === 'PERLU_PERBAIKAN')
+                        Menunggu Submit Ulang Berkas OPD
+                    @elseif($tiket->status === 'PENDING')
+                        Menunggu Verifikasi Berkas KAK / Surat Permohonan
+                    @elseif($tiket->step1_done && $tiket->step2_done)
+                        Proses 1 & 2 Selesai (Pengolahan Siap Transfer)
+                    @elseif($tiket->step1_done)
+                        Sedang Berjalan: Proses 2 (Pengolahan DTSEN)
+                    @else
+                        Sedang Berjalan: Proses 1 (Pemenuhan Dokumen)
+                    @endif
                 </div>
             </div>
         </div>
 
-        @php
-            $pct = $tiket->progress_percent;
-        @endphp
-
-        <!-- Overall Progress Bar Track -->
-        <div class="progress-gauge-box">
-            <div class="progress-gauge-labels">
-                <span style="color: #475569; font-weight: 600;">Progress Alur Tahapan Layanan DTSEN</span>
-                <span class="{{ $tiket->step5_done ? 'color-status-done' : 'color-status-progress' }}" style="font-weight: 700;">
-                    {{ $pct }}% Selesai
-                </span>
-            </div>
-            <div class="progress-track">
-                <div class="progress-fill" style="width: {{ $pct }}%;"></div>
-            </div>
-        </div>
-
-        <!-- 5-Step Process Flow: Progress 1, Progress 2, Progress 3, dst. -->
-        <div class="step-flow">
-            @foreach(\App\Models\TiketDtsen::$stepsDefinition as $stepNum => $stepDef)
+        <!-- 2-Step Process Flow Sisi Admin (Proses 1: Pemenuhan Dokumen, Proses 2: Pengolahan DTSEN) -->
+        <div class="step-flow admin-step-flow">
+            @foreach(\App\Models\TiketDtsen::$adminStepsDefinition as $stepNum => $stepDef)
                 @php
                     $isDone = $tiket->isStepDone($stepNum);
                     $isActive = $tiket->isStepActive($stepNum);
@@ -103,7 +98,10 @@
 
                     <div class="step-node-content">
                         <div class="step-node-title ticket-stepper-node-title">
-                            Progress {{ $stepNum }}
+                            Proses {{ $stepNum }}: {{ $stepDef['title'] }}
+                        </div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
+                            {{ $stepDef['desc'] }}
                         </div>
 
                         @if($isDone)
@@ -112,7 +110,7 @@
                             </span>
                         @elseif($stepNum === 1 && $tiket->status === 'PERLU_PERBAIKAN')
                             <span class="step-badge-status ticket-stepper-badge-revisi">
-                                ⚠️ Perlu Perbaikan
+                                ⚠️ Perlu Perbaikan Berkas
                             </span>
                         @elseif($isActive)
                             <span class="step-badge-status ticket-stepper-badge-active">
@@ -128,59 +126,101 @@
             @endforeach
         </div>
 
-        <div class="ticket-verifier-footer-box">
+        <!-- Sinkronisasi Otomatis OPD Box -->
+        <div style="margin-top: 14px; padding: 12px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; font-size: 12.5px; color: #166534; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fi fi-rr-refresh" style="font-size: 18px; color: #16a34a; flex-shrink: 0;"></i>
+                <div>
+                    <strong>Sinkronisasi Progress OPD:</strong> Tahap 1: Pengajuan (✓) &bull; Tahap 2: Pengolahan ({{ ($tiket->step1_done && $tiket->step2_done) ? '✓ Selesai' : 'Sedang Berjalan' }}) &bull; Tahap 3: Transfer &bull; Tahap 4: Selesai
+                    <div style="font-size: 11px; color: #15803d; margin-top: 2px;">
+                        Saat Proses 1 (Pemenuhan Dokumen) dan Proses 2 (Pengolahan DTSEN) dicentang, maka pada sisi OPD tahap <strong>Pengolahan</strong> otomatis centang hijau ✓.
+                    </div>
+                </div>
+            </div>
             <div>
-                <span class="ticket-verifier-note-label">Catatan Verifikator:</span>
+                @if($tiket->step1_done && $tiket->step2_done)
+                    <span style="background: #16a34a; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px;">
+                        ✓ Tahap Pengolahan di OPD Sudah Centang Hijau
+                    </span>
+                @else
+                    <span style="background: #e2e8f0; color: #475569; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px;">
+                        Tandai Selesai Proses 1 & 2 untuk Mencapai Centang Hijau di OPD
+                    </span>
+                @endif
+            </div>
+        </div>
+
+        <!-- Tombol Aksi Cepat Centang Tahapan Admin -->
+        <div class="ticket-verifier-footer-box" style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+            <div>
+                <span class="ticket-verifier-note-label">Catatan Admin / Walidata:</span>
                 <div class="ticket-verifier-note-text">
-                    {{ $tiket->catatan_admin ?: 'Belum ada catatan verifikator.' }}
+                    {{ $tiket->catatan_admin ?: 'Belum ada catatan admin.' }}
                 </div>
             </div>
 
-            <!-- Tombol Aksi Verifikasi Step Cepat -->
-            @if(!$tiket->step5_done)
-                @php
-                    $nextStep = 1;
-                    for ($s = 1; $s <= 5; $s++) {
-                        if (!$tiket->isStepDone($s)) { $nextStep = $s; break; }
-                    }
-                @endphp
-                <form action="{{ route('admin.tiket.step-ok', $tiket->id) }}" method="POST" class="form-inline">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <!-- Tombol Centang Proses 1 (Pemenuhan Dokumen) -->
+                <form action="{{ route('admin.tiket.toggle-step', [$tiket->id, 1]) }}" method="POST">
                     @csrf
-                    <input type="hidden" name="step" value="{{ $nextStep }}">
-                    <button type="submit" class="btn-pill-primary btn-approve-step">
-                        <i class="fi fi-rr-check"></i> Setujui Progress {{ $nextStep }} Selesai
-                    </button>
+                    @if(!$tiket->step1_done)
+                        <button type="submit" class="btn-pill-primary" style="font-size: 12px; padding: 7px 14px; background: #0b57d0;">
+                            <i class="fi fi-rr-check"></i> Selesaikan Proses 1 (Pemenuhan Dokumen)
+                        </button>
+                    @else
+                        <button type="submit" class="btn-pill-outline" style="font-size: 12px; padding: 7px 14px; color: #64748b;" title="Klik untuk membatalkan centang">
+                            <i class="fi fi-rr-undo"></i> Batal Proses 1
+                        </button>
+                    @endif
                 </form>
-            @endif
+
+                <!-- Tombol Centang Proses 2 (Pengolahan DTSEN) -->
+                <form action="{{ route('admin.tiket.toggle-step', [$tiket->id, 2]) }}" method="POST">
+                    @csrf
+                    @if(!$tiket->step2_done)
+                        <button type="submit" class="btn-pill-primary" style="font-size: 12px; padding: 7px 14px; background: #059669; border-color: #059669;">
+                            <i class="fi fi-rr-check"></i> Selesaikan Proses 2 (Pengolahan DTSEN)
+                        </button>
+                    @else
+                        <button type="submit" class="btn-pill-outline" style="font-size: 12px; padding: 7px 14px; color: #64748b;" title="Klik untuk membatalkan centang">
+                            <i class="fi fi-rr-undo"></i> Batal Proses 2
+                        </button>
+                    @endif
+                </form>
+            </div>
         </div>
     </div>
 
-    <!-- 2. Kontrol Panel Verifikasi Admin (Catatan & Status Variabel) -->
+    <!-- 2. Pemeriksaan Berkas Permohonan (Pending Check & Reject Flow) -->
     <div class="form-card ticket-section-card">
         <h3 class="ticket-section-header">
-            <i class="fi fi-rr-settings ticket-section-icon"></i>
-            <span>Kelola Status Verifikasi & Catatan Verifikator</span>
+            <i class="fi fi-rr-shield-check ticket-section-icon"></i>
+            <span>Verifikasi Berkas yang Tersubmit (Surat KAK & Surat Permohonan)</span>
         </h3>
 
-        <form action="{{ route('admin.tiket.verifikasi-variabel', $tiket->id) }}" method="POST">
+        <div style="margin-bottom: 14px; font-size: 13px; color: #475569;">
+            Periksa keabsahan dan kelengkapan berkas yang diunggah oleh Perangkat Daerah di bawah. Jika benar, setujui untuk melanjutkan ke kegiatan pemenuhan dokumen dan pengolahan DTSEN. Jika ada berkas yang salah atau tidak sesuai, tolak (reject) agar OPD submit ulang berkas yang benar.
+        </div>
+
+        <form action="{{ route('admin.tiket.verifikasi-berkas', $tiket->id) }}" method="POST">
             @csrf
-            <div class="ticket-verifier-form-grid">
+            <div style="display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: flex-end; flex-wrap: wrap;">
                 <div>
-                    <label class="ticket-field-label">Keputusan Verifikasi Variabel:</label>
-                    <select name="status_verifikasi" class="form-select ticket-field-select" required>
-                        <option value="SESUAI" {{ $tiket->status !== 'PERLU_PERBAIKAN' ? 'selected' : '' }}>✓ Sesuai Klausul Surat Edaran</option>
-                        <option value="PERLU_PERBAIKAN" {{ $tiket->status === 'PERLU_PERBAIKAN' ? 'selected' : '' }}>⚠️ Belum Sesuai (Minta Perbaikan OPD)</option>
-                    </select>
+                    <label class="ticket-field-label">Catatan Hasil Pemeriksaan Berkas (Untuk OPD):</label>
+                    <input type="text" 
+                           name="catatan_admin" 
+                           value="{{ $tiket->catatan_admin }}" 
+                           class="form-input ticket-field-input" 
+                           placeholder="Contoh: Berkas KAK belum ditandatangani kepala dinas, mohon upload ulang berkas yang telah bertanda tangan resmi...">
                 </div>
 
-                <div>
-                    <label class="ticket-field-label">Catatan Hasil Pemeriksaan Walidata:</label>
-                    <div class="ticket-field-input-group">
-                        <input type="text" name="catatan_admin" value="{{ $tiket->catatan_admin }}" class="form-input ticket-field-input" placeholder="Isi catatan verifikasi atau alasan perlunya perbaikan variabel...">
-                        <button type="submit" class="btn-pill-primary btn-save-note">
-                            <i class="fi fi-rr-disk"></i> Simpan Catatan
-                        </button>
-                    </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="submit" name="keputusan" value="APPROVE" class="btn-pill-primary" style="font-size: 13px; padding: 8px 16px; background: #059669; border-color: #059669;">
+                        <i class="fi fi-rr-check"></i> Berkas Benar & Lanjut
+                    </button>
+                    <button type="submit" name="keputusan" value="REJECT" class="btn-pill-outline" style="font-size: 13px; padding: 8px 16px; color: #dc2626; border-color: #fca5a5; background: #fff1f2;">
+                        <i class="fi fi-rr-cross-circle"></i> Reject / Minta Submit Ulang
+                    </button>
                 </div>
             </div>
         </form>

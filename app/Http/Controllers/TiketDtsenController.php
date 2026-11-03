@@ -197,7 +197,7 @@ class TiketDtsenController extends Controller
             'step3_done' => false,
             'step4_done' => false,
             'step5_done' => false,
-            'status' => 'DIPROSES',
+            'status' => 'PENDING',
             'catatan_admin' => 'Permintaan baru berhasil diajukan. Menunggu verifikasi berkas oleh Tim Walidata.',
         ]);
 
@@ -312,5 +312,56 @@ class TiketDtsenController extends Controller
         );
 
         return back()->with('success', "Variabel tiket [{$tiket->nomor_tiket}] berhasil diperbarui dan diajukan ulang untuk diverifikasi oleh Admin sesuai Surat Edaran.");
+    }
+
+    /**
+     * Unggah Ulang / Submit Ulang Berkas Perbaikan oleh OPD (KAK / Surat Permohonan)
+     */
+    public function revisiBerkas(Request $request, $id)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+        $user = auth()->user();
+
+        // Validasi kepemilikan jika bukan admin
+        if (!$user->isSuperAdmin() && !str_contains(strtolower($tiket->nama_instansi), strtolower($user->nama_instansi ?: '')) && $tiket->email_pemohon !== $user->email) {
+            return back()->with('error', 'Anda tidak memiliki hak untuk merevisi tiket instansi lain.');
+        }
+
+        $request->validate([
+            'file_kak' => 'nullable|file|mimes:pdf,doc,docx|max:51200',
+            'file_surat_permohonan' => 'nullable|file|mimes:pdf,doc,docx|max:51200',
+            'catatan_opd' => 'nullable|string|max:500',
+        ]);
+
+        $uploaded = false;
+
+        if ($request->hasFile('file_kak')) {
+            $pathKak = $request->file('file_kak')->store('berkas_kak', 'public');
+            $tiket->file_kak = $pathKak;
+            $tiket->nama_file_kak = $request->file('file_kak')->getClientOriginalName();
+            $uploaded = true;
+        }
+
+        if ($request->hasFile('file_surat_permohonan')) {
+            $pathPermohonan = $request->file('file_surat_permohonan')->store('berkas_permohonan', 'public');
+            $tiket->file_surat_permohonan = $pathPermohonan;
+            $tiket->file_surat = $pathPermohonan;
+            $tiket->nama_file_surat_permohonan = $request->file('file_surat_permohonan')->getClientOriginalName();
+            $uploaded = true;
+        }
+
+        $tiket->status = 'PENDING';
+        $catatanOpd = trim((string) $request->input('catatan_opd'));
+        $tiket->catatan_admin = 'Berkas perbaikan telah dikirim ulang oleh ' . ($user->nama_instansi ?: $user->name) . ' pada ' . now()->format('d/m/Y H:i') . ' WIB.' . ($catatanOpd ? ' Catatan: ' . $catatanOpd : '');
+        $tiket->save();
+
+        AuditLogger::log(
+            'TIKET_BERKAS_REVISED',
+            "Instansi {$tiket->nama_instansi} telah mengunggah ulang berkas perbaikan untuk tiket [{$tiket->nomor_tiket}]. Status kembali PENDING.",
+            'SUCCESS',
+            ['nomor_tiket' => $tiket->nomor_tiket]
+        );
+
+        return back()->with('success', "Berkas perbaikan tiket [{$tiket->nomor_tiket}] berhasil dikirim ulang ke Walidata. Status kini kembali PENDING menunggu verifikasi.");
     }
 }

@@ -93,40 +93,155 @@ class TiketDtsen extends Model
     ];
 
     /**
-     * Definisi Tahap Progress Bagi Pakai Data DTSEN (Progress 1, 2, 3, dst.)
+     * Definisi 4 Tahap Progress Bagi Pakai Data DTSEN untuk Sisi OPD
+     * 1. Pengajuan
+     * 2. Pengolahan
+     * 3. Transfer
+     * 4. Selesai
+     */
+    public static array $opdStepsDefinition = [
+        1 => [
+            'id' => 1,
+            'title' => 'Pengajuan',
+            'desc' => 'Pengajuan berkas permohonan layanan bagi pakai DTSEN',
+        ],
+        2 => [
+            'id' => 2,
+            'title' => 'Pengolahan',
+            'desc' => 'Pemenuhan dokumen dan pengolahan data mikro DTSEN',
+        ],
+        3 => [
+            'id' => 3,
+            'title' => 'Transfer',
+            'desc' => 'Penyaluran dan transfer dataset terpadu secara aman',
+        ],
+        4 => [
+            'id' => 4,
+            'title' => 'Selesai',
+            'desc' => 'Pengesahan Berita Acara Serah Terima (BAST) dan layanan selesai',
+        ],
+    ];
+
+    /**
+     * Definisi Tahap Alur Kerja Sisi Admin (Untuk sementara Proses 1 & 2)
+     */
+    public static array $adminStepsDefinition = [
+        1 => [
+            'id' => 1,
+            'title' => 'Pemenuhan Dokumen',
+            'desc' => 'Verifikasi dan pemenuhan kelengkapan dokumen KAK, Surat Permohonan, ROPA/DPIA/SKTM',
+            'pic' => 'Admin Walidata DTSEN'
+        ],
+        2 => [
+            'id' => 2,
+            'title' => 'Pengolahan DTSEN',
+            'desc' => 'Pengolahan data dan pemilahan variabel data mikro DTSEN sesuai kebutuhan',
+            'pic' => 'Tim Pengelola Data & Statistik'
+        ],
+    ];
+
+    /**
+     * Definisi Legacy 5 Tahap Progress
      */
     public static array $stepsDefinition = [
         1 => [
             'id' => 1,
-            'title' => 'Progress 1',
-            'desc' => 'Tahap proses ke-1',
-            'pic' => 'Admin Layanan DTSEN'
+            'title' => 'Pemenuhan Dokumen',
+            'desc' => 'Pemeriksaan berkas permohonan',
+            'pic' => 'Admin Walidata DTSEN'
         ],
         2 => [
             'id' => 2,
-            'title' => 'Progress 2',
-            'desc' => 'Tahap proses ke-2',
+            'title' => 'Pengolahan DTSEN',
+            'desc' => 'Pengolahan data DTSEN',
             'pic' => 'Tim Pengelola Data & Statistik'
         ],
         3 => [
             'id' => 3,
-            'title' => 'Progress 3',
-            'desc' => 'Tahap proses ke-3',
+            'title' => 'Transfer Data',
+            'desc' => 'Transfer dataset aman',
             'pic' => 'Walidata DTSEN'
         ],
         4 => [
             'id' => 4,
-            'title' => 'Progress 4',
-            'desc' => 'Tahap proses ke-4',
-            'pic' => 'Tim Teknis IT & Keamanan Siber'
+            'title' => 'Pengesahan BAST',
+            'desc' => 'Penyusunan Berita Acara',
+            'pic' => 'Tim Teknis IT'
         ],
         5 => [
             'id' => 5,
-            'title' => 'Progress 5',
-            'desc' => 'Tahap proses ke-5',
+            'title' => 'Selesai',
+            'desc' => 'Layanan tuntas',
             'pic' => 'Admin Layanan DTSEN'
         ],
     ];
+
+    /**
+     * Hitung persentase progress sisi OPD (4 Tahap: 25%, 50%, 75%, 100%)
+     */
+    public function getOpdProgressPercentAttribute(): int
+    {
+        if ($this->isOpdStepDone(4)) return 100;
+        if ($this->isOpdStepDone(3)) return 75;
+        if ($this->isOpdStepDone(2)) return 50;
+        if ($this->isOpdStepDone(1)) return 25;
+        return 10;
+    }
+
+    /**
+     * Cek apakah tahap OPD tertentu sudah selesai / centang hijau
+     */
+    public function isOpdStepDone(int $step): bool
+    {
+        return match ($step) {
+            1 => $this->status !== 'PERLU_PERBAIKAN',
+            2 => (bool) ($this->step1_done && $this->step2_done), // Otomatis centang jika Admin Proses 1 & 2 selesai
+            3 => (bool) $this->step3_done,
+            4 => (bool) ($this->step4_done || $this->step5_done || $this->status === 'SELESAI'),
+            default => false,
+        };
+    }
+
+    /**
+     * Cek apakah tahap OPD tertentu sedang aktif / diproses saat ini
+     */
+    public function isOpdStepActive(int $step): bool
+    {
+        if ($this->isOpdStepDone($step)) {
+            return false;
+        }
+
+        return match ($step) {
+            1 => $this->status === 'PERLU_PERBAIKAN',
+            2 => $this->isOpdStepDone(1) && !$this->isOpdStepDone(2),
+            3 => $this->isOpdStepDone(2) && !$this->isOpdStepDone(3),
+            4 => $this->isOpdStepDone(3) && !$this->isOpdStepDone(4),
+            default => false,
+        };
+    }
+
+    /**
+     * Label status aktif untuk sisi OPD
+     */
+    public function getCurrentOpdStatusLabelAttribute(): string
+    {
+        if ($this->status === 'PERLU_PERBAIKAN') {
+            return 'Perlu Perbaikan Berkas Permohonan';
+        }
+        if ($this->isOpdStepDone(4)) {
+            return 'SELESAI (Semua Tahapan Selesai)';
+        }
+        if ($this->isOpdStepDone(3)) {
+            return 'Sedang Berjalan: Tahap 4 (Pengesahan BAST)';
+        }
+        if ($this->isOpdStepDone(2)) {
+            return 'Sedang Berjalan: Tahap 3 (Transfer Data)';
+        }
+        if ($this->step1_done) {
+            return 'Sedang Berjalan: Tahap 2 (Pengolahan DTSEN)';
+        }
+        return 'Sedang Berjalan: Tahap 2 (Verifikasi Berkas & Pemenuhan Dokumen)';
+    }
 
     /**
      * Hitung persentase progress keseluruhan (0 - 100%)

@@ -33,38 +33,74 @@
         </div>
     </div>
 
-    <!-- 1. Progress Status Permohonan Bagi Pakai DTSEN (Visual 5 Tahap) -->
+    <!-- 1. Progress Status Permohonan Bagi Pakai DTSEN (Sisi OPD: 4 Tahap) -->
     <div class="progress-card">
         @if($tiket->status === 'PERLU_PERBAIKAN')
-            <!-- Warning Banner: Verifikasi Mengharuskan Perbaikan Variabel -->
-            <div class="revisi-banner">
-                <div class="ticket-top-actions">
-                    <div class="form-shell">
-                        <div class="revisi-banner-header">
-                            <span class="icon-size-18"><i class="fi fi-rr-exclamation"></i></span>
-                            <span>PERBAIKAN VARIABEL DIPERLUKAN (HASIL VERIFIKASI WALIDATA)</span>
+            <!-- Warning Banner: Verifikasi Mengharuskan Perbaikan Berkas atau Variabel -->
+            <div class="revisi-banner" style="background: #fff1f2; border: 1.5px solid #fecdd3; border-radius: 14px; padding: 20px; margin-bottom: 24px;">
+                <div style="display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #fee2e2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;">
+                        <i class="fi fi-rr-exclamation"></i>
+                    </div>
+                    <div style="flex: 1; min-width: 280px;">
+                        <div style="font-size: 15px; font-weight: 800; color: #991b1b; margin-bottom: 4px;">
+                            PERBAIKAN PERMOHONAN DIPERLUKAN (CATATAN ADMIN WALIDATA)
                         </div>
-                        <div class="revisi-banner-desc">
-                            Variabel yang Anda ajukan pada tiket <strong>{{ $tiket->nomor_tiket }}</strong> belum sesuai dengan klausul <strong>Surat Edaran No. {{ $tiket->no_surat_edaran }}</strong>.
-                            <div class="revisi-catatan-box">
-                                <strong>Catatan Hasil Pengecekan Walidata:</strong><br>
+                        <div style="font-size: 13px; color: #475569; line-height: 1.5; margin-bottom: 12px;">
+                            Admin Walidata meminta perbaikan berkas atau rincian permohonan pada tiket <strong>#{{ $tiket->nomor_tiket }}</strong>.
+                            <div style="margin-top: 8px; padding: 10px 14px; background: #ffffff; border: 1px solid #fda4af; border-radius: 8px; font-size: 13px; color: #b91c1c;">
+                                <strong>Catatan Walidata:</strong><br>
                                 {{ $tiket->catatan_admin }}
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <button type="button" onclick="toggleRevisiForm()" class="btn-pill-primary btn-revisi-trigger">
-                            <span><i class="fi fi-rr-edit"></i> Perbaiki Variabel Sekarang</span>
-                        </button>
+
+                        <!-- Form Re-Upload Berkas yang Benar -->
+                        <form action="{{ route('tiket.revisi-berkas', $tiket->id) }}" method="POST" enctype="multipart/form-data" style="margin-top: 14px; padding-top: 14px; border-top: 1px dashed #fecdd3;">
+                            @csrf
+                            <div style="font-size: 13px; font-weight: 700; color: #1e293b; margin-bottom: 8px;">
+                                Silakan unggah berkas KAK / Surat Permohonan yang telah diperbaiki:
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-bottom: 14px;">
+                                <div>
+                                    <label style="font-size: 12px; font-weight: 600; color: #334155; display: block; margin-bottom: 4px;">
+                                        Unggah Ulang Surat KAK yang Benar:
+                                    </label>
+                                    <input type="file" name="file_kak" class="form-text-input" accept=".pdf,.doc,.docx" style="font-size: 12px; padding: 6px;">
+                                </div>
+                                <div>
+                                    <label style="font-size: 12px; font-weight: 600; color: #334155; display: block; margin-bottom: 4px;">
+                                        Unggah Ulang Surat Permohonan yang Benar:
+                                    </label>
+                                    <input type="file" name="file_surat_permohonan" class="form-text-input" accept=".pdf,.doc,.docx" style="font-size: 12px; padding: 6px;">
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 14px;">
+                                <label style="font-size: 12px; font-weight: 600; color: #334155; display: block; margin-bottom: 4px;">
+                                    Catatan Tambahan dari Perangkat Daerah (Opsional):
+                                </label>
+                                <input type="text" name="catatan_opd" class="form-text-input" placeholder="Tuliskan keterangan perbaikan berkas...">
+                            </div>
+
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <button type="submit" class="btn-pill-primary" style="background: #dc2626; border-color: #dc2626;">
+                                    <i class="fi fi-rr-paper-plane"></i> Kirim Ulang Berkas Perbaikan ke Walidata
+                                </button>
+                                <button type="button" onclick="toggleRevisiForm()" class="btn-pill-outline" style="font-size: 12px;">
+                                    <i class="fi fi-rr-edit"></i> Perbaiki Variabel DTSEN
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
                 <!-- Collapsible Form Edit / Revisi Variabel -->
-                <div id="boxRevisiVariabel" class="revisi-form-collapsible">
+                <div id="boxRevisiVariabel" class="revisi-form-collapsible" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #fecdd3;">
                     <form action="{{ route('tiket.update-variabel', $tiket->id) }}" method="POST">
                         @csrf
                         <div class="revisi-form-title">
-                            Silakan sesuaikan daftar variabel DTSEN berikut sesuai catatan Walidata di atas:
+                            Silakan sesuaikan daftar variabel DTSEN berikut:
                         </div>
                         <div class="revisi-form-hint">
                             Pastikan variabel yang Anda inputkan tercantum pada lampiran Surat Edaran resmi.
@@ -107,42 +143,45 @@
                 <div class="ticket-tags-row">
                     <span class="ticket-tag-chip">#{{ $tiket->nomor_tiket }}</span>
                     @if($tiket->status === 'PERLU_PERBAIKAN')
-                        <span class="badge-status badge-status-revisi"><i class="fi fi-rr-exclamation"></i> PERLU PERBAIKAN OPD</span>
-                    @elseif($tiket->step5_done)
-                        <span class="badge-status success badge-status-selesai"><i class="fi fi-rr-check"></i> SELESAI (Semua Progress Selesai)</span>
+                        <span class="badge-status badge-status-revisi"><i class="fi fi-rr-exclamation"></i> PERLU PERBAIKAN BERKAS</span>
+                    @elseif($tiket->status === 'PENDING')
+                        <span class="badge-status pending badge-status-pending-sm">⏳ MENUNGGU VERIFIKASI BERKAS</span>
+                    @elseif($tiket->isOpdStepDone(4))
+                        <span class="badge-status success badge-status-selesai"><i class="fi fi-rr-check"></i> SELESAI (100%)</span>
                     @else
-                        <span class="badge-status pending badge-status-pending-sm">⏳ SEDANG DIPROSES</span>
+                        <span class="badge-status pending badge-status-pending-sm">● SEDANG DIPROSES</span>
                     @endif
                 </div>
                 <h2 class="ticket-heading-title">
                     Progress Status Permohonan Bagi Pakai DTSEN
                 </h2>
                 <div class="ticket-heading-meta">
-                    Surat Edaran: <strong>{{ $tiket->no_surat_edaran }}</strong> | Waktu Buat: {{ $tiket->created_at->format('d/m/Y H:i') }} WIB
+                    Surat Rujukan: <strong>{{ $tiket->no_surat_edaran ?: '-' }}</strong> | Waktu Buat: {{ $tiket->created_at->format('d/m/Y H:i') }} WIB
                 </div>
             </div>
 
             <div class="ticket-status-summary">
                 <span class="ticket-status-summary-label">Status Terkini:</span>
-                <div class="ticket-status-summary-value {{ ($tiket->status === 'PERLU_PERBAIKAN') ? 'color-status-revisi' : (($tiket->step5_done) ? 'color-status-done' : 'color-status-progress') }}">
+                <div class="ticket-status-summary-value {{ ($tiket->status === 'PERLU_PERBAIKAN') ? 'color-status-revisi' : (($tiket->isOpdStepDone(4)) ? 'color-status-done' : 'color-status-progress') }}">
                     @if($tiket->status === 'PERLU_PERBAIKAN')
-                        Perlu Perbaikan Variabel vs SE
+                        Perlu Perbaikan Berkas Permohonan
                     @else
-                        {{ $tiket->current_status_label }}
+                        {{ $tiket->current_opd_status_label }}
                     @endif
                 </div>
             </div>
         </div>
 
-        <!-- 5-Step Process Flow: Progress 1, Progress 2, Progress 3, dst. -->
-        <div class="step-flow">
-            @foreach(\App\Models\TiketDtsen::$stepsDefinition as $stepNum => $stepDef)
+        <!-- 4-Step Process Flow Sisi OPD: 1. Pengajuan, 2. Pengolahan, 3. Transfer, 4. Selesai -->
+        <div class="step-flow opd-4step-flow">
+            @foreach(\App\Models\TiketDtsen::$opdStepsDefinition as $stepNum => $stepDef)
                 @php
-                    $isDone = $tiket->isStepDone($stepNum);
-                    $isActive = $tiket->isStepActive($stepNum);
+                    $isDone = $tiket->isOpdStepDone($stepNum);
+                    $isActive = $tiket->isOpdStepActive($stepNum);
                     $nodeClass = $isDone ? 'is-done' : ($isActive ? 'is-active' : 'is-pending');
-                    $stepColAt = "step{$stepNum}_at";
-                    $timeDone = $tiket->$stepColAt;
+                    if ($stepNum === 1 && $tiket->status === 'PERLU_PERBAIKAN') {
+                        $nodeClass = 'is-revisi';
+                    }
                 @endphp
                 
                 <div class="step-node {{ $nodeClass }}">
@@ -152,6 +191,8 @@
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                 <polyline points="20 6 9 17 4 12"></polyline>
                             </svg>
+                        @elseif($stepNum === 1 && $tiket->status === 'PERLU_PERBAIKAN')
+                            <i class="fi fi-rr-exclamation"></i>
                         @else
                             <span>{{ $stepNum }}</span>
                         @endif
@@ -159,16 +200,19 @@
 
                     <div class="step-node-content">
                         <div class="step-node-title ticket-stepper-node-title">
-                            Progress {{ $stepNum }}
+                            {{ $stepNum }}. {{ $stepDef['title'] }}
+                        </div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 1px;">
+                            {{ $stepDef['desc'] }}
                         </div>
 
                         @if($isDone)
                             <span class="step-badge-status ticket-stepper-badge-done">
-                                ✓ Selesai {{ $timeDone ? '(' . $timeDone->format('d/m H:i') . ')' : '' }}
+                                ✓ Selesai
                             </span>
                         @elseif($stepNum === 1 && $tiket->status === 'PERLU_PERBAIKAN')
                             <span class="step-badge-status ticket-stepper-badge-revisi">
-                                ⚠️ Perlu Perbaikan
+                                ⚠️ Perlu Perbaikan Berkas
                             </span>
                         @elseif($isActive)
                             <span class="step-badge-status ticket-stepper-badge-active">

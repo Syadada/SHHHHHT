@@ -338,6 +338,105 @@ class HistoryController extends Controller
     }
 
     /**
+     * Keputusan Verifikasi Berkas oleh Admin (Loloskan / APPROVE vs Tolak / REJECT)
+     */
+    public function verifikasiBerkas(Request $request, $id)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+
+        $request->validate([
+            'keputusan' => 'required|in:APPROVE,REJECT',
+            'catatan_admin' => 'nullable|string|max:1000',
+        ]);
+
+        $keputusan = $request->input('keputusan');
+        $catatan = trim((string) $request->input('catatan_admin'));
+
+        if ($keputusan === 'APPROVE') {
+            // Berkas benar -> Loloskan verifikasi, selesaikan Proses 1 (Pemenuhan Dokumen)
+            $tiket->status = 'DIPROSES';
+            $tiket->step1_done = true;
+            $tiket->step1_at = now();
+            $tiket->catatan_admin = $catatan ?: 'Berkas KAK dan Surat Permohonan telah diverifikasi dan dinyatakan BENAR (Lolos Verifikasi). Melanjutkan ke proses pemenuhan dokumen dan pengolahan data DTSEN.';
+            $tiket->save();
+
+            AuditLogger::log(
+                'TIKET_BERKAS_APPROVED',
+                "Admin menyetujui berkas tiket [{$tiket->nomor_tiket}] ({$tiket->nama_instansi}). Status menjadi DIPROSES.",
+                'SUCCESS',
+                ['nomor_tiket' => $tiket->nomor_tiket]
+            );
+
+            return back()->with('success', "Berkas tiket [{$tiket->nomor_tiket}] disetujui (Lolos Verifikasi). Proses 1 Pemenuhan Dokumen telah diselesaikan.");
+        } else {
+            // Berkas ada yang salah -> Reject / Minta submit ulang KAK atau Surat Permohonan
+            $tiket->status = 'PERLU_PERBAIKAN';
+            $tiket->step1_done = false;
+            $tiket->catatan_admin = $catatan ?: 'Berkas KAK atau Surat Permohonan belum sesuai/belum benar. Silakan submit ulang berkas yang benar.';
+            $tiket->save();
+
+            AuditLogger::log(
+                'TIKET_BERKAS_REJECTED',
+                "Admin menolak / meminta perbaikan berkas tiket [{$tiket->nomor_tiket}] ({$tiket->nama_instansi}). Catatan: {$tiket->catatan_admin}",
+                'WARNING',
+                ['nomor_tiket' => $tiket->nomor_tiket]
+            );
+
+            return back()->with('info', "Tiket [{$tiket->nomor_tiket}] ditandai PERLU PERBAIKAN. OPD diminta submit ulang berkas KAK / Surat Permohonan yang benar.");
+        }
+    }
+
+    /**
+     * Toggle Centang / Selesai Tahapan Proses Admin (Proses 1: Pemenuhan Dokumen, Proses 2: Pengolahan DTSEN)
+     */
+    public function toggleStep(Request $request, $id, $step)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+        $step = (int) $step;
+
+        if (!in_array($step, [1, 2, 3, 4, 5])) {
+            abort(400, 'Nomor proses tidak valid.');
+        }
+
+        $colDone = "step{$step}_done";
+        $colAt = "step{$step}_at";
+
+        $newState = !$tiket->$colDone;
+        $tiket->$colDone = $newState;
+        $tiket->$colAt = $newState ? now() : null;
+
+        if ($newState) {
+            if ($tiket->status === 'PENDING') {
+                $tiket->status = 'DIPROSES';
+            }
+        }
+
+        $stepName = $step === 1 ? 'Pemenuhan Dokumen' : ($step === 2 ? 'Pengolahan DTSEN' : "Proses {$step}");
+        $tiket->catatan_admin = $newState 
+            ? "{$stepName} telah diselesaikan oleh Admin Walidata pada " . now()->format('d/m/Y H:i') . " WIB."
+            : "{$stepName} dikembalikan ke status belum selesai pada " . now()->format('d/m/Y H:i') . " WIB.";
+
+        $tiket->save();
+
+        AuditLogger::log(
+            'TIKET_STEP_TOGGLED',
+            "Admin mengubah {$stepName} pada tiket [{$tiket->nomor_tiket}] menjadi " . ($newState ? 'SELESAI' : 'BELUM SELESAI'),
+            'SUCCESS',
+            ['nomor_tiket' => $tiket->nomor_tiket, 'step' => $step, 'done' => $newState]
+        );
+
+        $msg = $newState 
+            ? "✓ {$stepName} berhasil diselesaikan!" 
+            : "{$stepName} dikembalikan ke status belum selesai.";
+
+        if ($tiket->step1_done && $tiket->step2_done) {
+            $msg .= " Karena Proses 1 & 2 telah dicentang, Progress 'Pengolahan' di sisi OPD otomatis centang hijau ✓.";
+        }
+
+        return back()->with('success', $msg);
+    }
+
+    /**
      * Unduh Berkas Surat Edaran Tiket
      */
     public function downloadSurat($id)

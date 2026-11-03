@@ -83,10 +83,11 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         // 5. Halaman Profil Pengguna / User (Hanya Bisa Lihat / Read-Only)
         Route::get('/opd/user', [ProfileController::class, 'userProfile'])->name('opd.user.index');
 
-        // 6. Unduh Dokumen, Surat & Revisi Variabel
+        // 6. Unduh Dokumen, Surat & Revisi Berkas
         Route::get('/tiket/{id}/surat', [TiketDtsenController::class, 'downloadSurat'])->name('tiket.download-surat');
         Route::get('/tiket/{id}/download-dokumen/{tipe}', [TiketDtsenController::class, 'downloadDokumen'])->name('tiket.download-dokumen');
         Route::post('/tiket/{id}/update-variabel', [TiketDtsenController::class, 'updateVariabel'])->name('tiket.update-variabel');
+        Route::post('/opd/tiket/{id}/revisi-berkas', [TiketDtsenController::class, 'revisiBerkas'])->name('tiket.revisi-berkas');
     });
 
     // --- B. PORTAL & DASHBOARD SUPER ADMINISTRATOR ---
@@ -118,8 +119,10 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/bagi-pakai-dtsen/{id}/download-docx', [BagiPakaiDtsenController::class, 'downloadDocx'])->whereNumber('id')->name('bagi-pakai-dtsen.download-docx');
 
         Route::post('/tiket/{id}/step-ok', [HistoryController::class, 'stepOk'])->name('tiket.step-ok');
+        Route::post('/tiket/{id}/toggle-step/{step}', [HistoryController::class, 'toggleStep'])->whereNumber('step')->name('tiket.toggle-step');
         Route::post('/tiket/{id}/update-steps', [HistoryController::class, 'updateSteps'])->name('tiket.update-steps');
         Route::post('/tiket/{id}/verifikasi-variabel', [HistoryController::class, 'verifikasiVariabel'])->name('tiket.verifikasi-variabel');
+        Route::post('/tiket/{id}/verifikasi-berkas', [HistoryController::class, 'verifikasiBerkas'])->name('tiket.verifikasi-berkas');
         Route::get('/tiket/{id}/download', [HistoryController::class, 'downloadSurat'])->name('riwayat.download');
         Route::delete('/riwayat/{id}', [HistoryController::class, 'destroy'])->name('riwayat.destroy');
         Route::get('/riwayat/export', [HistoryController::class, 'exportCsv'])->name('riwayat.export');
