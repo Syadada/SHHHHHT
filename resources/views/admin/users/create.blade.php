@@ -60,18 +60,11 @@
                 @csrf
 
                 <div class="admin-form-grid-3">
-                    <div class="admin-form-group">
+                    <div class="admin-form-group" style="grid-column: span 2;">
                         <label class="admin-form-label">
                             Nama Instansi / Perangkat Daerah <span class="admin-form-req">*</span>
                         </label>
                         <input type="text" name="nama_instansi" class="form-input" placeholder="Contoh: Dinas Sosial / Bappeda" required value="{{ old('nama_instansi') }}">
-                    </div>
-
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">
-                            Nama Lengkap PIC / Pejabat <span class="admin-form-req">*</span>
-                        </label>
-                        <input type="text" name="name" class="form-input" placeholder="Contoh: Drs. H. Ahmad Fauzi, M.Si" required value="{{ old('name') }}">
                     </div>
 
                     <div class="admin-form-group">
@@ -91,12 +84,12 @@
                         <label class="admin-form-label">
                             Username Login <span class="admin-form-req">*</span>
                         </label>
-                        <input type="text" name="username" class="form-input" placeholder="Contoh: dinsos_eselon2" required value="{{ old('username') }}" style="font-family: var(--font-mono);">
+                        <input type="text" name="username" class="form-input" placeholder="Contoh: dinsos_provinsi" required value="{{ old('username') }}" style="font-family: var(--font-mono);">
                     </div>
 
                     <div class="admin-form-group">
                         <label class="admin-form-label">
-                            Alamat Email Resmi <span class="admin-form-req">*</span>
+                            Alamat Email Resmi Instansi <span class="admin-form-req">*</span>
                         </label>
                         <input type="email" name="email" class="form-input" placeholder="Contoh: dinsos@pemda.go.id" required value="{{ old('email') }}">
                     </div>
@@ -106,13 +99,6 @@
                             Kata Sandi (Password) <span class="admin-form-req">*</span>
                         </label>
                         <input type="password" name="password" class="form-input" placeholder="Minimal 4 karakter" required>
-                    </div>
-
-                    <div class="admin-form-group">
-                        <label class="admin-form-label">
-                            Nomor Telepon / WhatsApp
-                        </label>
-                        <input type="text" name="nomor_kontak" class="form-input" placeholder="Contoh: 0812-3456-7890" value="{{ old('nomor_kontak') }}">
                     </div>
                 </div>
 

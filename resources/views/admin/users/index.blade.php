@@ -97,9 +97,10 @@
                                     </a>
                                 </div>
                                 <div class="user-sub-muted" style="margin-top: 3px;">
-                                    PIC: <a href="{{ route('admin.users.show', $u->id) }}" style="color: var(--text-secondary); text-decoration: none; font-weight: 600;" title="Buka Detail Akun">{{ $u->name }}</a>
-                                    @if($u->nomor_kontak)
-                                        • {{ $u->nomor_kontak }}
+                                    @if($u->role === 'perangkat_daerah')
+                                        <span style="color: #64748b;">Akun Resmi: {{ $u->email }}</span>
+                                    @else
+                                        <span>{{ $u->name }}</span>
                                     @endif
                                 </div>
                             </td>

@@ -147,7 +147,7 @@ class UserController extends Controller
 
         $request->validate([
             'nama_instansi' => 'required|string|max:200',
-            'name' => 'required|string|max:150',
+            'name' => 'nullable|string|max:150',
             'username' => 'required|string|max:80|unique:users,username',
             'email' => 'required|email|max:150|unique:users,email',
             'password' => 'required|string|min:4',
@@ -175,7 +175,7 @@ class UserController extends Controller
 
         $user = User::create([
             'nama_instansi' => $request->nama_instansi,
-            'name' => $request->name,
+            'name' => $request->name ?: $request->nama_instansi,
             'username' => trim($request->username),
             'email' => trim($request->email),
             'password' => Hash::make($request->password),

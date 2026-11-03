@@ -85,16 +85,18 @@
                     <div class="user-modal-field-value">#{{ $user->id }}</div>
                 </div>
                 <div class="user-modal-card-item">
-                    <div class="user-modal-field-label">Nama Lengkap PIC / Pemohon</div>
-                    <div class="user-modal-field-value">{{ $user->name }}</div>
+                    <div class="user-modal-field-label">
+                        {{ $user->role === 'perangkat_daerah' ? 'Nama Instansi Pemohon' : 'Nama Pengguna' }}
+                    </div>
+                    <div class="user-modal-field-value">{{ $user->nama_instansi ?: $user->name }}</div>
                 </div>
                 <div class="user-modal-card-item">
-                    <div class="user-modal-field-label">Alamat Email</div>
+                    <div class="user-modal-field-label">Alamat Email Resmi</div>
                     <div class="user-modal-field-value">{{ $user->email }}</div>
                 </div>
                 <div class="user-modal-card-item">
-                    <div class="user-modal-field-label">Nomor Telepon / WhatsApp</div>
-                    <div class="user-modal-field-value">{{ $user->nomor_kontak ?: 'Belum ditambahkan' }}</div>
+                    <div class="user-modal-field-label">Username Login</div>
+                    <div class="user-modal-field-value" style="font-family: var(--font-mono); color: #0b57d0;">{{ $user->username }}</div>
                 </div>
                 <div class="user-modal-card-item">
                     <div class="user-modal-field-label">Nama Instansi / Satker</div>

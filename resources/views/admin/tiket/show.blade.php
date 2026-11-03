@@ -197,19 +197,98 @@
             <div class="ticket-detail-item">
                 <div class="ticket-detail-label">Instansi Pemohon:</div>
                 <div class="ticket-detail-val">{{ $tiket->nama_instansi }}</div>
-                <div class="ticket-detail-sub">PIC: {{ $tiket->nama_pemohon }} ({{ $tiket->kontak_pemohon }} / {{ $tiket->email_pemohon }})</div>
+                <div class="ticket-detail-sub">
+                    <strong>Narahubung:</strong> {{ $tiket->nama_narahubung ?: ($tiket->nama_pemohon ?: '-') }} 
+                    @if($tiket->no_narahubung ?: $tiket->kontak_pemohon)
+                        ({{ $tiket->no_narahubung ?: $tiket->kontak_pemohon }})
+                    @endif
+                </div>
             </div>
 
             <div class="ticket-detail-item">
-                <div class="ticket-detail-label">Surat Edaran Resmi:</div>
+                <div class="ticket-detail-label">Nomor Surat / Rujukan:</div>
                 <div class="ticket-detail-val">{{ $tiket->no_surat_edaran }}</div>
-                @if($tiket->file_surat)
-                    <div class="ticket-file-download-wrap">
-                        <a href="{{ route('admin.riwayat.download', $tiket->id) }}" class="btn-pill-outline ticket-btn-download">
-                            <i class="fi fi-rr-download"></i> Unduh File Surat ({{ $tiket->nama_file_asli ?: 'PDF' }})
-                        </a>
+                <div class="ticket-detail-sub">
+                    Tanggal Diajukan: {{ $tiket->created_at ? $tiket->created_at->format('d/m/Y H:i') : '-' }} WIB
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 Berkas Dokumen Permintaan OPD -->
+        <div style="margin-top: 16px; margin-bottom: 20px;">
+            <div class="ticket-detail-label form-group-mb-16">
+                Berkas Dokumen Lampiran Permohonan:
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;">
+                <!-- 1. Surat KAK -->
+                <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 3px;">
+                        1. Surat KAK (Required)
                     </div>
-                @endif
+                    @if($tiket->file_kak)
+                        <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'kak']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
+                            <i class="fi fi-rr-download"></i> Unduh Berkas KAK
+                        </a>
+                    @else
+                        <span style="font-size: 11px; color: #94a3b8;">- Tidak terlampir -</span>
+                    @endif
+                </div>
+
+                <!-- 2. Surat Permohonan -->
+                <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 3px;">
+                        2. Surat Permohonan (Required)
+                    </div>
+                    @if($tiket->file_surat_permohonan || $tiket->file_surat)
+                        <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'surat_permohonan']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
+                            <i class="fi fi-rr-download"></i> Unduh Permohonan
+                        </a>
+                    @else
+                        <span style="font-size: 11px; color: #94a3b8;">- Tidak terlampir -</span>
+                    @endif
+                </div>
+
+                <!-- 3. ROPA -->
+                <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 3px;">
+                        3. ROPA (Opsional)
+                    </div>
+                    @if($tiket->file_ropa)
+                        <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'ropa']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
+                            <i class="fi fi-rr-download"></i> Unduh Berkas ROPA
+                        </a>
+                    @else
+                        <span style="font-size: 11px; color: #94a3b8;">- Tidak ada berkas -</span>
+                    @endif
+                </div>
+
+                <!-- 4. DPIA -->
+                <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 3px;">
+                        4. DPIA (Opsional)
+                    </div>
+                    @if($tiket->file_dpia)
+                        <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'dpia']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
+                            <i class="fi fi-rr-download"></i> Unduh Berkas DPIA
+                        </a>
+                    @else
+                        <span style="font-size: 11px; color: #94a3b8;">- Tidak ada berkas -</span>
+                    @endif
+                </div>
+
+                <!-- 5. SKTM -->
+                <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
+                    <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 3px;">
+                        5. SKTM (Opsional)
+                    </div>
+                    @if($tiket->file_sktm)
+                        <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'sktm']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
+                            <i class="fi fi-rr-download"></i> Unduh Berkas SKTM
+                        </a>
+                    @else
+                        <span style="font-size: 11px; color: #94a3b8;">- Tidak ada berkas -</span>
+                    @endif
+                </div>
             </div>
         </div>
 

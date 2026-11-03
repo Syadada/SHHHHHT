@@ -7,7 +7,7 @@
 @section('content')
 <div class="opd-clean-container">
 
-    <!-- Active Ticket Notice (Jika Ada Tiket yang Sedang Berjalan) -->
+    <!-- Active Ticket Notice (Jika Ada Permintaan Layanan yang Sedang Berjalan) -->
     @if($latestTiket)
         <div class="opd-quick-ticket-banner">
             <div class="quick-banner-left">
@@ -15,7 +15,7 @@
                     <i class="fi fi-rr-time-forward"></i>
                 </div>
                 <div>
-                    <div class="quick-banner-label">Tiket Permohonan Terakhir:</div>
+                    <div class="quick-banner-label">Permintaan Layanan Terakhir:</div>
                     <div class="quick-banner-num">
                         {{ $latestTiket->nomor_tiket }} 
                         <span class="quick-banner-se">(SE: {{ $latestTiket->no_surat_edaran }})</span>
@@ -23,8 +23,8 @@
                 </div>
             </div>
             <div>
-                <a href="{{ route('opd.layanan-bagi-pakai') }}" class="btn-pill-outline ticket-btn-download">
-                    <i class="fi fi-rr-eye"></i> Pantau Progress di Layanan DTSEN &rarr;
+                <a href="{{ route('opd.tiket.show', $latestTiket->id) }}" class="btn-pill-outline ticket-btn-download">
+                    <i class="fi fi-rr-eye"></i> Lihat Status Layanan &rarr;
                 </a>
             </div>
         </div>
@@ -33,7 +33,7 @@
     <!-- Clean Hero Card (Fokus Utama: Tombol Permintaan Bagi Pakai) -->
     <div class="opd-clean-hero-card">
         <div class="opd-clean-icon-bubble">
-            <i class="fi fi-rr-ticket"></i>
+            <i class="fi fi-rr-layers"></i>
         </div>
 
         <div class="opd-clean-instansi">

@@ -1,8 +1,8 @@
 @extends('layouts.opd')
 
-@section('title', 'Tiket Saya — Layanan Permintaan Bagi Pakai DTSEN')
-@section('page_title', 'Tiket Permohonan Saya')
-@section('page_subtitle', 'Daftar Tiket Layanan Bagi Pakai DTSEN Instansi Anda')
+@section('title', 'Layanan Bagi Pakai DTSEN — Portal Perangkat Daerah')
+@section('page_title', 'Layanan')
+@section('page_subtitle', 'Daftar Permintaan Layanan Bagi Pakai DTSEN Instansi Anda')
 
 @section('content')
 @php
@@ -27,7 +27,7 @@
     <nav class="app-breadcrumb">
         <a href="{{ route('opd.dashboard') }}"><i class="fi fi-rr-home"></i> Dashboard</a>
         <span class="separator">/</span>
-        <span class="current">Tiket Saya</span>
+        <span class="current">Layanan</span>
     </nav>
 
     <!-- Support Tickets Card (DomaiNesia Style) -->
@@ -37,18 +37,18 @@
         <div class="ticket-portal-header">
             <div>
                 <h2 class="ticket-portal-title">
-                    <i class="fi fi-rr-ticket color-status-progress"></i>
-                    <span>Daftar Tiket Dukungan & Permohonan</span>
+                    <i class="fi fi-rr-share color-status-progress"></i>
+                    <span>Daftar Permintaan Layanan Bagi Pakai</span>
                 </h2>
                 <div class="portal-subtitle">
-                    Klik pada <strong>Nomor Tiket</strong> untuk melihat rincian progress tahapan secara lebih jelas.
+                    Klik pada <strong>Nomor Permintaan / Tiket</strong> untuk memantau rincian alur progress tahapan secara langsung.
                 </div>
             </div>
 
             <div class="ticket-filter-bar">
                 <form action="{{ route('opd.tiket.index') }}" method="GET" class="ticket-filter-form">
                     <div class="ticket-search-box">
-                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No. Tiket / SE..." class="form-input ticket-search-input">
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No. Permintaan / SE..." class="form-input ticket-search-input">
                         <i class="fi fi-rr-search ticket-search-icon"></i>
                     </div>
 

@@ -61,14 +61,16 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         // 1. Dashboard OPD (Clean Page: Hanya Tombol Buat Tiket Baru & Info Instansi)
         Route::get('/opd/dashboard', [ProfileController::class, 'dashboard'])->name('opd.dashboard');
 
-        // 2. Layanan Buat Tiket Baru (Formulir Pengajuan Tiket Permohonan DTSEN)
+        // 2. Layanan Permintaan Bagi Pakai DTSEN (Formulir Pengajuan Tiket Permohonan DTSEN)
         Route::get('/opd/tiket/create', [TiketDtsenController::class, 'create'])->name('opd.tiket.create');
+        Route::get('/opd/layanan/create', [TiketDtsenController::class, 'create'])->name('opd.layanan.create');
         Route::get('/formulir', [TiketDtsenController::class, 'index'])->name('formulir.index');
         Route::post('/formulir', [TiketDtsenController::class, 'store'])->name('formulir.store');
         Route::post('/tiket', [TiketDtsenController::class, 'store'])->name('tiket.store');
 
-        // 3. Daftar Tiket Saya (Ala DomaiNesia Support Tickets) & Detail Progress
+        // 3. Daftar Layanan Bagi Pakai DTSEN & Detail Progress
         Route::get('/opd/tiket', [ProfileController::class, 'daftarTiket'])->name('opd.tiket.index');
+        Route::get('/opd/layanan', [ProfileController::class, 'daftarTiket'])->name('opd.layanan.index');
         Route::get('/opd/tiket/{id}', [ProfileController::class, 'showTiket'])->whereNumber('id')->name('opd.tiket.show');
         Route::get('/opd/tiket/{id}/formulir', [BagiPakaiDtsenController::class, 'formulir'])->whereNumber('id')->name('opd.tiket.formulir');
         Route::get('/opd/tiket/{id}/download-docx', [BagiPakaiDtsenController::class, 'downloadDocx'])->whereNumber('id')->name('opd.tiket.download-docx');
@@ -78,8 +80,9 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
         Route::get('/opd/riwayat-bagi-data/{id}', [ProfileController::class, 'showRiwayatBagiData'])->whereNumber('id')->name('opd.riwayat-bagi-data.show');
         Route::get('/profile', [ProfileController::class, 'layananBagiPakai'])->name('profile'); // Dukungan alias
 
-        // 5. Unduh Surat & Revisi Variabel
+        // 5. Unduh Dokumen, Surat & Revisi Variabel
         Route::get('/tiket/{id}/surat', [TiketDtsenController::class, 'downloadSurat'])->name('tiket.download-surat');
+        Route::get('/tiket/{id}/download-dokumen/{tipe}', [TiketDtsenController::class, 'downloadDokumen'])->name('tiket.download-dokumen');
         Route::post('/tiket/{id}/update-variabel', [TiketDtsenController::class, 'updateVariabel'])->name('tiket.update-variabel');
     });
 

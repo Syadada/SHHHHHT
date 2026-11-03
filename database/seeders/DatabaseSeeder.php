@@ -34,12 +34,12 @@ class DatabaseSeeder extends Seeder
         $opdDinsos = User::updateOrCreate(
             ['username' => 'dinsos'],
             [
-                'name' => 'Budi Santoso (Dinas Sosial)',
+                'name' => 'Dinas Sosial Provinsi',
                 'nama_instansi' => 'Dinas Sosial Provinsi',
                 'email' => 'dinsos@pemda.go.id',
                 'password' => Hash::make('dinsos123'), // Password: dinsos123
                 'role' => 'perangkat_daerah',
-                'nomor_kontak' => '081234567890',
+                'nomor_kontak' => null,
                 'last_login_at' => now()->subHours(3),
                 'last_login_ip' => '192.168.10.45',
                 'last_login_device' => 'WIN-LP-DINSOS01',
@@ -50,12 +50,12 @@ class DatabaseSeeder extends Seeder
         $opdBappeda = User::updateOrCreate(
             ['username' => 'bappeda'],
             [
-                'name' => 'Siti Nurhaliza (Bappeda Litbang)',
+                'name' => 'Badan Perencanaan Pembangunan Daerah',
                 'nama_instansi' => 'Badan Perencanaan Pembangunan Daerah',
                 'email' => 'bappeda@pemda.go.id',
                 'password' => Hash::make('bappeda123'), // Password: bappeda123
                 'role' => 'perangkat_daerah',
-                'nomor_kontak' => '081987654321',
+                'nomor_kontak' => null,
                 'last_login_at' => now()->subDay(),
                 'last_login_ip' => '192.168.20.12',
                 'last_login_device' => 'WIN-LP-BAPPEDA02',

@@ -18,9 +18,8 @@
                     {{ $user->nama_instansi ?: $user->name }}
                 </h1>
                 <div class="ticket-heading-meta">
-                    <span><i class="fi fi-rr-user"></i> PIC: <strong>{{ $user->name }}</strong></span> &bull; 
-                    <span><i class="fi fi-rr-envelope"></i> Email: <strong>{{ $user->email }}</strong></span> &bull; 
-                    <span><i class="fi fi-rr-phone-call"></i> Kontak: <strong>{{ $user->nomor_kontak ?: '-' }}</strong></span>
+                    <span><i class="fi fi-rr-building"></i> Instansi: <strong>{{ $user->nama_instansi ?: $user->name }}</strong></span> &bull; 
+                    <span><i class="fi fi-rr-envelope"></i> Email Resmi: <strong>{{ $user->email }}</strong></span>
                 </div>
             </div>
 

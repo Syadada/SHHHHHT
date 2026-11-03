@@ -42,35 +42,44 @@
                     <span>Dashboard</span>
                 </a>
 
-                <!-- 2. Tiket Saya (Support Tickets ala DomaiNesia) -->
-                <a href="{{ route('opd.tiket.index') }}" class="opd-nav-link {{ request()->routeIs('opd.tiket.*') ? 'active' : '' }}">
-                    <i class="fi fi-rr-ticket"></i>
-                    <span>Tiket Saya</span>
-                </a>
-
-                <!-- 3. Layanan Bagi Pakai DTSEN (Progress 5 Tahap & Riwayat BAST) -->
-                <a href="{{ route('opd.layanan-bagi-pakai') }}" class="opd-nav-link {{ request()->routeIs('opd.layanan-bagi-pakai') || request()->routeIs('profile') ? 'active' : '' }}">
-                    <i class="fi fi-rr-document"></i>
-                    <span>Layanan Bagi Pakai DTSEN</span>
-                </a>
-
-                <!-- 4. Permintaan Bagi Pakai (Formulir Pengajuan) -->
-                <a href="{{ route('opd.tiket.create') }}" class="opd-nav-link {{ request()->routeIs('formulir.*') || request()->routeIs('opd.tiket.create') ? 'active' : '' }}">
-                    <i class="fi fi-rr-plus"></i>
-                    <span>Permintaan Bagi Pakai</span>
-                    <span class="opd-nav-badge">+Form</span>
-                </a>
+                @php
+                    $isLayananActive = request()->routeIs('opd.tiket.*') || request()->routeIs('opd.layanan.*') || request()->routeIs('formulir.*') || request()->routeIs('opd.layanan-bagi-pakai');
+                @endphp
+                <!-- 2. Layanan (Satu kata persis seperti di Admin dengan Dropdown Submenu) -->
+                <div class="app-nav-dropdown {{ $isLayananActive ? 'active' : '' }}" style="position: relative;">
+                    <a href="{{ route('opd.tiket.index') }}" class="opd-nav-link app-nav-dropdown-toggle {{ $isLayananActive ? 'active' : '' }}" style="justify-content: space-between;" title="Layanan Bagi Pakai DTSEN">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fi fi-rr-layers" style="font-size: 18px;"></i>
+                            <span>Layanan</span>
+                        </div>
+                        <i class="fi fi-rr-angle-small-right app-nav-caret"></i>
+                    </a>
+                    <ul class="app-nav-submenu">
+                        <li>
+                            <a href="{{ route('opd.tiket.index') }}" class="app-nav-subitem {{ request()->routeIs('opd.tiket.index') || request()->routeIs('opd.layanan.index') ? 'active' : '' }}">
+                                <i class="fi fi-rr-share"></i>
+                                <span>Bagi Pakai DTSEN</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('opd.tiket.create') }}" class="app-nav-subitem {{ request()->routeIs('opd.tiket.create') || request()->routeIs('formulir.*') ? 'active' : '' }}">
+                                <i class="fi fi-rr-plus"></i>
+                                <span>Buat Permintaan Baru</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
 
             </div>
 
-            <!-- Footer User Profile & Device ID -->
+            <!-- Footer User Profile & Device ID (Tanpa Informasi Pribadi: Nama, Telepon, Jabatan) -->
             <div class="opd-sidebar-footer">
                 <div class="opd-user-box">
-                    <div class="opd-user-name" title="{{ Auth::user()->name }}">
-                        <i class="fi fi-rr-user"></i> {{ Auth::user()->name }}
+                    <div class="opd-user-name" title="{{ Auth::user()->nama_instansi ?: Auth::user()->name }}">
+                        <i class="fi fi-rr-building"></i> {{ Auth::user()->nama_instansi ?: Auth::user()->name }}
                     </div>
-                    <div class="opd-user-instansi" title="{{ Auth::user()->nama_instansi ?: Auth::user()->name }}">
-                        {{ Auth::user()->nama_instansi ?: Auth::user()->name }}
+                    <div class="opd-user-instansi" title="{{ Auth::user()->email }}">
+                        <i class="fi fi-rr-envelope"></i> {{ Auth::user()->email }}
                     </div>
                     <div>
                         <span class="opd-device-pill" title="ID Perangkat Laptop Login">

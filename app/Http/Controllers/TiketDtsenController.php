@@ -82,69 +82,122 @@ class TiketDtsenController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
+        // Validasi Field Permintaan Bagi Pakai dari Sisi OPD
         $request->validate([
             'nama_instansi' => 'required|string|max:200',
-            'no_surat_edaran' => 'required|string|max:150',
-            'nama_pemohon' => 'nullable|string|max:150',
-            'kontak_pemohon' => 'nullable|string|max:100',
+            'no_surat_edaran' => 'nullable|string|max:150',
+            'nama_narahubung' => 'required|string|max:150',
+            'no_narahubung' => 'required|string|max:100',
+            'file_kak' => 'required|file|max:51200',
+            'file_surat_permohonan' => 'nullable|file|max:51200',
+            'file_surat' => 'nullable|file|max:51200',
+            'file_ropa' => 'nullable|file|max:51200',
+            'file_dpia' => 'nullable|file|max:51200',
+            'file_sktm' => 'nullable|file|max:51200',
             'email_pemohon' => 'nullable|email|max:150',
             'tujuan_pemanfaatan' => 'nullable|string',
             'variabel_dtsen' => 'required|array|min:1',
-            'file_surat' => 'nullable|file|max:51200', // Maksimal 50MB
         ], [
             'nama_instansi.required' => 'Nama Instansi / Lembaga pemohon wajib diisi.',
-            'no_surat_edaran.required' => 'Nomor Surat Edaran / Permohonan wajib diisi.',
-            'variabel_dtsen.required' => 'Minimal salah satu variabel DTSEN harus diisi.',
-            'variabel_dtsen.min' => 'Silakan isi variabel DTSEN yang diminta.',
-            'file_surat.max' => 'Ukuran berkas surat tidak boleh melebihi 50MB.',
+            'nama_narahubung.required' => 'Nama Narahubung wajib diisi.',
+            'no_narahubung.required' => 'Nomor Narahubung wajib diisi.',
+            'file_kak.required' => 'Berkas Surat KAK wajib diunggah (Required).',
+            'variabel_dtsen.required' => 'Minimal salah satu variabel DTSEN harus dipilih.',
+            'variabel_dtsen.min' => 'Silakan centang variabel DTSEN yang diminta.',
+            'file_kak.max' => 'Ukuran berkas Surat KAK tidak boleh melebihi 50MB.',
+            'file_surat_permohonan.max' => 'Ukuran berkas Surat Permohonan tidak boleh melebihi 50MB.',
         ]);
+
+        // Pastikan Berkas Surat Permohonan Diunggah (file_surat_permohonan atau file_surat)
+        if (!$request->hasFile('file_surat_permohonan') && !$request->hasFile('file_surat')) {
+            return back()->withInput()->withErrors([
+                'file_surat_permohonan' => 'Berkas Surat Permohonan resmi wajib diunggah (Required).'
+            ]);
+        }
 
         // Bersihkan variabel kosong dan trim
         $variabelInput = array_filter(array_map('trim', (array) $request->input('variabel_dtsen')));
         
         if (empty($variabelInput)) {
             return back()->withInput()->withErrors([
-                'variabel_dtsen' => 'Mohon isi setidaknya satu kolom variabel DTSEN yang Anda butuhkan.'
+                'variabel_dtsen' => 'Mohon pilih dan centang setidaknya satu variabel DTSEN yang Anda butuhkan.'
             ]);
         }
 
-        // Handle file lampiran surat jika ada
-        $filePath = null;
-        $originalName = null;
+        // Helper simpan berkas
+        $saveFile = function($fieldName) use ($request) {
+            if ($request->hasFile($fieldName)) {
+                $file = $request->file($fieldName);
+                $originalName = $file->getClientOriginalName();
+                $path = $file->store('dokumen_dtsen', 'public');
+                return [$path, $originalName];
+            }
+            return [null, null];
+        };
+
+        // 1. Surat KAK (Required)
+        [$pathKak, $nameKak] = $saveFile('file_kak');
+
+        // 2. Surat Permohonan (Required)
+        [$pathSurat, $nameSurat] = $request->hasFile('file_surat_permohonan') 
+            ? $saveFile('file_surat_permohonan') 
+            : $saveFile('file_surat');
+
+        // 3. ROPA (Opsional)
+        [$pathRopa, $nameRopa] = $saveFile('file_ropa');
+
+        // 4. DPIA (Opsional)
+        [$pathDpia, $nameDpia] = $saveFile('file_dpia');
+
+        // 5. SKTM (Opsional)
+        [$pathSktm, $nameSktm] = $saveFile('file_sktm');
+
+        // Formatted size & hash untuk berkas utama surat permohonan
         $formattedSize = null;
         $extension = null;
         $hashSha256 = null;
-
-        if ($request->hasFile('file_surat')) {
-            $file = $request->file('file_surat');
-            $originalName = $file->getClientOriginalName();
-            $extension = strtolower($file->getClientOriginalExtension() ?: 'pdf');
-            $sizeBytes = $file->getSize();
-
-            if ($sizeBytes >= 1048576) {
-                $formattedSize = round($sizeBytes / 1048576, 2) . ' MB';
-            } else {
-                $formattedSize = round($sizeBytes / 1024, 2) . ' KB';
-            }
-
-            $filePath = $file->store('surat_edaran', 'public');
-            $hashSha256 = hash_file('sha256', $file->getRealPath());
+        $primaryFile = $request->file('file_surat_permohonan') ?: $request->file('file_surat');
+        if ($primaryFile) {
+            $extension = strtolower($primaryFile->getClientOriginalExtension() ?: 'pdf');
+            $sizeBytes = $primaryFile->getSize();
+            $formattedSize = ($sizeBytes >= 1048576) 
+                ? round($sizeBytes / 1048576, 2) . ' MB' 
+                : round($sizeBytes / 1024, 2) . ' KB';
+            $hashSha256 = hash_file('sha256', $primaryFile->getRealPath());
         }
 
         // Generate Nomor Tiket Unik
         $nomorTiket = 'TIK-DTSEN-' . date('Ymd') . '-' . strtoupper(substr(uniqid(), -4));
 
+        $namaNarahubung = trim($request->input('nama_narahubung'));
+        $noNarahubung = trim($request->input('no_narahubung'));
+        $noSuratEdaran = $request->input('no_surat_edaran') ?: ('SP/' . date('Ymd') . '/' . strtoupper(substr(uniqid(), -4)));
+
         $tiket = TiketDtsen::create([
             'nomor_tiket' => $nomorTiket,
             'nama_instansi' => $request->input('nama_instansi'),
-            'no_surat_edaran' => $request->input('no_surat_edaran'),
-            'nama_pemohon' => $request->input('nama_pemohon') ?: 'PIC Instansi Pemohon',
-            'kontak_pemohon' => $request->input('kontak_pemohon'),
-            'email_pemohon' => $request->input('email_pemohon'),
+            'no_surat_edaran' => $noSuratEdaran,
+            'nama_narahubung' => $namaNarahubung,
+            'no_narahubung' => $noNarahubung,
+            'nama_pemohon' => $namaNarahubung, // Fallback backward compatibility
+            'kontak_pemohon' => $noNarahubung,  // Fallback backward compatibility
+            'email_pemohon' => $request->input('email_pemohon') ?: (auth()->user()->email ?? null),
             'tujuan_pemanfaatan' => $request->input('tujuan_pemanfaatan') ?: 'Permohonan bagi pakai data DTSEN untuk kebutuhan program instansi.',
             'variabel_dtsen' => array_values($variabelInput),
-            'file_surat' => $filePath,
-            'nama_file_asli' => $originalName,
+            // Berkas Dokumen
+            'file_kak' => $pathKak,
+            'nama_file_kak' => $nameKak,
+            'file_surat_permohonan' => $pathSurat,
+            'nama_file_surat_permohonan' => $nameSurat,
+            'file_ropa' => $pathRopa,
+            'nama_file_ropa' => $nameRopa,
+            'file_dpia' => $pathDpia,
+            'nama_file_dpia' => $nameDpia,
+            'file_sktm' => $pathSktm,
+            'nama_file_sktm' => $nameSktm,
+            // Legacy file surat columns
+            'file_surat' => $pathSurat,
+            'nama_file_asli' => $nameSurat,
             'ukuran_file' => $formattedSize,
             'ekstensi_file' => $extension,
             'hash_sha256' => $hashSha256,
@@ -155,19 +208,19 @@ class TiketDtsenController extends Controller
             'step4_done' => false,
             'step5_done' => false,
             'status' => 'DIPROSES',
-            'catatan_admin' => 'Tiket baru berhasil diajukan. Menunggu verifikasi berkas oleh admin.',
+            'catatan_admin' => 'Permintaan baru berhasil diajukan. Menunggu verifikasi berkas oleh Tim Walidata.',
         ]);
 
         // Catat Audit Trail
         AuditLogger::log(
             'TIKET_DTSEN_CREATED',
-            "Tiket Bagi Pakai DTSEN [{$nomorTiket}] diajukan oleh {$tiket->nama_instansi}. Jumlah variabel: " . count($variabelInput),
+            "Permintaan Layanan Bagi Pakai DTSEN [{$nomorTiket}] diajukan oleh {$tiket->nama_instansi}. Narahubung: {$namaNarahubung} ({$noNarahubung}). Jumlah variabel: " . count($variabelInput),
             'SUCCESS',
             ['nomor_tiket' => $nomorTiket, 'instansi' => $tiket->nama_instansi]
         );
 
-        return redirect()->route('opd.layanan-bagi-pakai', ['track_id' => $tiket->id])
-            ->with('success', "Tiket Layanan DTSEN berhasil dibuat dengan Nomor: {$nomorTiket}! Status dan tahapan alur dapat dipantau di bawah.")
+        return redirect()->route('opd.tiket.index')
+            ->with('success', "Permintaan Layanan DTSEN berhasil diajukan dengan Nomor: {$nomorTiket}! Status dan tahapan alur dapat dipantau pada daftar layanan.")
             ->with('new_tiket_id', $tiket->id);
     }
 
@@ -183,6 +236,48 @@ class TiketDtsenController extends Controller
         }
 
         return Storage::disk('public')->download($tiket->file_surat, $tiket->nama_file_asli ?: "Surat_{$tiket->nomor_tiket}.{$tiket->ekstensi_file}");
+    }
+
+    /**
+     * Download Berkas Dokumen Pendukung (KAK, Surat Permohonan, ROPA, DPIA, SKTM)
+     */
+    public function downloadDokumen($id, $tipe)
+    {
+        $tiket = TiketDtsen::findOrFail($id);
+
+        $fileMap = [
+            'kak' => [
+                'path' => $tiket->file_kak,
+                'name' => $tiket->nama_file_kak ?: "Surat_KAK_{$tiket->nomor_tiket}.pdf"
+            ],
+            'surat_permohonan' => [
+                'path' => $tiket->file_surat_permohonan ?: $tiket->file_surat,
+                'name' => $tiket->nama_file_surat_permohonan ?: ($tiket->nama_file_asli ?: "Surat_Permohonan_{$tiket->nomor_tiket}.pdf")
+            ],
+            'ropa' => [
+                'path' => $tiket->file_ropa,
+                'name' => $tiket->nama_file_ropa ?: "Dokumen_ROPA_{$tiket->nomor_tiket}.pdf"
+            ],
+            'dpia' => [
+                'path' => $tiket->file_dpia,
+                'name' => $tiket->nama_file_dpia ?: "Dokumen_DPIA_{$tiket->nomor_tiket}.pdf"
+            ],
+            'sktm' => [
+                'path' => $tiket->file_sktm,
+                'name' => $tiket->nama_file_sktm ?: "Dokumen_SKTM_{$tiket->nomor_tiket}.pdf"
+            ],
+        ];
+
+        if (!isset($fileMap[$tipe])) {
+            abort(404, 'Tipe dokumen tidak valid.');
+        }
+
+        $doc = $fileMap[$tipe];
+        if (!$doc['path'] || !Storage::disk('public')->exists($doc['path'])) {
+            return back()->with('error', 'Berkas dokumen tidak ditemukan di server.');
+        }
+
+        return Storage::disk('public')->download($doc['path'], $doc['name']);
     }
 
     /**
