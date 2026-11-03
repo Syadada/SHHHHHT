@@ -59,7 +59,7 @@
         <!-- 1. HEADER DOKUMEN & PENOMORAN NASKAH SOP -->
         <div class="form-section-card">
             <div class="section-head-box" style="margin-bottom: 14px;">
-            <h2 class="section-head-title">1. Header Dokumen & Penomoran Naskah SOP</h2>
+            <h2 class="section-head-title">Header Dokumen & Penomoran Naskah SOP</h2>
             </div>
 
             <div class="form-2col-grid">
@@ -110,7 +110,7 @@
         <!-- 2. PERMINTAAN LAYANAN (INSTANSI & NARAHUBUNG) -->
         <div class="form-section-card">
             <div class="section-head-box" style="margin-bottom: 14px;">
-            <h2 class="section-head-title">2. Permintaan Layanan (Instansi & Narahubung)</h2>
+            <h2 class="section-head-title">Permintaan Layanan (Instansi & Narahubung)</h2>
             </div>
 
             <div class="form-2col-grid">
@@ -222,7 +222,7 @@
         <!-- 3. PENUGASAN & DESKRIPSI PEKERJAAN (WALIDATA) -->
         <div class="form-section-card">
             <div class="section-head-box" style="margin-bottom: 14px;">
-            <h2 class="section-head-title">3. Penugasan & Deskripsi Pekerjaan (Walidata)</h2>
+            <h2 class="section-head-title">Penugasan & Deskripsi Pekerjaan (Walidata)</h2>
             </div>
 
             <div class="form-2col-grid">
@@ -336,7 +336,7 @@
         <!-- 4. VARIABEL DTSEN YANG DIMINTA -->
         <div class="form-section-card">
             <div class="section-head-box-tight" style="margin-bottom: 4px;">
-                <h2 class="section-head-title">4. Variabel DTSEN yang Diminta</h2>
+                <h2 class="section-head-title">Variabel DTSEN yang Diminta</h2>
             </div>
             <p style="font-size: 13px; color: #64748b; margin-bottom: 8px;">
                 Pilih tema dataset di kotak sebelah kiri, lalu beri tanda centang (checklist) pada variabel data DTSEN yang Anda butuhkan di kotak sebelah kanan.
@@ -348,7 +348,7 @@
         <!-- 5. PEMENUHAN DOKUMEN & MATRIKS PELAKSANAAN SOP -->
         <div class="form-section-card">
             <div class="section-head-box" style="margin-bottom: 14px;">
-            <h2 class="section-head-title">5. Pemenuhan Dokumen & Matriks Pelaksanaan SOP</h2>
+            <h2 class="section-head-title">Pemenuhan Dokumen & Matriks Pelaksanaan SOP</h2>
             </div>
 
             <div class="form-2col-grid">
@@ -440,7 +440,7 @@
         <!-- 6. CATATAN PELAKSANA -->
         <div class="form-section-card">
             <div class="section-head-box" style="margin-bottom: 14px;">
-            <h2 class="section-head-title">6. Catatan Pelaksana</h2>
+            <h2 class="section-head-title">Catatan Pelaksana</h2>
             </div>
 
             <div>
@@ -454,7 +454,7 @@
         <!-- 7. HASIL PELAKSANAAN PEKERJAAN -->
         <div class="form-section-card">
             <div class="section-head-box" style="margin-bottom: 14px;">
-            <h2 class="section-head-title">7. Hasil Pelaksanaan Pekerjaan</h2>
+            <h2 class="section-head-title">Hasil Pelaksanaan Pekerjaan</h2>
             </div>
 
             <div>
@@ -469,7 +469,7 @@
         <!-- 8. UNGGAH BERKAS LAMPIRAN SURAT EDARAN RESMI -->
         <div class="form-section-card">
             <div class="section-head-box" style="margin-bottom: 14px;">
-            <h2 class="section-head-title">8. Lampiran Berkas Permohonan Resmi</h2>
+            <h2 class="section-head-title">Lampiran Berkas Permohonan Resmi</h2>
             </div>
 
             <div class="upload-drop-zone" onclick="document.getElementById('inputSuratFile').click()">

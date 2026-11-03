@@ -220,10 +220,10 @@
                 Berkas Dokumen Lampiran Permohonan:
             </div>
             <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px;">
-                <!-- 1. Surat KAK -->
+                <!-- Surat KAK -->
                 <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
                     <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 3px;">
-                        1. Surat KAK (Required)
+                        Surat KAK (Wajib)
                     </div>
                     @if($tiket->file_kak)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'kak']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
@@ -234,10 +234,10 @@
                     @endif
                 </div>
 
-                <!-- 2. Surat Permohonan -->
+                <!-- Surat Permohonan -->
                 <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
                     <div style="font-size: 11px; font-weight: 700; color: #dc2626; text-transform: uppercase; margin-bottom: 3px;">
-                        2. Surat Permohonan (Required)
+                        Surat Permohonan (Wajib)
                     </div>
                     @if($tiket->file_surat_permohonan || $tiket->file_surat)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'surat_permohonan']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
@@ -248,10 +248,10 @@
                     @endif
                 </div>
 
-                <!-- 3. ROPA -->
+                <!-- ROPA -->
                 <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
                     <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 3px;">
-                        3. ROPA (Opsional)
+                        ROPA (Opsional)
                     </div>
                     @if($tiket->file_ropa)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'ropa']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
@@ -262,10 +262,10 @@
                     @endif
                 </div>
 
-                <!-- 4. DPIA -->
+                <!-- DPIA -->
                 <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
                     <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 3px;">
-                        4. DPIA (Opsional)
+                        DPIA (Opsional)
                     </div>
                     @if($tiket->file_dpia)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'dpia']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">
@@ -276,10 +276,10 @@
                     @endif
                 </div>
 
-                <!-- 5. SKTM -->
+                <!-- SKTM -->
                 <div style="padding: 10px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px;">
                     <div style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 3px;">
-                        5. SKTM (Opsional)
+                        SKTM (Opsional)
                     </div>
                     @if($tiket->file_sktm)
                         <a href="{{ route('tiket.download-dokumen', [$tiket->id, 'sktm']) }}" class="btn-pill-outline" style="font-size: 11px; padding: 3px 8px; display: inline-flex; align-items: center; gap: 4px; text-decoration: none;">

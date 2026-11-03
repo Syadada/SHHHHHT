@@ -24,7 +24,7 @@
     <form action="{{ route('formulir.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        <!-- 1. IDENTITAS INSTANSI & NARAHUBUNG (TANPA FIELD TAMBAHAN) -->
+        <!-- IDENTITAS INSTANSI & NARAHUBUNG -->
         <div class="form-section-card">
             <div class="section-head-box">
                 <div class="section-head-icon">
@@ -46,16 +46,16 @@
                        class="form-text-input" 
                        value="{{ old('nama_instansi', Auth::user()->nama_instansi ?: Auth::user()->name) }}" 
                        readonly 
+                       placeholder="Nama instansi terisi otomatis"
                        style="background: #f8fafc; font-weight: 700; color: #0f172a; cursor: not-allowed;">
-                <div class="form-help-hint">Terisi otomatis sesuai akun kedinasan Anda.</div>
             </div>
 
-            <!-- 6 & 7. NARAHUBUNG (REQUIRED) -->
+            <!-- Narahubung (Required) -->
             <div class="form-2col-grid" style="margin-top: 14px;">
-                <!-- 6. Nama Narahubung -->
+                <!-- Nama Narahubung -->
                 <div>
                     <label class="form-group-label">
-                        6. Nama Narahubung <span class="form-required">*</span>
+                        Nama Narahubung <span class="form-required">*</span>
                     </label>
                     <input type="text" 
                            name="nama_narahubung" 
@@ -63,26 +63,24 @@
                            value="{{ old('nama_narahubung') }}" 
                            placeholder="Nama lengkap narahubung pemohon" 
                            required>
-                    <div class="form-help-hint">Nama person in charge (narahubung) yang bertanggung jawab atas permohonan.</div>
                 </div>
 
-                <!-- 7. No Narahubung -->
+                <!-- Nomor Narahubung -->
                 <div>
                     <label class="form-group-label">
-                        7. Nomor Narahubung <span class="form-required">*</span>
+                        Nomor Narahubung <span class="form-required">*</span>
                     </label>
                     <input type="text" 
                            name="no_narahubung" 
                            class="form-text-input" 
                            value="{{ old('no_narahubung') }}" 
-                           placeholder="Contoh: 081234567890" 
+                           placeholder="Nomor WhatsApp aktif narahubung (contoh: 081234567890)" 
                            required>
-                    <div class="form-help-hint">Nomor WhatsApp atau telepon aktif narahubung.</div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. BERKAS DOKUMEN PERMINTAAN (FILE BOX 1 - 5) -->
+        <!-- Berkas Dokumen Permintaan -->
         <div class="form-section-card">
             <div class="section-head-box">
                 <div class="section-head-icon">
@@ -96,20 +94,17 @@
 
             <div class="dtsen-filebox-grid">
                 
-                <!-- 1. SURAT KAK (FILE BOX) REQUIRED -->
+                <!-- Surat KAK (File Box) Required -->
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
-                            1. Surat KAK
+                            Surat KAK
                         </div>
                         <span class="dtsen-badge-req">Wajib</span>
                     </div>
-                    <div class="dtsen-filebox-desc">
-                        Kerangka Acuan Kerja (KAK) kegiatan atau pemanfaatan data.
-                    </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKak').click()">
                         <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
-                        <div class="dtsen-dropzone-title" id="kakTitle">Pilih Berkas KAK</div>
+                        <div class="dtsen-dropzone-title" id="kakTitle">Pilih Berkas Surat KAK</div>
                         <div class="dtsen-dropzone-sub" id="kakSub">PDF, DOC, DOCX (Maks 50MB)</div>
                         <input type="file" 
                                name="file_kak" 
@@ -121,16 +116,13 @@
                     </div>
                 </div>
 
-                <!-- 2. SURAT PERMOHONAN (FILE BOX) REQUIRED -->
+                <!-- Surat Permohonan (File Box) Required -->
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
-                            2. Surat Permohonan
+                            Surat Permohonan
                         </div>
                         <span class="dtsen-badge-req">Wajib</span>
-                    </div>
-                    <div class="dtsen-filebox-desc">
-                        Scan surat dinas permohonan resmi pimpinan instansi.
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputPermohonan').click()">
                         <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
@@ -146,16 +138,13 @@
                     </div>
                 </div>
 
-                <!-- 3. ROPA (FILE BOX) OPSIONAL -->
+                <!-- ROPA (File Box) Opsional -->
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
-                            3. ROPA
+                            ROPA
                         </div>
                         <span class="dtsen-badge-opt">Opsional</span>
-                    </div>
-                    <div class="dtsen-filebox-desc">
-                        Record of Processing Activities (Inventarisasi Pemrosesan Data UU PDP).
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputRopa').click()">
                         <i class="fi fi-rr-document dtsen-dropzone-icon"></i>
@@ -170,16 +159,13 @@
                     </div>
                 </div>
 
-                <!-- 4. DPIA (FILE BOX) OPSIONAL -->
+                <!-- DPIA (File Box) Opsional -->
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
-                            4. DPIA
+                            DPIA
                         </div>
                         <span class="dtsen-badge-opt">Opsional</span>
-                    </div>
-                    <div class="dtsen-filebox-desc">
-                        Data Protection Impact Assessment (Kajian Dampak & Mitigasi Risiko Data).
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputDpia').click()">
                         <i class="fi fi-rr-shield-check dtsen-dropzone-icon"></i>
@@ -194,16 +180,13 @@
                     </div>
                 </div>
 
-                <!-- 5. SKTM (FILE BOX) OPSIONAL -->
+                <!-- SKTM (File Box) Opsional -->
                 <div class="dtsen-filebox-card">
                     <div class="dtsen-filebox-header">
                         <div class="dtsen-filebox-title">
-                            5. SKTM
+                            SKTM
                         </div>
                         <span class="dtsen-badge-opt">Opsional</span>
-                    </div>
-                    <div class="dtsen-filebox-desc">
-                        Surat Keterangan Tidak Mampu / Berkas Pendukung Kriteria Sasaran.
                     </div>
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
                         <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
@@ -221,7 +204,7 @@
             </div>
         </div>
 
-        <!-- 3. VARIABEL DTSEN YANG DIMINTA (DIPISAHKAN & OPSIONAL) -->
+        <!-- Variabel DTSEN yang Diminta (Dipisahkan & Opsional) -->
         <div class="form-section-card">
             <div class="section-head-box-tight" style="margin-bottom: 6px;">
                 <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; flex-wrap: wrap; gap: 8px;">
@@ -293,7 +276,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
 }
 .dtsen-filebox-title {
     font-size: 14px;
@@ -316,13 +299,6 @@
     color: #64748b;
     padding: 2px 7px;
     border-radius: 6px;
-}
-.dtsen-filebox-desc {
-    font-size: 11.5px;
-    color: #64748b;
-    margin-bottom: 12px;
-    line-height: 1.4;
-    min-height: 32px;
 }
 .dtsen-file-dropzone {
     border: 1.5px dashed #cbd5e1;
