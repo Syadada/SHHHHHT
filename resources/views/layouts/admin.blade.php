@@ -94,7 +94,7 @@
                             <div class="app-nav-item-left">
                                 <i class="fi fi-rr-users app-nav-icon"></i>
                                 <span>User</span>
-                                @if($pendingResetCount > 0 && auth()->user()->isSuperAdminOnly())
+                                @if($pendingResetCount > 0 && auth()->user()->isSuperAdmin())
                                     <span style="background: #f59e0b; color: #ffffff; font-size: 10px; font-weight: 800; border-radius: 9999px; padding: 1px 6px; margin-left: 6px;">{{ $pendingResetCount }}</span>
                                 @endif
                             </div>
@@ -105,7 +105,7 @@
                                 <a href="{{ route('admin.users.index') }}" class="app-nav-subitem {{ request()->routeIs('admin.users.index') || request()->routeIs('admin.users.show') ? 'active' : '' }}">
                                     <i class="fi fi-rr-users-alt"></i>
                                     <span>User Management</span>
-                                    @if($pendingResetCount > 0 && auth()->user()->isSuperAdminOnly())
+                                    @if($pendingResetCount > 0 && auth()->user()->isSuperAdmin())
                                         <span style="background: #f59e0b; color: #ffffff; font-size: 9.5px; font-weight: 800; border-radius: 9999px; padding: 1px 5px; margin-left: auto;">{{ $pendingResetCount }}</span>
                                     @endif
                                 </a>

@@ -118,7 +118,7 @@ class AuthController extends Controller
     }
 
     /**
-     * Pengajuan Lupa Password oleh User/OPD ke Superadmin
+     * Pengajuan Lupa Password oleh User/OPD ke Walidata
      */
     public function requestResetPassword(Request $request)
     {
@@ -142,7 +142,7 @@ class AuthController extends Controller
             ]);
         }
 
-        // Buat permintaan reset password untuk Superadmin
+        // Buat permintaan reset password untuk Walidata
         \App\Models\PasswordResetRequest::create([
             'user_id' => $user->id,
             'username' => $user->username,
@@ -153,12 +153,12 @@ class AuthController extends Controller
 
         AuditLogger::log(
             'AUTH_PASSWORD_RESET_REQUESTED',
-            "Pengguna {$user->username} ({$user->nama_instansi}) mengajukan permintaan reset kata sandi ke Superadmin.",
+            "Pengguna {$user->username} ({$user->nama_instansi}) mengajukan permintaan reset kata sandi ke Walidata.",
             'WARNING',
             ['user_id' => $user->id, 'ip' => $request->ip()]
         );
 
-        return back()->with('success', "Permintaan reset kata sandi untuk akun {$user->username} telah dikirim ke Superadmin. Silakan hubungi atau tunggu konfirmasi Superadmin.");
+        return back()->with('success', "Permintaan reset kata sandi untuk akun {$user->username} telah dikirim ke Walidata. Silakan hubungi atau tunggu konfirmasi Walidata.");
     }
 
     /**

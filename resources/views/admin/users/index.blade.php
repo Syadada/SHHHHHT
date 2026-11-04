@@ -30,8 +30,8 @@
         </div>
     @endif
 
-    <!-- Banner Notifikasi Permintaan Reset Password (Khusus Superadmin) -->
-    @if(isset($pendingResetRequests) && $pendingResetRequests->count() > 0 && auth()->user()->isSuperAdminOnly())
+    <!-- Banner Notifikasi Permintaan Reset Password (Walidata) -->
+    @if(isset($pendingResetRequests) && $pendingResetRequests->count() > 0 && auth()->user()->isSuperAdmin())
         <div style="background: #fffbeb; border: 1.5px solid #fde68a; border-radius: 12px; padding: 16px 20px; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
@@ -43,7 +43,7 @@
                             {{ $pendingResetRequests->count() }} Permintaan Reset Password Masuk
                         </div>
                         <div style="font-size: 12.5px; color: #b45309;">
-                            Pengguna salah memasukkan password 3 kali dan meminta bantuan reset kata sandi ke Superadmin.
+                            Pengguna salah memasukkan password 3 kali dan meminta bantuan reset kata sandi ke Walidata.
                         </div>
                     </div>
                 </div>
@@ -147,9 +147,9 @@
                                 @endif
                             </td>
 
-                            <!-- 4. Kata Sandi (Hanya Superadmin yang berhak melihat & mereset) -->
+                            <!-- 4. Kata Sandi (Hanya Walidata yang berhak melihat & mereset) -->
                             <td class="table-col-nowrap">
-                                @if(auth()->user()->isSuperAdminOnly())
+                                @if(auth()->user()->isSuperAdmin())
                                     <div style="display: flex; align-items: center; gap: 6px;">
                                         <span id="pwd-val-{{ $u->id }}" style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: #0f172a; min-width: 70px;">••••••••</span>
                                         <button type="button" 

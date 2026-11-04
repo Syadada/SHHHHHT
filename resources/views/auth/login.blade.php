@@ -45,14 +45,14 @@
                         <i class="fi fi-rr-key"></i> Lupa Kata Sandi?
                     </div>
                     <div style="font-size: 12.5px; color: #78350f; line-height: 1.5; margin-bottom: 12px;">
-                        Anda telah salah memasukkan kata sandi 3 kali. Klik tombol di bawah untuk meminta bantuan reset kata sandi ke Superadmin.
+                        Anda telah salah memasukkan kata sandi 3 kali. Klik tombol di bawah untuk meminta bantuan reset kata sandi ke Walidata.
                     </div>
-                    <!-- Tombol Kirim Permintaan ke Superadmin -->
+                    <!-- Tombol Kirim Permintaan ke Walidata -->
                     <form action="{{ route('password.request-reset') }}" method="POST" style="margin: 0;">
                         @csrf
                         <input type="hidden" name="username" value="{{ session('failed_username', old('login')) }}">
                         <button type="submit" class="btn-pill-primary" style="background: #b45309; border-color: #b45309; font-size: 12.5px; padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;">
-                            <i class="fi fi-rr-bell"></i> Minta Reset Kata Sandi ke Superadmin
+                            <i class="fi fi-rr-bell"></i> Minta Reset Kata Sandi ke Walidata
                         </button>
                     </form>
                 </div>

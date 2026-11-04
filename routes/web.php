@@ -31,7 +31,7 @@ Route::middleware('guest')->group(function () {
         return redirect()->route('login');
     });
 
-    // Fitur Pengajuan Lupa Password ke Superadmin
+    // Fitur Pengajuan Lupa Password ke Walidata
     Route::post('/lupa-password', [AuthController::class, 'requestResetPassword'])->name('password.request-reset');
 });
 

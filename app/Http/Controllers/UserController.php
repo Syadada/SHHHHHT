@@ -473,12 +473,12 @@ class UserController extends Controller
     }
 
     /**
-     * Superadmin Mereset Password Akun Pengguna Langsung
+     * Walidata Mereset Password Akun Pengguna Langsung
      */
     public function superAdminResetPassword(Request $request, $id)
     {
-        if (!auth()->user()->isSuperAdminOnly()) {
-            abort(403, 'Hanya Super Administrator yang berhak mereset kata sandi akun.');
+        if (!auth()->user()->isSuperAdmin()) {
+            abort(403, 'Hanya Administrator Walidata yang berhak mereset kata sandi akun.');
         }
 
         $request->validate([
@@ -502,8 +502,8 @@ class UserController extends Controller
             ]);
 
         AuditLogger::log(
-            'USER_PASSWORD_RESET_SUPERADMIN',
-            "Superadmin mereset kata sandi akun [{$user->username}] ({$user->nama_instansi}).",
+            'USER_PASSWORD_RESET_WALIDATA',
+            "Walidata mereset kata sandi akun [{$user->username}] ({$user->nama_instansi}).",
             'SUCCESS',
             ['target_user_id' => $user->id, 'admin_id' => auth()->id()]
         );
@@ -512,12 +512,12 @@ class UserController extends Controller
     }
 
     /**
-     * Superadmin Menyetujui Permintaan Reset Password Masuk
+     * Walidata Menyetujui Permintaan Reset Password Masuk
      */
     public function approveResetRequest(Request $request, $id)
     {
-        if (!auth()->user()->isSuperAdminOnly()) {
-            abort(403, 'Hanya Super Administrator yang berhak menyetujui permintaan reset kata sandi.');
+        if (!auth()->user()->isSuperAdmin()) {
+            abort(403, 'Hanya Administrator Walidata yang berhak menyetujui permintaan reset kata sandi.');
         }
 
         $resetReq = \App\Models\PasswordResetRequest::findOrFail($id);
@@ -535,7 +535,7 @@ class UserController extends Controller
 
         AuditLogger::log(
             'USER_RESET_REQUEST_APPROVED',
-            "Superadmin menyetujui reset kata sandi akun [{$user->username}] menjadi [{$newPassword}].",
+            "Walidata menyetujui reset kata sandi akun [{$user->username}] menjadi [{$newPassword}].",
             'SUCCESS',
             ['target_user_id' => $user->id, 'admin_id' => auth()->id()]
         );

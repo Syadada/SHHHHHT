@@ -105,7 +105,7 @@
                 <div class="user-modal-card-item">
                     <div class="user-modal-field-label">Kata Sandi Akun</div>
                     <div class="user-modal-field-value">
-                        @if(auth()->user()->isSuperAdminOnly())
+                        @if(auth()->user()->isSuperAdmin())
                             <div style="display: flex; align-items: center; gap: 8px;">
                                 <span id="pwd-detail-val" style="font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: #0f172a;">••••••••</span>
                                 <button type="button" 
@@ -125,7 +125,7 @@
                             </div>
                         @else
                             <span style="color: #94a3b8; font-size: 12px; display: inline-flex; align-items: center; gap: 4px;">
-                                <i class="fi fi-rr-lock"></i> Terkunci (Hanya Superadmin)
+                                <i class="fi fi-rr-lock"></i> Terkunci (Hanya Walidata)
                             </span>
                         @endif
                     </div>
