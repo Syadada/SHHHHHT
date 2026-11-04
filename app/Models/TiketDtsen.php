@@ -140,7 +140,7 @@ class TiketDtsen extends Model
             'id' => 1,
             'title' => 'Pemenuhan Dokumen',
             'desc' => 'Verifikasi dan pemenuhan kelengkapan dokumen KAK, Surat Permohonan, ROPA/DPIA/SKTM',
-            'pic' => 'Admin Walidata DTSEN'
+            'pic' => 'Walidata DTSEN'
         ],
         2 => [
             'id' => 2,
@@ -158,7 +158,7 @@ class TiketDtsen extends Model
             'id' => 1,
             'title' => 'Pemenuhan Dokumen',
             'desc' => 'Pemeriksaan berkas permohonan',
-            'pic' => 'Admin Walidata DTSEN'
+            'pic' => 'Walidata DTSEN'
         ],
         2 => [
             'id' => 2,

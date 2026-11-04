@@ -74,7 +74,7 @@
             <div class="admin-stat-sub">Dinas, Badan, dan Satker pemohon</div>
         </div>
         <div class="admin-stat-card">
-            <div class="admin-stat-label">Super Administrator</div>
+            <div class="admin-stat-label">Walidata</div>
             <div class="admin-stat-val admin-stat-val-purple">{{ number_format($totalAdmin, 0, ',', '.') }}</div>
             <div class="admin-stat-sub">Pengelola sistem kendali penuh</div>
         </div>
@@ -137,7 +137,7 @@
                                 @if($u->role === 'superadmin')
                                     <span class="role-badge-super">
                                         <i class="fi fi-rr-shield-check"></i>
-                                        {{ $u->roleRelation ? $u->roleRelation->name : 'Super Administrator' }}
+                                        {{ $u->roleRelation ? $u->roleRelation->name : 'Walidata' }}
                                     </span>
                                 @else
                                     <span class="role-badge-opd">

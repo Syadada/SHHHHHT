@@ -91,7 +91,7 @@ class TiketDtsenController extends Controller
         // KUNCI FORM: Hanya status PERLU_PERBAIKAN yang boleh diedit
         if ($tiket->status !== 'PERLU_PERBAIKAN') {
             return redirect()->route('opd.tiket.show', $tiket->id)
-                ->with('error', 'Permohonan sedang dalam proses resmi dan tidak dapat diedit sebelum ada permintaan perbaikan dari Admin Walidata.');
+                ->with('error', 'Permohonan sedang dalam proses resmi dan tidak dapat diedit sebelum ada permintaan perbaikan dari Walidata.');
         }
 
         return view('opd.tiket.edit', compact('tiket'));

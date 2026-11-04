@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Progress Tiket #' . $tiket->nomor_tiket . ' — Admin Walidata')
+@section('title', 'Detail Progress Tiket #' . $tiket->nomor_tiket . ' — Walidata')
 
 @section('content')
 <div class="ticket-stack-container">
@@ -153,7 +153,7 @@
         <!-- Tombol Aksi Cepat Centang Tahapan Admin -->
         <div class="ticket-verifier-footer-box" style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
             <div>
-                <span class="ticket-verifier-note-label">Catatan Admin / Walidata:</span>
+                <span class="ticket-verifier-note-label">Catatan Walidata:</span>
                 <div class="ticket-verifier-note-text">
                     {{ $tiket->catatan_admin ?: 'Belum ada catatan admin.' }}
                 </div>

@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Daftar Tiket Support — Admin Walidata')
+@section('title', 'Daftar Tiket Support — Walidata')
 
 @section('content')
 @php

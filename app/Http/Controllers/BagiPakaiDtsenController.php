@@ -221,7 +221,7 @@ class BagiPakaiDtsenController extends Controller
             'step4_done' => false,
             'step5_done' => false,
             'status' => 'DIPROSES',
-            'catatan_admin' => $request->filled('catatan_admin') ? trim($request->input('catatan_admin')) : 'Permintaan layanan dibuat oleh Walidata/Admin atas nama OPD (SOP: ' . self::NO_SOP . '). Menunggu verifikasi berkas.',
+            'catatan_admin' => $request->filled('catatan_admin') ? trim($request->input('catatan_admin')) : 'Permintaan layanan dibuat oleh Walidata atas nama OPD (SOP: ' . self::NO_SOP . '). Menunggu verifikasi berkas.',
 
             // Data Elemen Lampiran I SOP Form
             'nomor_naskah' => trim($request->input('nomor_naskah')) ?: self::NO_SOP,

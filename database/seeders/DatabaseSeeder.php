@@ -14,11 +14,11 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Akun Super Admin (Hak Kendali Penuh)
+        // 1. Akun Walidata (Hak Kendali Penuh)
         $superAdmin = User::updateOrCreate(
             ['username' => 'admin'],
             [
-                'name' => 'Super Administrator',
+                'name' => 'Walidata',
                 'nama_instansi' => 'Dinas Komunikasi & Informatika (Walidata)',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('admin'), // Password default: admin

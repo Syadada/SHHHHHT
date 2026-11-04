@@ -478,7 +478,7 @@ class UserController extends Controller
     public function superAdminResetPassword(Request $request, $id)
     {
         if (!auth()->user()->isSuperAdmin()) {
-            abort(403, 'Hanya Administrator Walidata yang berhak mereset kata sandi akun.');
+            abort(403, 'Hanya Walidata yang berhak mereset kata sandi akun.');
         }
 
         $request->validate([
@@ -517,7 +517,7 @@ class UserController extends Controller
     public function approveResetRequest(Request $request, $id)
     {
         if (!auth()->user()->isSuperAdmin()) {
-            abort(403, 'Hanya Administrator Walidata yang berhak menyetujui permintaan reset kata sandi.');
+            abort(403, 'Hanya Walidata yang berhak menyetujui permintaan reset kata sandi.');
         }
 
         $resetReq = \App\Models\PasswordResetRequest::findOrFail($id);

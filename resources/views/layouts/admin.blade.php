@@ -180,7 +180,7 @@
                                     {{ Auth::user()->name ?? 'Super Administrator' }}
                                 </span>
                                 <span class="sidebar-user-role">
-                                    {{ Auth::user()->role_title ?? 'Super Administrator' }}
+                                    {{ Auth::user()->role_title ?? 'Walidata' }}
                                 </span>
                             </div>
                         </div>

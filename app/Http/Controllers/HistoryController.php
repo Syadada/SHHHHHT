@@ -420,7 +420,7 @@ class HistoryController extends Controller
 
         $stepName = $step === 1 ? 'Pemenuhan Dokumen' : ($step === 2 ? 'Pengolahan DTSEN' : "Proses {$step}");
         $tiket->catatan_admin = $newState 
-            ? "{$stepName} telah diselesaikan oleh Admin Walidata pada " . now()->format('d/m/Y H:i') . " WIB."
+            ? "{$stepName} telah diselesaikan oleh Walidata pada " . now()->format('d/m/Y H:i') . " WIB."
             : "{$stepName} dikembalikan ke status belum selesai pada " . now()->format('d/m/Y H:i') . " WIB.";
 
         $tiket->save();

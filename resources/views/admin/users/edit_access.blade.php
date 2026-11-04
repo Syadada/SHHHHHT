@@ -69,7 +69,7 @@
                     <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px;">Peran Saat Ini</div>
                     <span class="role-badge-super" style="font-size: 13px; padding: 6px 14px; background: #fef3c7; color: #b45309; border-color: #fde68a;">
                         <i class="fi fi-rr-shield-check"></i>
-                        {{ $user->roleRelation ? $user->roleRelation->name : ($user->role === 'superadmin' ? 'Super Administrator' : 'Perangkat Daerah') }}
+                        {{ $user->roleRelation ? $user->roleRelation->name : ($user->role === 'superadmin' ? 'Walidata' : 'Perangkat Daerah') }}
                     </span>
                 </div>
             </div>

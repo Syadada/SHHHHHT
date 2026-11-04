@@ -54,7 +54,7 @@
                     <div>
                         @if($user->isSuperAdmin())
                             <span class="role-badge-super">
-                                <i class="fi fi-rr-shield-check"></i> {{ $user->roleRelation ? $user->roleRelation->name : 'Super Administrator' }}
+                                <i class="fi fi-rr-shield-check"></i> {{ $user->roleRelation ? $user->roleRelation->name : 'Walidata' }}
                             </span>
                         @else
                             <span class="role-badge-opd">

@@ -22,7 +22,7 @@ class GovernanceDatabaseSeeder extends Seeder
         $roleSuperAdmin = Role::updateOrCreate(
             ['slug' => 'superadmin'],
             [
-                'name' => 'Super Administrator (Walidata)',
+                'name' => 'Walidata',
                 'deskripsi' => 'Pengelola dan pengawas utama permohonan bagi pakai data DTSEN tingkat daerah.',
             ]
         );

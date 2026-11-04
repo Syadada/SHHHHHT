@@ -77,7 +77,7 @@
                     <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px;">Peran & Wewenang</div>
                     <span class="role-badge-super" style="font-size: 13px; padding: 6px 14px; background: #fef3c7; color: #b45309; border-color: #fde68a;">
                         <i class="fi fi-rr-shield-check"></i>
-                        {{ $user->roleRelation ? $user->roleRelation->name : ($user->role === 'superadmin' ? 'Super Administrator' : 'Administrator') }}
+                        {{ $user->roleRelation ? $user->roleRelation->name : ($user->role === 'superadmin' ? 'Walidata' : 'Administrator') }}
                     </span>
                     @if($user->roleRelation && $user->roleRelation->privileges)
                         <div style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 380px; margin-top: 8px;">
