@@ -14,9 +14,7 @@
             <i class="fi fi-rr-laptop"></i>
             <span>Log Laptop & Audit Keamanan</span>
         </h1>
-        <p class="page-top-subtitle">
-            Audit jejak digital identitas perangkat laptop dan riwayat aktivitas login akun pengguna ke dalam sistem.
-        </p>
+        
     </div>
     <div>
         <a href="{{ route('admin.riwayat.export-logs', ['format' => 'csv']) }}" class="btn-pill-primary">
@@ -31,22 +29,22 @@
     <div class="admin-stat-card">
         <div class="admin-stat-label">Total Log Aktivitas</div>
         <div class="admin-stat-val admin-stat-val-blue">{{ number_format($totalLogs ?? 0, 0, ',', '.') }}</div>
-        <div class="admin-stat-sub">Seluruh jejak autentikasi tersimpan</div>
+        
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-label">Laptop / Device Terdeteksi</div>
         <div class="admin-stat-val admin-stat-val-green">{{ number_format($uniqueDevices ?? 0, 0, ',', '.') }}</div>
-        <div class="admin-stat-sub">Nomor identitas unik perangkat</div>
+        
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-label">Login Hari Ini</div>
         <div class="admin-stat-val admin-stat-val-purple">{{ number_format($todayLogs ?? 0, 0, ',', '.') }}</div>
-        <div class="admin-stat-sub">Sesi masuk aktif hari ini</div>
+        
     </div>
     <div class="admin-stat-card">
         <div class="admin-stat-label">Peringatan Keamanan</div>
         <div class="admin-stat-val admin-stat-val-amber">{{ number_format($securityAlerts ?? 0, 0, ',', '.') }}</div>
-        <div class="admin-stat-sub">Akses tidak sah & gagal masuk</div>
+        
     </div>
 </div>
 
@@ -89,9 +87,7 @@
                     <span>Log Nomor Laptop & Perangkat yang Digunakan Login</span>
                 </h2>
             </div>
-            <div class="admin-card-header-sub">
-                Audit jejak digital identitas laptop/device setiap kali ada akun yang melakukan login. Klik pada ID Log atau Akun Pengguna untuk melihat detail.
-            </div>
+            
         </div>
 
         <div class="table-responsive" style="overflow-x: hidden;">
@@ -200,9 +196,7 @@
                     <span>Log Keamanan & Penolakan Akses Sistem</span>
                 </h2>
             </div>
-            <div class="admin-card-header-sub">
-                Mencatat upaya akses yang diblokir, salah kata sandi, atau percobaan URL ilegal
-            </div>
+            
         </div>
 
         <div class="table-responsive">
@@ -282,9 +276,7 @@
                     <span>Log Aktivitas Tiket & Verifikasi Persetujuan</span>
                 </h2>
             </div>
-            <div class="admin-card-header-sub">
-                Riwayat approval tahapan, verifikasi variabel, revisi, dan perubahan status tiket
-            </div>
+            
         </div>
 
         <div class="table-responsive">
@@ -361,9 +353,7 @@
                     <span>Semua Jejak Audit Sistem</span>
                 </h2>
             </div>
-            <div class="admin-card-header-sub">
-                Seluruh catatan operasional aplikasi secara menyeluruh dan berurutan
-            </div>
+            
         </div>
 
         <div class="table-responsive">

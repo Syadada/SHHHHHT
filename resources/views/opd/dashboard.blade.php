@@ -58,38 +58,5 @@
         </div>
     </div>
 
-    <!-- Alur Panduan Layanan (3 Langkah Ringkas & Bersih) -->
-    <div>
-        <div class="guide-section-heading">
-            Alur Layanan Bagi Pakai DTSEN:
-        </div>
-
-        <div class="opd-guide-grid">
-            <div class="opd-guide-card">
-                <div class="opd-guide-number">1</div>
-                <div class="opd-guide-card-title">Ajukan Permintaan Bagi Pakai</div>
-                <div class="opd-guide-card-desc">
-                    Isi formulir dan cantumkan nomor Surat Edaran resmi beserta rincian variabel data yang dibutuhkan.
-                </div>
-            </div>
-
-            <div class="opd-guide-card">
-                <div class="opd-guide-number">2</div>
-                <div class="opd-guide-card-title">Walidata Verifikasi</div>
-                <div class="opd-guide-card-desc">
-                    Tim Walidata memeriksa kesesuaian variabel dan menyiapkan data melalui tahap progress resmi.
-                </div>
-            </div>
-
-            <div class="opd-guide-card">
-                <div class="opd-guide-number">3</div>
-                <div class="opd-guide-card-title">Tanda Tangan BAST</div>
-                <div class="opd-guide-card-desc">
-                    Petugas OPD hadir dengan laptop terdaftar untuk penyerahan data dan penandatanganan Berita Acara (BAST).
-                </div>
-            </div>
-        </div>
-    </div>
-
 </div>
 @endsection

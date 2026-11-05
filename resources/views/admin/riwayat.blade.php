@@ -30,9 +30,7 @@
                         <h1 class="dash-hero-title">
                             Dashboard Layanan Bagi Pakai DTSEN
                         </h1>
-                        <p class="dash-hero-subtitle">
-                            Ringkasan statistik, 5 permintaan layanan terbaru, dan 10 aktivitas jejak audit sistem DTSEN.
-                        </p>
+                        
                     </div>
                     <div class="dash-hero-actions">
                         <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="btn-pill-primary">
@@ -49,25 +47,25 @@
                     <div class="dash-metric-card">
                         <div class="dash-metric-label">Total Tiket Masuk</div>
                         <div class="dash-metric-value">{{ number_format($totalTiket ?? 0) }}</div>
-                        <div class="dash-metric-sub">Seluruh permohonan instansi</div>
+                        
                     </div>
 
                     <div class="dash-metric-card">
                         <div class="dash-metric-label">Sedang Diproses</div>
                         <div class="dash-metric-value" style="color: var(--blue-primary);">{{ number_format($totalDiproses ?? 0) }}</div>
-                        <div class="dash-metric-sub">Menunggu verifikasi / tahapan aktif</div>
+                        
                     </div>
 
                     <div class="dash-metric-card">
                         <div class="dash-metric-label">Selesai Dibagipakaikan</div>
                         <div class="dash-metric-value" style="color: var(--green-primary);">{{ number_format($totalSelesai ?? 0) }}</div>
-                        <div class="dash-metric-sub">Tahap 1 - 5 selesai 100%</div>
+                        
                     </div>
 
                     <div class="dash-metric-card">
                         <div class="dash-metric-label">Tiket Hari Ini</div>
                         <div class="dash-metric-value" style="color: var(--purple-primary);">{{ number_format($totalHariIni ?? 0) }}</div>
-                        <div class="dash-metric-sub">Dalam 24 jam terakhir</div>
+                        
                     </div>
                 </div>
 
@@ -81,9 +79,7 @@
                                 </svg>
                                 <span>Permintaan Layanan Terbaru (5 Item)</span>
                             </h2>
-                            <p class="dash-card-subtitle">
-                                Menampilkan permohonan layanan bagi pakai DTSEN baru yang masih dalam proses (belum selesai). Permohonan yang telah selesai 100% tersimpan di menu Layanan Bagi Pakai.
-                            </p>
+                            
                         </div>
                         <div>
                             <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
@@ -219,7 +215,7 @@
                                         <td colspan="6" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
                                             <div style="font-size: 32px; margin-bottom: 8px; color: #10b981;"><i class="fi fi-rr-check-circle"></i></div>
                                             <div style="font-weight: 700; font-size: 14px; color: var(--text-primary);">Tidak ada permintaan layanan yang belum selesai</div>
-                                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Semua tiket layanan telah selesai diproses (100%), atau belum ada permohonan baru yang diajukan oleh OPD.</div>
+                                            
                                         </td>
                                     </tr>
                                 @endforelse
@@ -238,9 +234,7 @@
                                 </svg>
                                 <span>Aktivitas Terbaru (10 Entri)</span>
                             </h2>
-                            <p class="dash-card-subtitle">
-                                Rekaman 10 jejak audit waktu-nyata atas tindakan autentikasi, pembaruan tahapan tiket, dan interaksi pengguna.
-                            </p>
+                            
                         </div>
                         <div>
                             <a href="{{ route('admin.logs.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
@@ -340,7 +334,7 @@
                                         <td colspan="6" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
                                             <div style="font-size: 30px; margin-bottom: 8px; color: #94a3b8;"><i class="fi fi-rr-time-past"></i></div>
                                             <div style="font-weight: 700; font-size: 14px; color: var(--text-primary);">Belum ada rekaman aktivitas</div>
-                                            <div style="font-size: 12px; color: var(--text-muted); margin-top: 3px;">Aktivitas audit sistem akan tercatat secara otomatis di sini.</div>
+                                            
                                         </td>
                                     </tr>
                                 @endforelse
@@ -396,7 +390,7 @@
                             <input type="checkbox" name="step1_done" id="chkStep1" value="1" style="width: 18px; height: 18px;">
                             <div>
                                 <strong style="color: #1f1f1f; font-size: 13px;">Progress 1</strong>
-                                <div style="font-size: 11px; color: #5e5e5e;">Tahap proses ke-1 bagi pakai DTSEN.</div>
+                                
                             </div>
                         </label>
 
@@ -404,7 +398,7 @@
                             <input type="checkbox" name="step2_done" id="chkStep2" value="1" style="width: 18px; height: 18px;">
                             <div>
                                 <strong style="color: #1f1f1f; font-size: 13px;">Progress 2</strong>
-                                <div style="font-size: 11px; color: #5e5e5e;">Tahap proses ke-2 bagi pakai DTSEN.</div>
+                                
                             </div>
                         </label>
 
@@ -412,7 +406,7 @@
                             <input type="checkbox" name="step3_done" id="chkStep3" value="1" style="width: 18px; height: 18px;">
                             <div>
                                 <strong style="color: #1f1f1f; font-size: 13px;">Progress 3</strong>
-                                <div style="font-size: 11px; color: #5e5e5e;">Tahap proses ke-3 bagi pakai DTSEN.</div>
+                                
                             </div>
                         </label>
 
@@ -420,7 +414,7 @@
                             <input type="checkbox" name="step4_done" id="chkStep4" value="1" style="width: 18px; height: 18px;">
                             <div>
                                 <strong style="color: #1f1f1f; font-size: 13px;">Progress 4</strong>
-                                <div style="font-size: 11px; color: #5e5e5e;">Tahap proses ke-4 bagi pakai DTSEN.</div>
+                                
                             </div>
                         </label>
 
@@ -428,7 +422,7 @@
                             <input type="checkbox" name="step5_done" id="chkStep5" value="1" style="width: 18px; height: 18px;">
                             <div>
                                 <strong style="color: #1f1f1f; font-size: 13px;">Progress 5 (Selesai 100%)</strong>
-                                <div style="font-size: 11px; color: #5e5e5e;">Tahap proses ke-5 bagi pakai DTSEN selesai sepenuhnya.</div>
+                                
                             </div>
                         </label>
                     </div>

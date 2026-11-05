@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="id">
-<head>33
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login ADMINISTRATOR</title>
+    <title>Login WALIDATA</title>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,7 +20,7 @@
         <div class="form-card login-card-admin">
 
             <div class="form-header form-group-mb-24">
-                <h1 class="form-title login-title-admin">LOGIN ADMINISTRATOR</h1>
+                <h1 class="form-title login-title-admin">LOGIN WALIDATA</h1>
             </div>
 
            
@@ -43,7 +43,7 @@
                            id="input_login" 
                            class="form-control" 
                            value="{{ old('login') }}" 
-                           placeholder="Masukkan akun admin..." 
+                           placeholder="Masukkan akun walidata..." 
                            required 
                            autofocus
                            autocomplete="username">

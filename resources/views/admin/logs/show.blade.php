@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div style="font-size: 14px; color: #475569; margin-top: 6px; max-width: 600px; line-height: 1.5;">
-                    {{ $log->description ?: 'Pencatatan sesi autentikasi dan jejak login perangkat ke dalam sistem.' }}
+                    {{ $log->description ?: '-' }}
                 </div>
             </div>
 

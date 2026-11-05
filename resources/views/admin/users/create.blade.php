@@ -21,9 +21,7 @@
                 <i class="fi fi-rr-user-add" style="color: #0b57d0;"></i>
                 <span>Buat Akun Pengguna Baru</span>
             </h1>
-            <p class="page-top-subtitle">
-                Isi data kredensial akun pengguna atau pejabat instansi. Setelah klik simpan, Anda akan langsung dialihkan ke halaman konfigurasi hak akses.
-            </p>
+            
         </div>
         <div>
             <a href="{{ route('admin.users.index') }}" class="btn-pill-secondary">

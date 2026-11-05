@@ -488,6 +488,150 @@
             </tr>
         </table>
 
+        <!-- Bagian 3b: Tim Pelaksana Walidata -->
+        <div class="doc-section-heading">Tim Pelaksana Walidata</div>
+        <table class="form-grid-table">
+            <thead>
+                <tr class="bg-light-header">
+                    <th style="width: 5%; text-align: center;">No</th>
+                    <th style="width: 32%;">Nama & NIP</th>
+                    <th style="width: 28%;">Instansi / Unit Kerja</th>
+                    <th style="width: 22%;">Jabatan / Peran</th>
+                    <th style="width: 13%; text-align: center;">Status Kehadiran</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Walidata: Penanggung Jawab -->
+                <tr>
+                    <td style="text-align: center;">1</td>
+                    <td>
+                        <strong>{{ $tiket->penanggung_jawab ?: 'Chobir Sabbaha, S.Kom., M.T.' }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_penanggung_jawab ?: '19780218 200501 1 009' }}</span>
+                    </td>
+                    <td>Diskominfo SP Prov. Banten (Walidata)</td>
+                    <td>Penanggung Jawab Walidata</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir / Pengesah</td>
+                </tr>
+                <!-- Walidata: Pelaksana 1 -->
+                <tr>
+                    <td style="text-align: center;">2</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_1 ?: 'Tia Fitria Saumi, S.Kom.' }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_1 ?: '19930812 202012 2 008' }}</span>
+                    </td>
+                    <td>Diskominfo SP Prov. Banten (Walidata)</td>
+                    <td>{{ $tiket->jabatan_pelaksana_1 ?: 'Pranata Komputer Ahli Muda (Pelaksana 1)' }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                <!-- Walidata: Pelaksana 2 -->
+                <tr>
+                    <td style="text-align: center;">3</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_2 ?: 'Ahmad Fauzi, S.T.' }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_2 ?: '19890514 201503 1 004' }}</span>
+                    </td>
+                    <td>Diskominfo SP Prov. Banten (Walidata)</td>
+                    <td>{{ $tiket->jabatan_pelaksana_2 ?: 'Statistisi Ahli Pertama (Pelaksana 2)' }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                @if(!empty($tiket->pelaksana_3))
+                <tr>
+                    <td style="text-align: center;">4</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_3 }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_3 ?: '-' }}</span>
+                    </td>
+                    <td>Diskominfo SP Prov. Banten (Walidata)</td>
+                    <td>{{ $tiket->jabatan_pelaksana_3 ?: 'Tim Teknis Walidata (Pelaksana 3)' }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                @endif
+                @if(!empty($tiket->pelaksana_4))
+                <tr>
+                    <td style="text-align: center;">5</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_4 }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_4 ?: '-' }}</span>
+                    </td>
+                    <td>Diskominfo SP Prov. Banten (Walidata)</td>
+                    <td>{{ $tiket->jabatan_pelaksana_4 ?: 'Tim Teknis Walidata (Pelaksana 4)' }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                @endif
+            </tbody>
+        </table>
+        <div style="margin-bottom: 12px;"></div>
+
+        <!-- Bagian 3c: Tim Pelaksana Pemohon -->
+        <div class="doc-section-heading">Tim Pelaksana Pemohon</div>
+        <table class="form-grid-table">
+            <thead>
+                <tr class="bg-light-header">
+                    <th style="width: 5%; text-align: center;">No</th>
+                    <th style="width: 32%;">Nama & NIP</th>
+                    <th style="width: 28%;">Instansi / Perangkat Daerah</th>
+                    <th style="width: 22%;">Jabatan / Peran</th>
+                    <th style="width: 13%; text-align: center;">Status Kehadiran</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Perwakilan OPD 1 -->
+                <tr>
+                    <td style="text-align: center;">1</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_opd_1 ?: ($tiket->nama_narahubung ?: $tiket->nama_pemohon) }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_opd_1 ?: ($tiket->nip_narahubung ?: ($tiket->nip_pemohon ?: '-')) }}</span>
+                    </td>
+                    <td>{{ $tiket->nama_instansi }}</td>
+                    <td>{{ $tiket->jabatan_pelaksana_opd_1 ?: ($tiket->jabatan_narahubung ?: ($tiket->jabatan_pemohon ?: 'PIC Narahubung / Penerima Data')) }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                @if(!empty($tiket->pelaksana_opd_2))
+                <tr>
+                    <td style="text-align: center;">2</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_opd_2 }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_opd_2 ?: '-' }}</span>
+                    </td>
+                    <td>{{ $tiket->nama_instansi }}</td>
+                    <td>{{ $tiket->jabatan_pelaksana_opd_2 ?: 'Staf Pendamping OPD' }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                @endif
+                @if(!empty($tiket->pelaksana_opd_3))
+                <tr>
+                    <td style="text-align: center;">3</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_opd_3 }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_opd_3 ?: '-' }}</span>
+                    </td>
+                    <td>{{ $tiket->nama_instansi }}</td>
+                    <td>{{ $tiket->jabatan_pelaksana_opd_3 ?: 'Staf Pendamping OPD' }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                @endif
+                @if(!empty($tiket->pelaksana_opd_4))
+                <tr>
+                    <td style="text-align: center;">4</td>
+                    <td>
+                        <strong>{{ $tiket->pelaksana_opd_4 }}</strong><br>
+                        <span style="font-size: 10px; color: #64748b;">NIP. {{ $tiket->nip_pelaksana_opd_4 ?: '-' }}</span>
+                    </td>
+                    <td>{{ $tiket->nama_instansi }}</td>
+                    <td>{{ $tiket->jabatan_pelaksana_opd_4 ?: 'Staf Pendamping OPD' }}</td>
+                    <td style="text-align: center; color: #166534; font-weight: 600;">✓ Hadir</td>
+                </tr>
+                @endif
+            </tbody>
+        </table>
+        @if(!empty($tiket->keterangan_kehadiran))
+        <div style="font-size: 11px; margin-top: 5px; margin-bottom: 15px; color: #334155; font-style: italic;">
+            * <strong>Catatan / Keterangan Kehadiran:</strong> {{ $tiket->keterangan_kehadiran }}
+        </div>
+        @else
+        <div style="margin-bottom: 15px;"></div>
+        @endif
+
         <!-- Bagian 4: Pelaksanaan (Tabel 5 Tahapan SOP) -->
         <div class="doc-section-heading">Pelaksanaan</div>
         <table class="form-grid-table">
@@ -631,49 +775,64 @@
         </table>
 
         <!-- Bagian 7: Tanda Tangan & Visualisasi TTE -->
-        <div class="tte-grid">
-            <div class="tte-col">
-                <div>Pelaksana 1,</div>
+        <div class="tte-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 24px; page-break-inside: avoid;">
+            <div class="tte-col" style="width: auto;">
+                <div style="font-weight: 600;">Tim Pelaksana Walidata 1,</div>
+                <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">{{ $tiket->jabatan_pelaksana_1 ?: 'Pranata Komputer Ahli Muda' }}</div>
                 <div class="tte-box">
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
-                        <i class="fi fi-rr-shield-check" style="font-size: 16px;"></i>
-                        <span>TTE TERVERIFIKASI</span>
-                        <span style="font-size: 9px; color: #64748b; font-family: monospace;">BSrE BSSN</span>
+                        <i class="fi fi-rr-shield-check" style="font-size: 16px; color: #2563eb;"></i>
+                        <span style="color: #2563eb; font-weight: 700; font-size: 10px;">TTE TERVERIFIKASI</span>
+                        <span style="font-size: 8px; color: #64748b; font-family: monospace;">BSrE BSSN</span>
                     </div>
                 </div>
                 <div class="tte-name">{{ $tiket->pelaksana_1 ?: 'Tia Fitria Saumi, S.Kom.' }}</div>
-                <div class="tte-nip">NIP. 19930812 202012 2 008</div>
+                <div class="tte-nip">NIP. {{ $tiket->nip_pelaksana_1 ?: '19930812 202012 2 008' }}</div>
             </div>
 
-            <div class="tte-col">
-                <div>Pelaksana 2,</div>
+            <div class="tte-col" style="width: auto;">
+                <div style="font-weight: 600;">Tim Pelaksana Walidata 2,</div>
+                <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">{{ $tiket->jabatan_pelaksana_2 ?: 'Statistisi Ahli Pertama' }}</div>
                 <div class="tte-box">
                     <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
-                        <i class="fi fi-rr-shield-check" style="font-size: 16px;"></i>
-                        <span>TTE TERVERIFIKASI</span>
-                        <span style="font-size: 9px; color: #64748b; font-family: monospace;">BSrE BSSN</span>
+                        <i class="fi fi-rr-shield-check" style="font-size: 16px; color: #2563eb;"></i>
+                        <span style="color: #2563eb; font-weight: 700; font-size: 10px;">TTE TERVERIFIKASI</span>
+                        <span style="font-size: 8px; color: #64748b; font-family: monospace;">BSrE BSSN</span>
                     </div>
                 </div>
                 <div class="tte-name">{{ $tiket->pelaksana_2 ?: 'Ahmad Fauzi, S.T.' }}</div>
-                <div class="tte-nip">NIP. 19890514 201503 1 004</div>
+                <div class="tte-nip">NIP. {{ $tiket->nip_pelaksana_2 ?: '19890514 201503 1 004' }}</div>
+            </div>
+
+            <div class="tte-col" style="width: auto;">
+                <div style="font-weight: 600;">Tim Pelaksana Pemohon,</div>
+                <div style="font-size: 10px; color: #64748b; margin-bottom: 4px;">{{ $tiket->jabatan_pelaksana_opd_1 ?: ($tiket->jabatan_narahubung ?: ($tiket->jabatan_pemohon ?: 'PIC / Narahubung OPD')) }}</div>
+                <div class="tte-box">
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
+                        <i class="fi fi-rr-shield-check" style="font-size: 16px; color: #16a34a;"></i>
+                        <span style="color: #16a34a; font-weight: 700; font-size: 10px;">TTE / TANDA TANGAN</span>
+                        <span style="font-size: 8px; color: #64748b; font-family: monospace;">BERITA ACARA DTSEN</span>
+                    </div>
+                </div>
+                <div class="tte-name">{{ $tiket->pelaksana_opd_1 ?: ($tiket->nama_narahubung ?: $tiket->nama_pemohon) }}</div>
+                <div class="tte-nip">NIP. {{ $tiket->nip_pelaksana_opd_1 ?: ($tiket->nip_narahubung ?: ($tiket->nip_pemohon ?: '-')) }}</div>
             </div>
         </div>
 
-        <div style="margin-top: 24px; text-align: center; page-break-inside: avoid;">
+        <div style="margin-top: 26px; text-align: center; page-break-inside: avoid;">
             <div style="font-size: 12px;">Mengetahui,</div>
             <div style="font-size: 12px; font-weight: 700;">Kepala Bidang Statistik, Persandian dan Keamanan Informasi</div>
             <div style="font-size: 11px; color: #475569;">selaku Penanggung Jawab Walidata</div>
-            <div class="tte-box" style="margin: 10px auto;">
+            <div class="tte-box" style="margin: 10px auto; width: 260px;">
                 <div style="display: flex; flex-direction: column; align-items: center; gap: 3px;">
                     <i class="fi fi-rr-shield-check" style="font-size: 18px; color: #16a34a;"></i>
-                    <span style="color: #16a34a;">TTE DISAHKAN RESMI</span>
+                    <span style="color: #16a34a; font-weight: 700;">TTE DISAHKAN RESMI</span>
                     <span style="font-size: 9px; color: #64748b; font-family: monospace;">ID: TTE-WALIDATA-{{ $tiket->id }}</span>
                 </div>
             </div>
             <div class="tte-name" style="font-size: 13px;">{{ $tiket->penanggung_jawab ?: 'Chobir Sabbaha, S.Kom., M.T.' }}</div>
-            <div class="tte-nip">NIP. 19780218 200501 1 009</div>
+            <div class="tte-nip">NIP. {{ $tiket->nip_penanggung_jawab ?: '19780218 200501 1 009' }}</div>
         </div>
-
     </div>
 
 </body>

@@ -30,7 +30,7 @@
             <div class="form-group" style="margin-bottom: 24px;">
                 <label class="form-label" style="font-size: 14px; font-weight: 700; color: #fff; display: flex; justify-content: space-between;">
                     <span>Pilih Berkas KAK (File Field) <span style="color: #ef4444;">*</span></span>
-                    <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Format: PDF, DOC, DOCX, XLS, XLSX (Maks. 50MB)</span>
+                    <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Format: PDF, DOC, DOCX, XLS, XLSX (Maks. 500MB)</span>
                 </label>
 
                 <div style="border: 2px dashed rgba(59, 130, 246, 0.4); background: rgba(15, 23, 42, 0.6); border-radius: 14px; padding: 32px 20px; text-align: center; position: relative; transition: all 0.2s ease;" id="dropzoneBox">

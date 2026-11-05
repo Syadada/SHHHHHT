@@ -27,9 +27,7 @@
                         <i class="fi fi-rr-document"></i> Format SOP: FR.01-SOP.DTSEN-09/DKISP
                     </span>
                 </div>
-                <p style="font-size: 13px; color: #64748b; margin: 0;">
-                    Lengkapi seluruh parameter formulir pemenuhan layanan bagi pakai DTSEN (Lampiran I SOP). Seluruh isian akan otomatis menjadi basis data tampilan dan ekspor berkas Word resmi (.docx).
-                </p>
+                
             </div>
             <div>
                 <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
@@ -480,7 +478,7 @@
                     Klik untuk memilih berkas surat permohonan dinas
                 </div>
                 <div class="upload-subtitle" id="fileDisplaySubtitle">
-                    Format file: .pdf, .docx, .doc (Maksimal 50 MB)
+                    Format file: .pdf, .docx, .doc (Maksimal 500 MB)
                 </div>
                 <input type="file" 
                        name="file_surat" 

@@ -114,6 +114,7 @@ Route::middleware(['auth', 'session.timeout'])->group(function () {
             return redirect()->route('admin.bagi-pakai-dtsen.index');
         })->name('tiket.index');
         Route::get('/tiket/{id}', [HistoryController::class, 'tiketShow'])->whereNumber('id')->name('tiket.show');
+        Route::get('/tiket/{id}/download-dokumen/{tipe}', [TiketDtsenController::class, 'downloadDokumen'])->name('tiket.download-dokumen');
 
         // Layanan Bagi Pakai DTSEN (SOP: 555/07-SOP/DISKOMINFO SP/2026 - Permintaan Layanan Buat/Edit/Hapus)
         Route::get('/bagi-pakai-dtsen', [BagiPakaiDtsenController::class, 'index'])->name('bagi-pakai-dtsen.index');

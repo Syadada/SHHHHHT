@@ -93,7 +93,7 @@
                 <div style="background: #f8fafc; padding: 12px 14px; border-radius: 8px; border: 1px solid #e2e8f0;">
                     <div style="font-size: 11px; color: #64748b; font-weight: 600;">PETUGAS INPUT ADMIN</div>
                     <div style="font-size: 14px; font-weight: 700; color: #0f172a; margin-top: 4px;">
-                        {{ $riwayat->created_by ?: 'Super Administrator' }}
+                        {{ $riwayat->created_by ?: 'Walidata' }}
                     </div>
                 </div>
             </div>

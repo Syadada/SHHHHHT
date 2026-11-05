@@ -105,7 +105,7 @@
                                     id="btnDelPermohonan" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearFile('inputPermohonan', 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan', 'Pilih Berkas Surat Permohonan', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    onclick="clearFile('inputPermohonan', 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan', 'Pilih Berkas Surat Permohonan', 'PDF, DOC, DOCX (Maks 500MB)')" 
                                     title="Hapus berkas yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Hapus
                             </button>
@@ -117,7 +117,7 @@
                         <div class="dtsen-file-dropzone dtsen-dropzone-permohonan" onclick="document.getElementById('inputPermohonan').click()">
                             <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
                             <div class="dtsen-dropzone-title" id="permohonanTitle">Pilih Berkas Surat Permohonan</div>
-                            <div class="dtsen-dropzone-sub" id="permohonanSub">PDF, DOC, DOCX (Maks 50MB)</div>
+                            <div class="dtsen-dropzone-sub" id="permohonanSub">PDF, DOC, DOCX (Maks 500MB)</div>
                             <input type="file" 
                                    name="file_surat_permohonan" 
                                    id="inputPermohonan" 
@@ -179,7 +179,7 @@
                                     id="btnDelKak" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearFile('inputKak', 'kakTitle', 'kakSub', 'btnDelKak', 'Pilih Berkas KAK', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    onclick="clearFile('inputKak', 'kakTitle', 'kakSub', 'btnDelKak', 'Pilih Berkas KAK', 'PDF, DOC, DOCX (Maks 500MB)')" 
                                     title="Hapus berkas yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Hapus
                             </button>
@@ -189,7 +189,7 @@
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKak').click()">
                         <i class="fi fi-rr-cloud-upload-alt dtsen-dropzone-icon"></i>
                         <div class="dtsen-dropzone-title" id="kakTitle">Pilih Berkas KAK</div>
-                        <div class="dtsen-dropzone-sub" id="kakSub">PDF, DOC, DOCX (Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="kakSub">PDF, DOC, DOCX (Maks 500MB)</div>
                         <input type="file" 
                                name="file_kak" 
                                id="inputKak" 
@@ -211,7 +211,7 @@
                                     id="btnDelSktm" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearFile('inputSktm', 'sktmTitle', 'sktmSub', 'btnDelSktm', 'Pilih Berkas SK Tim Pelaksana', 'PDF, DOC, DOCX, ZIP (Maks 50MB)')" 
+                                    onclick="clearFile('inputSktm', 'sktmTitle', 'sktmSub', 'btnDelSktm', 'Pilih Berkas SK Tim Pelaksana', 'PDF, DOC, DOCX, ZIP (Maks 500MB)')" 
                                     title="Hapus berkas yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Hapus
                             </button>
@@ -221,7 +221,7 @@
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputSktm').click()">
                         <i class="fi fi-rr-file dtsen-dropzone-icon"></i>
                         <div class="dtsen-dropzone-title" id="sktmTitle">Pilih Berkas SK Tim Pelaksana</div>
-                        <div class="dtsen-dropzone-sub" id="sktmSub">PDF, DOC, DOCX, ZIP (Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="sktmSub">PDF, DOC, DOCX, ZIP (Maks 500MB)</div>
                         <input type="file" 
                                name="file_sktm" 
                                id="inputSktm" 
@@ -242,7 +242,7 @@
                                     id="btnDelRopa" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearFile('inputRopa', 'ropaTitle', 'ropaSub', 'btnDelRopa', 'Pilih Berkas ROPA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    onclick="clearFile('inputRopa', 'ropaTitle', 'ropaSub', 'btnDelRopa', 'Pilih Berkas ROPA', 'PDF, DOC, DOCX, XLSX (Maks 500MB)')" 
                                     title="Hapus berkas yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Hapus
                             </button>
@@ -252,7 +252,7 @@
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputRopa').click()">
                         <i class="fi fi-rr-document dtsen-dropzone-icon"></i>
                         <div class="dtsen-dropzone-title" id="ropaTitle">Pilih Berkas ROPA</div>
-                        <div class="dtsen-dropzone-sub" id="ropaSub">PDF, DOC, DOCX, XLSX (Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="ropaSub">PDF, DOC, DOCX, XLSX (Maks 500MB)</div>
                         <input type="file" 
                                name="file_ropa" 
                                id="inputRopa" 
@@ -273,7 +273,7 @@
                                     id="btnDelDpia" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearFile('inputDpia', 'dpiaTitle', 'dpiaSub', 'btnDelDpia', 'Pilih Berkas DPIA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    onclick="clearFile('inputDpia', 'dpiaTitle', 'dpiaSub', 'btnDelDpia', 'Pilih Berkas DPIA', 'PDF, DOC, DOCX, XLSX (Maks 500MB)')" 
                                     title="Hapus berkas yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Hapus
                             </button>
@@ -283,7 +283,7 @@
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputDpia').click()">
                         <i class="fi fi-rr-shield-check dtsen-dropzone-icon"></i>
                         <div class="dtsen-dropzone-title" id="dpiaTitle">Pilih Berkas DPIA</div>
-                        <div class="dtsen-dropzone-sub" id="dpiaSub">PDF, DOC, DOCX, XLSX (Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="dpiaSub">PDF, DOC, DOCX, XLSX (Maks 500MB)</div>
                         <input type="file" 
                                name="file_dpia" 
                                id="inputDpia" 
@@ -304,7 +304,7 @@
                                     id="btnDelKlasifikasi" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearFile('inputKlasifikasi', 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi', 'Pilih Berkas Klasifikasi DTSEN', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    onclick="clearFile('inputKlasifikasi', 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi', 'Pilih Berkas Klasifikasi DTSEN', 'PDF, DOC, DOCX, XLSX (Maks 500MB)')" 
                                     title="Hapus berkas yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Hapus
                             </button>
@@ -314,7 +314,7 @@
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputKlasifikasi').click()">
                         <i class="fi fi-rr-folder dtsen-dropzone-icon"></i>
                         <div class="dtsen-dropzone-title" id="klasifikasiTitle">Pilih Berkas Klasifikasi DTSEN</div>
-                        <div class="dtsen-dropzone-sub" id="klasifikasiSub">PDF, DOC, DOCX, XLSX (Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="klasifikasiSub">PDF, DOC, DOCX, XLSX (Maks 500MB)</div>
                         <input type="file" 
                                name="file_klasifikasi_dtsen" 
                                id="inputKlasifikasi" 
@@ -335,7 +335,7 @@
                                     id="btnDelHakAkses" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearFile('inputHakAkses', 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses', 'Pilih Berkas Hak Akses', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    onclick="clearFile('inputHakAkses', 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses', 'Pilih Berkas Hak Akses', 'PDF, DOC, DOCX (Maks 500MB)')" 
                                     title="Hapus berkas yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Hapus
                             </button>
@@ -345,7 +345,7 @@
                     <div class="dtsen-file-dropzone" onclick="document.getElementById('inputHakAkses').click()">
                         <i class="fi fi-rr-key dtsen-dropzone-icon"></i>
                         <div class="dtsen-dropzone-title" id="hakAksesTitle">Pilih Berkas Hak Akses</div>
-                        <div class="dtsen-dropzone-sub" id="hakAksesSub">PDF, DOC, DOCX (Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="hakAksesSub">PDF, DOC, DOCX (Maks 500MB)</div>
                         <input type="file" 
                                name="file_hak_akses" 
                                id="inputHakAkses" 

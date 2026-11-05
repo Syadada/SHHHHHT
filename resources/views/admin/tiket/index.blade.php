@@ -38,9 +38,7 @@
                     <i class="fi fi-rr-ticket color-status-progress"></i>
                     <span>Semua Tiket Permohonan Perangkat Daerah</span>
                 </h2>
-                <div class="portal-subtitle">
-                    Klik pada <strong>Nomor Tiket</strong> untuk melihat progress secara detail serta melakukan verifikasi & approval.
-                </div>
+                
             </div>
 
             <div class="ticket-filter-bar">

@@ -140,7 +140,7 @@
                                     id="btnDelPermohonan" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearNewFile('inputPermohonan', 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan', 'permohonan', 'Pilih Berkas Surat Permohonan', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    onclick="clearNewFile('inputPermohonan', 'permohonanTitle', 'permohonanSub', 'btnDelPermohonan', 'permohonan', 'Pilih Berkas Surat Permohonan', 'PDF, DOC, DOCX (Maks 500MB)')" 
                                     title="Batalkan berkas baru yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Batal Ganti
                             </button>
@@ -159,7 +159,7 @@
                                 @endif
                             </div>
                             <div class="dtsen-dropzone-sub" id="permohonanSub">
-                                Klik di sini untuk mengunggah berkas pengganti (PDF, DOC, DOCX Maks 50MB)
+                                Klik di sini untuk mengunggah berkas pengganti (PDF, DOC, DOCX Maks 500MB)
                             </div>
                             <input type="file" 
                                    name="file_surat_permohonan" 
@@ -226,7 +226,7 @@
                                     id="btnDelKak" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearNewFile('inputKak', 'kakTitle', 'kakSub', 'btnDelKak', 'kak', 'Pilih Berkas KAK', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    onclick="clearNewFile('inputKak', 'kakTitle', 'kakSub', 'btnDelKak', 'kak', 'Pilih Berkas KAK', 'PDF, DOC, DOCX (Maks 500MB)')" 
                                     title="Batalkan berkas baru yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Batal Ganti
                             </button>
@@ -242,7 +242,7 @@
                                 Pilih Berkas KAK
                             @endif
                         </div>
-                        <div class="dtsen-dropzone-sub" id="kakSub">Klik untuk ganti berkas (PDF, DOC, DOCX Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="kakSub">Klik untuk ganti berkas (PDF, DOC, DOCX Maks 500MB)</div>
                         <input type="file" 
                                name="file_kak" 
                                id="inputKak" 
@@ -268,7 +268,7 @@
                                     id="btnDelSktm" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearNewFile('inputSktm', 'sktmTitle', 'sktmSub', 'btnDelSktm', 'sktm', 'Pilih Berkas SK Tim Pelaksana', 'PDF, DOC, DOCX, ZIP (Maks 50MB)')" 
+                                    onclick="clearNewFile('inputSktm', 'sktmTitle', 'sktmSub', 'btnDelSktm', 'sktm', 'Pilih Berkas SK Tim Pelaksana', 'PDF, DOC, DOCX, ZIP (Maks 500MB)')" 
                                     title="Batalkan berkas baru yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Batal Ganti
                             </button>
@@ -294,7 +294,7 @@
                                 Pilih Berkas SK Tim Pelaksana
                             @endif
                         </div>
-                        <div class="dtsen-dropzone-sub" id="sktmSub">Klik untuk ganti (PDF, DOC, DOCX, ZIP Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="sktmSub">Klik untuk ganti (PDF, DOC, DOCX, ZIP Maks 500MB)</div>
                         <input type="file" 
                                name="file_sktm" 
                                id="inputSktm" 
@@ -320,7 +320,7 @@
                                     id="btnDelRopa" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearNewFile('inputRopa', 'ropaTitle', 'ropaSub', 'btnDelRopa', 'ropa', 'Pilih Berkas ROPA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    onclick="clearNewFile('inputRopa', 'ropaTitle', 'ropaSub', 'btnDelRopa', 'ropa', 'Pilih Berkas ROPA', 'PDF, DOC, DOCX, XLSX (Maks 500MB)')" 
                                     title="Batalkan berkas baru yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Batal Ganti
                             </button>
@@ -346,7 +346,7 @@
                                 Pilih Berkas ROPA
                             @endif
                         </div>
-                        <div class="dtsen-dropzone-sub" id="ropaSub">Klik untuk ganti (PDF, DOC, DOCX, XLSX Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="ropaSub">Klik untuk ganti (PDF, DOC, DOCX, XLSX Maks 500MB)</div>
                         <input type="file" 
                                name="file_ropa" 
                                id="inputRopa" 
@@ -372,7 +372,7 @@
                                     id="btnDelDpia" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearNewFile('inputDpia', 'dpiaTitle', 'dpiaSub', 'btnDelDpia', 'dpia', 'Pilih Berkas DPIA', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    onclick="clearNewFile('inputDpia', 'dpiaTitle', 'dpiaSub', 'btnDelDpia', 'dpia', 'Pilih Berkas DPIA', 'PDF, DOC, DOCX, XLSX (Maks 500MB)')" 
                                     title="Batalkan berkas baru yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Batal Ganti
                             </button>
@@ -398,7 +398,7 @@
                                 Pilih Berkas DPIA
                             @endif
                         </div>
-                        <div class="dtsen-dropzone-sub" id="dpiaSub">Klik untuk ganti (PDF, DOC, DOCX, XLSX Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="dpiaSub">Klik untuk ganti (PDF, DOC, DOCX, XLSX Maks 500MB)</div>
                         <input type="file" 
                                name="file_dpia" 
                                id="inputDpia" 
@@ -424,7 +424,7 @@
                                     id="btnDelKlasifikasi" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearNewFile('inputKlasifikasi', 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi', 'klasifikasi', 'Pilih Berkas Klasifikasi DTSEN', 'PDF, DOC, DOCX, XLSX (Maks 50MB)')" 
+                                    onclick="clearNewFile('inputKlasifikasi', 'klasifikasiTitle', 'klasifikasiSub', 'btnDelKlasifikasi', 'klasifikasi', 'Pilih Berkas Klasifikasi DTSEN', 'PDF, DOC, DOCX, XLSX (Maks 500MB)')" 
                                     title="Batalkan berkas baru yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Batal Ganti
                             </button>
@@ -450,7 +450,7 @@
                                 Pilih Berkas Klasifikasi DTSEN
                             @endif
                         </div>
-                        <div class="dtsen-dropzone-sub" id="klasifikasiSub">Klik untuk ganti (PDF, DOC, DOCX, XLSX Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="klasifikasiSub">Klik untuk ganti (PDF, DOC, DOCX, XLSX Maks 500MB)</div>
                         <input type="file" 
                                name="file_klasifikasi_dtsen" 
                                id="inputKlasifikasi" 
@@ -476,7 +476,7 @@
                                     id="btnDelHakAkses" 
                                     class="dtsen-file-delete-btn" 
                                     style="display: none;" 
-                                    onclick="clearNewFile('inputHakAkses', 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses', 'hakAkses', 'Pilih Berkas Hak Akses', 'PDF, DOC, DOCX (Maks 50MB)')" 
+                                    onclick="clearNewFile('inputHakAkses', 'hakAksesTitle', 'hakAksesSub', 'btnDelHakAkses', 'hakAkses', 'Pilih Berkas Hak Akses', 'PDF, DOC, DOCX (Maks 500MB)')" 
                                     title="Batalkan berkas baru yang dipilih">
                                 <i class="fi fi-rr-trash"></i> Batal Ganti
                             </button>
@@ -502,7 +502,7 @@
                                 Pilih Berkas Hak Akses
                             @endif
                         </div>
-                        <div class="dtsen-dropzone-sub" id="hakAksesSub">Klik untuk ganti (PDF, DOC, DOCX Maks 50MB)</div>
+                        <div class="dtsen-dropzone-sub" id="hakAksesSub">Klik untuk ganti (PDF, DOC, DOCX Maks 500MB)</div>
                         <input type="file" 
                                name="file_hak_akses" 
                                id="inputHakAkses" 
@@ -601,7 +601,7 @@ function clearNewFile(inputId, titleId, subId, btnDelId, key, defaultTitle, defa
             titleEl.innerHTML = `<span style="color: #059669; font-weight: 700;">✓ Berkas Ada: ${serverName}</span>`;
         }
         if (subEl) {
-            subEl.innerHTML = `Klik di sini untuk mengunggah berkas pengganti (PDF, DOC, DOCX Maks 50MB)`;
+            subEl.innerHTML = `Klik di sini untuk mengunggah berkas pengganti (PDF, DOC, DOCX Maks 500MB)`;
         }
     } else {
         if (titleEl) {
@@ -642,7 +642,7 @@ function toggleHapusServerFile(key, inputHapusId, titleId, subId, btnHapusId) {
             titleEl.innerHTML = `<span style="color: #059669; font-weight: 700;">✓ Berkas Ada: ${serverName}</span>`;
         }
         if (subEl) {
-            subEl.innerHTML = `Klik untuk ganti berkas (PDF, DOC, DOCX Maks 50MB)`;
+            subEl.innerHTML = `Klik untuk ganti berkas (PDF, DOC, DOCX Maks 500MB)`;
         }
         if (btnHapus) {
             btnHapus.innerHTML = `<i class="fi fi-rr-trash"></i> Hapus Berkas`;

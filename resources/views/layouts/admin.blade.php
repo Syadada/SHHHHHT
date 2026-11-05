@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Admin Panel') — Layanan Bagi Pakai DTSEN</title>
+    <title>@yield('title', 'Walidata') — Layanan Bagi Pakai DTSEN</title>
     
     <!-- Modern Typography (Roboto & JetBrains Mono) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,7 +27,7 @@
                     </div>
                     <div class="app-brand-title">
                         <span>Layanan Bagi Pakai DTSEN</span>
-                        <span class="app-brand-badge">SUPER ADMIN</span>
+                        <span class="app-brand-badge">WALIDATA</span>
                     </div>
                 </a>
             </div>
@@ -162,13 +162,6 @@
 
                 <!-- Sidebar Footer (User Profile & Logout) -->
                 <div class="app-sidebar-footer">
-                    <!-- Preview Portal OPD (Image 6) -->
-                    <a href="{{ route('opd.dashboard') }}" class="sidebar-preview-btn" target="_blank" title="Lihat Tampilan Portal OPD">
-                        <i class="fi fi-rr-browser"></i>
-                        <span>Preview Portal OPD</span>
-                        <i class="fi fi-rr-arrow-up-right sidebar-preview-ext"></i>
-                    </a>
-
                     <!-- User Profile Box & Logout -->
                     <div class="sidebar-user-box">
                         <div class="sidebar-user-header">
@@ -176,8 +169,8 @@
                                 {{ strtoupper(substr(Auth::user()->name ?? 'S', 0, 1)) }}
                             </div>
                             <div class="sidebar-user-meta">
-                                <span class="sidebar-user-name" title="{{ Auth::user()->name ?? 'Super Administrator' }}">
-                                    {{ Auth::user()->name ?? 'Super Administrator' }}
+                                <span class="sidebar-user-name" title="{{ Auth::user()->name ?? 'Walidata' }}">
+                                    {{ Auth::user()->name ?? 'Walidata' }}
                                 </span>
                                 <span class="sidebar-user-role">
                                     {{ Auth::user()->role_title ?? 'Walidata' }}

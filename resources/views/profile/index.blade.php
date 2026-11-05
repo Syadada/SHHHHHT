@@ -260,9 +260,6 @@
                             <div class="step-node-title" style="font-size: 14px; font-weight: 700; color: #0f172a;">
                                 {{ $stepNum }}. {{ $stepDef['title'] }}
                             </div>
-                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
-                                {{ $stepDef['desc'] }}
-                            </div>
 
                             @if($isDone)
                                 <span class="step-badge-status" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;">

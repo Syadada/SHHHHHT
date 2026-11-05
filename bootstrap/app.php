@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->redirectTo(
             guests: function (\Illuminate\Http\Request $request) {
+                // Saat session habis atau belum login, selalu arahkan ke login OPD (/login)
                 return route('login');
             },
             users: function () {
@@ -39,5 +40,33 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Tangani TokenMismatchException (Error 419 Page Expired) saat session habis pada POST / AJAX
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e, \Illuminate\Http\Request $request) {
+            $targetRoute = route('login');
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Sesi Anda telah berakhir. Silakan login kembali.',
+                    'redirect' => $targetRoute,
+                ], 401);
+            }
+
+            return redirect()->to($targetRoute);
+        });
+
+        // Tangani HttpException 419 (Page Expired) umum
+        $exceptions->render(function (\Symfony\Component\HttpKernel\Exception\HttpException $e, \Illuminate\Http\Request $request) {
+            if ($e->getStatusCode() === 419) {
+                $targetRoute = route('login');
+
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'message' => 'Sesi Anda telah berakhir. Silakan login kembali.',
+                        'redirect' => $targetRoute,
+                    ], 401);
+                }
+
+                return redirect()->to($targetRoute);
+            }
+        });
     })->create();

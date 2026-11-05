@@ -78,6 +78,29 @@ class TiketDtsen extends Model
         'sop_rujukan',
         'hasil_pekerjaan',
         'data_sop_extra',
+        // Tim Pelaksana Walidata & Tim / Hadir dari OPD
+        'nip_penanggung_jawab',
+        'nip_pelaksana_1',
+        'jabatan_pelaksana_1',
+        'nip_pelaksana_2',
+        'jabatan_pelaksana_2',
+        'nip_pelaksana_3',
+        'jabatan_pelaksana_3',
+        'nip_pelaksana_4',
+        'jabatan_pelaksana_4',
+        'pelaksana_opd_1',
+        'nip_pelaksana_opd_1',
+        'jabatan_pelaksana_opd_1',
+        'pelaksana_opd_2',
+        'nip_pelaksana_opd_2',
+        'jabatan_pelaksana_opd_2',
+        'pelaksana_opd_3',
+        'nip_pelaksana_opd_3',
+        'jabatan_pelaksana_opd_3',
+        'pelaksana_opd_4',
+        'nip_pelaksana_opd_4',
+        'jabatan_pelaksana_opd_4',
+        'keterangan_kehadiran',
     ];
 
     protected $casts = [
@@ -133,7 +156,7 @@ class TiketDtsen extends Model
     ];
 
     /**
-     * Definisi Tahap Alur Kerja Sisi Admin (Untuk sementara Proses 1 & 2)
+     * Definisi Tahap Alur Kerja Sisi Admin (5 Proses)
      */
     public static array $adminStepsDefinition = [
         1 => [
@@ -147,6 +170,24 @@ class TiketDtsen extends Model
             'title' => 'Pengolahan DTSEN',
             'desc' => 'Pengolahan data dan pemilahan variabel data mikro DTSEN sesuai kebutuhan',
             'pic' => 'Tim Pengelola Data & Statistik'
+        ],
+        3 => [
+            'id' => 3,
+            'title' => 'Transfer Data',
+            'desc' => 'Penyaluran dan transfer dataset terpadu secara aman',
+            'pic' => 'Walidata DTSEN'
+        ],
+        4 => [
+            'id' => 4,
+            'title' => 'Pengesahan BAST',
+            'desc' => 'Penyusunan dan pengesahan Berita Acara Serah Terima (BAST)',
+            'pic' => 'Tim Teknis IT'
+        ],
+        5 => [
+            'id' => 5,
+            'title' => 'Layanan Selesai',
+            'desc' => 'Layanan bagi pakai tuntas 100%',
+            'pic' => 'Walidata DTSEN'
         ],
     ];
 
@@ -204,10 +245,10 @@ class TiketDtsen extends Model
     public function isOpdStepDone(int $step): bool
     {
         return match ($step) {
-            1 => $this->status !== 'PERLU_PERBAIKAN',
+            1 => (bool) ($this->step1_done || $this->isCompleted()) && $this->status !== 'PERLU_PERBAIKAN',
             2 => (bool) ($this->step1_done && $this->step2_done), // Otomatis centang jika Admin Proses 1 & 2 selesai
             3 => (bool) $this->step3_done,
-            4 => (bool) ($this->step4_done || $this->step5_done || $this->status === 'SELESAI'),
+            4 => (bool) ($this->step5_done || $this->status === 'SELESAI'),
             default => false,
         };
     }
@@ -222,7 +263,7 @@ class TiketDtsen extends Model
         }
 
         return match ($step) {
-            1 => $this->status === 'PERLU_PERBAIKAN',
+            1 => $this->status !== 'PERLU_PERBAIKAN',
             2 => $this->isOpdStepDone(1) && !$this->isOpdStepDone(2),
             3 => $this->isOpdStepDone(2) && !$this->isOpdStepDone(3),
             4 => $this->isOpdStepDone(3) && !$this->isOpdStepDone(4),
@@ -247,10 +288,10 @@ class TiketDtsen extends Model
         if ($this->isOpdStepDone(2)) {
             return 'Sedang Berjalan: Tahap 3 (Transfer Data)';
         }
-        if ($this->step1_done) {
+        if ($this->isOpdStepDone(1)) {
             return 'Sedang Berjalan: Tahap 2 (Pengolahan DTSEN)';
         }
-        return 'Sedang Berjalan: Tahap 2 (Verifikasi Berkas & Pemenuhan Dokumen)';
+        return 'Sedang Berjalan: Tahap 1 (Menunggu Verifikasi Berkas)';
     }
 
     /**
@@ -268,6 +309,14 @@ class TiketDtsen extends Model
         if ($doneCount === 5) return 100;
         if ($doneCount === 0) return 10;
         return (int) round(($doneCount / 5) * 100);
+    }
+
+    /**
+     * Cek apakah tiket telah selesai 100% dan berstatus final / dikunci
+     */
+    public function isCompleted(): bool
+    {
+        return $this->status === 'SELESAI' || (bool) $this->step5_done;
     }
 
     /**

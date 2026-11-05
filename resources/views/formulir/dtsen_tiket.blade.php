@@ -254,7 +254,7 @@
                                 </svg>
                             </div>
                             <div class="form-file-title">Pilih berkas surat atau seret ke area ini</div>
-                            <div class="form-file-subtitle">Format didukung: PDF, DOCX, XLSX, atau ZIP (Maksimal 50MB)</div>
+                            <div class="form-file-subtitle">Format didukung: PDF, DOCX, XLSX, atau ZIP (Maksimal 500MB)</div>
                         </div>
 
                         <div class="form-file-selected" id="gFileSelected">

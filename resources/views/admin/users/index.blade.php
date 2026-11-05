@@ -7,9 +7,7 @@
             <i class="fi fi-rr-users-alt"></i>
             <span>User Management</span>
         </h1>
-        <p class="page-top-subtitle">
-            Kelola data seluruh akun pengguna, wewenang hak akses, dan status login perangkat terdaftar.
-        </p>
+        
     </div>
     <div style="display: flex; gap: 10px; align-items: center;">
         <a href="{{ route('admin.users.create') }}" class="btn-pill-primary" style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; font-size: 13px; text-decoration: none;">
@@ -42,9 +40,7 @@
                         <div style="font-size: 14px; font-weight: 700; color: #92400e;">
                             {{ $pendingResetRequests->count() }} Permintaan Reset Password Masuk
                         </div>
-                        <div style="font-size: 12.5px; color: #b45309;">
-                            Pengguna salah memasukkan password 3 kali dan meminta bantuan reset kata sandi ke Walidata.
-                        </div>
+                        
                     </div>
                 </div>
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
@@ -66,17 +62,17 @@
         <div class="admin-stat-card">
             <div class="admin-stat-label">Total Akun Terdaftar</div>
             <div class="admin-stat-val admin-stat-val-blue">{{ number_format($totalUsers, 0, ',', '.') }}</div>
-            <div class="admin-stat-sub">Seluruh pengguna aktif di sistem</div>
+            
         </div>
         <div class="admin-stat-card">
             <div class="admin-stat-label">Akun Perangkat Daerah</div>
             <div class="admin-stat-val admin-stat-val-green">{{ number_format($totalOpd, 0, ',', '.') }}</div>
-            <div class="admin-stat-sub">Dinas, Badan, dan Satker pemohon</div>
+            
         </div>
         <div class="admin-stat-card">
             <div class="admin-stat-label">Walidata</div>
             <div class="admin-stat-val admin-stat-val-purple">{{ number_format($totalAdmin, 0, ',', '.') }}</div>
-            <div class="admin-stat-sub">Pengelola sistem kendali penuh</div>
+            
         </div>
     </div>
 
@@ -88,9 +84,7 @@
                     <span>Daftar Akun Pengguna Terdaftar</span>
                 </h2>
             </div>
-            <div class="admin-card-header-sub">
-                Klik pada <strong>Nama Instansi</strong> atau <strong>Username</strong> untuk melihat informasi akun, kontak, dan jejak perangkat secara detail.
-            </div>
+            
         </div>
 
         <div class="table-responsive">
@@ -239,9 +233,7 @@
                 <span>Daftar Riwayat Bagi Data DTSEN Resmi Terbit (BAST)</span>
             </h2>
         </div>
-        <div class="admin-card-header-sub">
-            Klik pada <strong>Nama Perangkat Daerah</strong> atau <strong>No. Surat Edaran</strong> untuk membuka rincian berita acara, petugas hadir, dan laptop.
-        </div>
+        
     </div>
 
     <div class="table-responsive" style="overflow-x: hidden;">

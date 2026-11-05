@@ -136,7 +136,7 @@
                                 </svg>
                             </div>
                             <div class="form-file-title" data-i18n="title_file">Klik di sini untuk memilih berkas atau seret ke area ini</div>
-                            <div class="form-file-subtitle" data-i18n="sub_file">Mendukung format: PDF, DOCX, XLSX, atau ZIP (Maksimal 50MB)</div>
+                            <div class="form-file-subtitle" data-i18n="sub_file">Mendukung format: PDF, DOCX, XLSX, atau ZIP (Maksimal 500MB)</div>
                         </div>
 
                         <div class="form-file-selected" id="gFileSelected">

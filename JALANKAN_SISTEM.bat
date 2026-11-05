@@ -346,14 +346,14 @@ echo  ini ke taskbar. Jika jendela ini ditutup (X), maka website akan mati.
 echo  Tekan CTRL+C jika memang ingin menghentikan server secara manual.
 echo =======================================================================
 echo.
-"%PHP_EXE%" -d variables_order=EGPCS artisan serve --host=0.0.0.0 --port=%LARAVEL_PORT% --no-reload
+"%PHP_EXE%" -d variables_order=EGPCS -d memory_limit=1024M -d upload_max_filesize=500M -d post_max_size=550M -d max_execution_time=600 -d max_input_time=600 artisan serve --host=0.0.0.0 --port=%LARAVEL_PORT% --no-reload
 if %errorlevel% neq 0 (
     echo.
     echo [INFO] artisan serve gagal binding 0.0.0.0. Menjalankan fallback web server langsung [server.php]...
-    "%PHP_EXE%" -d variables_order=EGPCS -S 0.0.0.0:%LARAVEL_PORT% "%PROJECT_DIR%server.php"
+    "%PHP_EXE%" -d variables_order=EGPCS -d memory_limit=1024M -d upload_max_filesize=500M -d post_max_size=550M -d max_execution_time=600 -d max_input_time=600 -S 0.0.0.0:%LARAVEL_PORT% "%PROJECT_DIR%server.php"
     if %errorlevel% neq 0 (
         echo [INFO] Menjalankan fallback ke localhost 127.0.0.1...
-        "%PHP_EXE%" -d variables_order=EGPCS -S 127.0.0.1:%LARAVEL_PORT% "%PROJECT_DIR%server.php"
+        "%PHP_EXE%" -d variables_order=EGPCS -d memory_limit=1024M -d upload_max_filesize=500M -d post_max_size=550M -d max_execution_time=600 -d max_input_time=600 -S 127.0.0.1:%LARAVEL_PORT% "%PROJECT_DIR%server.php"
     )
 )
 

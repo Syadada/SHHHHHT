@@ -102,12 +102,22 @@ def generate_formulir(ticket_id):
     
     deskripsi = tiket.get("deskripsi_pekerjaan") or f"Memenuhi permintaan layanan bagi pakai data mikro DTSEN dari Walidata ke {nama_instansi}."
     penanggung_jawab = tiket.get("penanggung_jawab") or "Chobir Sabbaha, S.Kom., M.T."
+    nip_penanggung_jawab = tiket.get("nip_penanggung_jawab") or "19780218 200501 1 009"
     tempat = tiket.get("tempat_pelaksanaan") or "Gedung Diskominfo SP Provinsi Banten (KP3B Serang)"
     pelaksana_1 = tiket.get("pelaksana_1") or "Tia Fitria Saumi, S.Kom."
+    nip_pelaksana_1 = tiket.get("nip_pelaksana_1") or "19930812 202012 2 008"
+    jabatan_pelaksana_1 = tiket.get("jabatan_pelaksana_1") or "Pranata Komputer Ahli Muda"
     pelaksana_2 = tiket.get("pelaksana_2") or "Ahmad Fauzi, S.T."
+    nip_pelaksana_2 = tiket.get("nip_pelaksana_2") or "19890514 201503 1 004"
+    jabatan_pelaksana_2 = tiket.get("jabatan_pelaksana_2") or "Statistisi Ahli Pertama"
     pelaksana_3 = tiket.get("pelaksana_3") or "-"
     pelaksana_4 = tiket.get("pelaksana_4") or "-"
     sop_rujukan = tiket.get("sop_rujukan") or "555/07-SOP/DISKOMINFO SP/2026"
+
+    pelaksana_opd_1 = tiket.get("pelaksana_opd_1") or tiket.get("nama_narahubung") or tiket.get("nama_pemohon") or "-"
+    nip_pelaksana_opd_1 = tiket.get("nip_pelaksana_opd_1") or tiket.get("nip_narahubung") or tiket.get("nip_pemohon") or "-"
+    jabatan_pelaksana_opd_1 = tiket.get("jabatan_pelaksana_opd_1") or tiket.get("jabatan_narahubung") or "Narahubung / PIC Hadir"
+    keterangan_kehadiran = tiket.get("keterangan_kehadiran") or "-"
     
     catatan_admin = tiket.get("catatan_admin") or "-"
     hasil_pekerjaan = tiket.get("hasil_pekerjaan") or f"Pelaksana telah melaksanakan pemenuhan permintaan Layanan Bagi Pakai DTSEN ke {nama_instansi} sesuai dengan penugasan pimpinan dan SOP {sop_rujukan}."
@@ -141,7 +151,17 @@ def generate_formulir(ticket_id):
         "{20 Oktober 2026; 14:15}": waktu_selesai,
         "{Contoh: Kamis, 15 Oktober 2026.}": tgl_permintaan_str,
         "{Berikan catatan jika ada. Jika tidak ada, isi dengan tanda strip (-).}": catatan_admin,
-        "{Contoh: Pelaksana telah melaksanakan pemenuhan permintaan Layanan Bagi Pakai DTSEN ke Dinas/Badan  sesuai dengan penugasan pimpinan.}": hasil_pekerjaan
+        "{Contoh: Pelaksana telah melaksanakan pemenuhan permintaan Layanan Bagi Pakai DTSEN ke Dinas/Badan  sesuai dengan penugasan pimpinan.}": hasil_pekerjaan,
+        "{NIP Pejabat Administrator}": nip_penanggung_jawab,
+        "{NIP Pelaksana 1}": nip_pelaksana_1,
+        "{Jabatan Pelaksana 1}": jabatan_pelaksana_1,
+        "{Nama Lengkap Pelaksana 2}": pelaksana_2,
+        "{NIP Pelaksana 2}": nip_pelaksana_2,
+        "{Jabatan Pelaksana 2}": jabatan_pelaksana_2,
+        "{Nama Lengkap PIC OPD}": pelaksana_opd_1,
+        "{NIP PIC OPD}": nip_pelaksana_opd_1,
+        "{Jabatan PIC OPD}": jabatan_pelaksana_opd_1,
+        "{Keterangan Kehadiran}": keterangan_kehadiran
     }
 
     # Iterate through tables and replace

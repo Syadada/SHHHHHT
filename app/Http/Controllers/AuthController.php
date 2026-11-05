@@ -256,7 +256,9 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        $userName = Auth::user() ? Auth::user()->name : 'Pengguna';
+        $user = Auth::user();
+        $userName = $user ? $user->name : 'Pengguna';
+        $isAdmin = ($user && $user->isSuperAdmin()) || $request->is('admin*') || $request->is('dkisp-secret*');
 
         AuditLogger::log(
             'AUTH_LOGOUT',
@@ -265,10 +267,12 @@ class AuthController extends Controller
         );
 
         Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        if ($request->hasSession()) {
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+        }
 
-        // Admin maupun OPD jika logout selalu dikembalikan ke login page secara bersih tanpa notifikasi
+        // Selalu kembalikan ke login umum OPD (/login)
         return redirect()->route('login');
     }
 

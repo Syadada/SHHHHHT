@@ -23,9 +23,7 @@
                 <i class="fi fi-rr-shield-check" style="color: #f59e0b;"></i>
                 <span>Edit Hak Akses & Wewenang Akun</span>
             </h1>
-            <p class="page-top-subtitle">
-                Atur peran (role) dan kustomisasi wewenang granular akun <strong>{{ $user->username }}</strong> ({{ $user->nama_instansi ?: $user->name }}).
-            </p>
+            
         </div>
         <div>
             <a href="{{ route('admin.users.show', $user->id) }}" class="btn-pill-secondary">
@@ -109,13 +107,7 @@
                     </select>
                 </div>
 
-                <!-- Info Box Bantuan Skenario -->
-                <div style="margin-bottom: 24px; padding: 14px 18px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; display: flex; align-items: center; gap: 12px;">
-                    <div style="font-size: 20px; color: #1d4ed8;">💡</div>
-                    <div style="font-size: 13px; color: #1e40af; line-height: 1.5;">
-                        <strong>Contoh Skenario:</strong> Untuk membuat akun <em>Pejabat Eselon 2 yang hanya bisa update proses tiket</em>, pastikan hanya opsi <strong>"Manipulasi Tahapan Proses"</strong> di modul Tiket yang dicentang.
-                    </div>
-                </div>
+                
 
                 <!-- 2. Checklist Hak Akses Granular Per Modul -->
                 <div style="margin-bottom: 24px;">

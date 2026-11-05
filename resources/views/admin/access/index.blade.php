@@ -19,9 +19,7 @@
                 </span>
                 <span>Hak Akses & Peran Administrator</span>
             </h1>
-            <p style="font-size: 13.5px; color: #64748b; margin-top: 4px; margin-bottom: 0;">
-                Kelola segmentasi wewenang akun Administrator: pisahkan hak membuat akun (Admin 1), update proses tiket (Admin 2), dan pengawasan penuh.
-            </p>
+            
         </div>
 
         <div style="display: flex; gap: 10px;">
@@ -40,7 +38,7 @@
             <div>
                 <div style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Total Administrator</div>
                 <div style="font-size: 28px; font-weight: 800; color: #0f172a; margin: 4px 0;">{{ $totalAdmin }}</div>
-                <div style="font-size: 12px; color: #10b981; font-weight: 600;">Akun Terdaftar</div>
+                
             </div>
             <div style="width: 44px; height: 44px; border-radius: 10px; background: #f8fafc; color: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #e2e8f0;">
                 <i class="fi fi-rr-users"></i>
@@ -52,7 +50,7 @@
             <div>
                 <div style="font-size: 12px; font-weight: 700; color: #0284c7; text-transform: uppercase; letter-spacing: 0.5px;">Admin 1 (Kelola Akun)</div>
                 <div style="font-size: 28px; font-weight: 800; color: #0284c7; margin: 4px 0;">{{ $totalUserManager }}</div>
-                <div style="font-size: 12px; color: #64748b;">Hanya bisa buat & kelola akun</div>
+                
             </div>
             <div style="width: 44px; height: 44px; border-radius: 10px; background: #f0f9ff; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #bae6fd;">
                 <i class="fi fi-rr-user-add"></i>
@@ -64,7 +62,7 @@
             <div>
                 <div style="font-size: 12px; font-weight: 700; color: #d97706; text-transform: uppercase; letter-spacing: 0.5px;">Admin 2 (Operator Proses)</div>
                 <div style="font-size: 28px; font-weight: 800; color: #d97706; margin: 4px 0;">{{ $totalOperator }}</div>
-                <div style="font-size: 12px; color: #64748b;">Hanya bisa update alur tiket</div>
+                
             </div>
             <div style="width: 44px; height: 44px; border-radius: 10px; background: #fffbeb; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #fde68a;">
                 <i class="fi fi-rr-play-alt"></i>
@@ -74,9 +72,9 @@
         <!-- Super Admin -->
         <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
-                <div style="font-size: 12px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">Super Administrator</div>
+                <div style="font-size: 12px; font-weight: 700; color: #7c3aed; text-transform: uppercase; letter-spacing: 0.5px;">Walidata</div>
                 <div style="font-size: 28px; font-weight: 800; color: #7c3aed; margin: 4px 0;">{{ $totalSuperAdmin }}</div>
-                <div style="font-size: 12px; color: #64748b;">Wewenang penuh semua modul</div>
+                
             </div>
             <div style="width: 44px; height: 44px; border-radius: 10px; background: #f5f3ff; color: #7c3aed; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid #ddd6fe;">
                 <i class="fi fi-rr-crown"></i>
@@ -143,7 +141,7 @@
                             <td style="padding: 14px 18px;">
                                 @if($isSuper)
                                     <span style="display: inline-flex; align-items: center; gap: 5px; background: #f5f3ff; color: #7c3aed; border: 1px solid #ddd6fe; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700;">
-                                        <i class="fi fi-rr-crown"></i> Super Administrator
+                                        <i class="fi fi-rr-crown"></i> Walidata
                                     </span>
                                 @elseif($roleSlug === 'admin_user_manager')
                                     <span style="display: inline-flex; align-items: center; gap: 5px; background: #f0f9ff; color: #0369a1; border: 1px solid #bae6fd; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700;">
@@ -252,7 +250,7 @@
                 </p>
             </div>
             <div style="background: #fff; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                <strong style="color: #7c3aed;">3. Super Administrator:</strong>
+                <strong style="color: #7c3aed;">3. Walidata:</strong>
                 <p style="margin: 4px 0 0; font-size: 12.5px;">
                     Walidata tingkat daerah yang berwenang penuh atas seluruh fitur, termasuk memodifikasi penugasan hak akses setiap admin pada panel ini.
                 </p>

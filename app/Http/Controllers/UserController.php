@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\AuditLog;
 use App\Models\TiketDtsen;
 use App\Models\RiwayatBagiDataDtsen;
+use App\Models\AppSetting;
 use App\Services\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -294,6 +295,7 @@ class UserController extends Controller
     public function profile()
     {
         $user = auth()->user()->load('roleRelation.privileges');
+        $sessionLifetime = (int) AppSetting::get('session_lifetime', config('session.lifetime', 5));
         
         $recentLogs = AuditLog::where(function($q) use ($user) {
                 $q->where('user_id', $user->id)
@@ -304,7 +306,7 @@ class UserController extends Controller
             ->take(10)
             ->get();
 
-        return view('admin.profile', compact('user', 'recentLogs'));
+        return view('admin.profile', compact('user', 'recentLogs', 'sessionLifetime'));
     }
 
     /**
@@ -320,10 +322,12 @@ class UserController extends Controller
             'nama_instansi' => 'nullable|string|max:200',
             'nomor_kontak' => 'nullable|string|max:50',
             'password' => 'nullable|string|min:4|confirmed',
+            'session_lifetime' => 'nullable|integer|min:1|max:1440',
         ], [
             'email.unique' => 'Email ini sudah digunakan oleh akun lain.',
             'password.min' => 'Password baru minimal 4 karakter.',
             'password.confirmed' => 'Konfirmasi password baru tidak cocok.',
+            'session_lifetime.integer' => 'Waktu sesi harus berupa angka bulat dalam menit.',
         ]);
 
         $user->name = $request->name;
@@ -335,9 +339,35 @@ class UserController extends Controller
         }
         $user->save();
 
+        // Khusus Walidata (Super Admin): Dapat mengatur batas waktu masa aktif sesi sistem
+        if ($user->isSuperAdmin() && $request->filled('session_lifetime')) {
+            $newLifetime = max(1, min(1440, (int) $request->session_lifetime));
+            AppSetting::set('session_lifetime', $newLifetime);
+
+            // Update .env file agar sinkron
+            $envPath = base_path('.env');
+            if (file_exists($envPath) && is_writable($envPath)) {
+                $env = file_get_contents($envPath);
+                if (preg_match('/^SESSION_LIFETIME=/m', $env)) {
+                    $env = preg_replace('/^SESSION_LIFETIME=.*/m', 'SESSION_LIFETIME=' . $newLifetime, $env);
+                } else {
+                    $env .= "\nSESSION_LIFETIME=" . $newLifetime . "\n";
+                }
+                @file_put_contents($envPath, $env);
+            }
+            config(['session.lifetime' => $newLifetime]);
+
+            AuditLogger::log(
+                'SESSION_LIFETIME_CONFIGURED',
+                "Walidata memperbarui batas waktu sesi idle sistem menjadi {$newLifetime} menit.",
+                'SUCCESS',
+                ['new_lifetime_minutes' => $newLifetime, 'updated_by' => $user->username]
+            );
+        }
+
         AuditLogger::log(
             'PROFILE_UPDATED',
-            "Administrator [{$user->username}] memperbarui informasi profil akun pribadinya.",
+            "Walidata [{$user->username}] memperbarui informasi profil akun pribadinya.",
             'SUCCESS'
         );
 

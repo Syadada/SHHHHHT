@@ -17,7 +17,7 @@ class AutoLogoutTimeout
 
     public function __construct()
     {
-        $configuredMinutes = (int) config('session.lifetime', 5);
+        $configuredMinutes = (int) \App\Models\AppSetting::get('session_lifetime', config('session.lifetime', 5));
         $this->timeoutSeconds = $configuredMinutes > 0 ? $configuredMinutes * 60 : 300;
     }
 
@@ -33,11 +33,12 @@ class AutoLogoutTimeout
             if ($lastActivity && ($currentTime - $lastActivity) > $this->timeoutSeconds) {
                 $user = Auth::user();
                 $userName = $user ? $user->name : 'Pengguna';
+                $minutes = (int) round($this->timeoutSeconds / 60);
 
                 // Catat di Audit Logger
                 AuditLogger::log(
-                    'SESSION_TIMEOUT_5M',
-                    "Sesi {$userName} berakhir otomatis karena tidak ada aktivitas selama 5 menit.",
+                    'SESSION_TIMEOUT',
+                    "Sesi {$userName} berakhir otomatis karena tidak ada aktivitas selama {$minutes} menit.",
                     'WARNING',
                     [
                         'user_id' => $user ? $user->id : null,
@@ -46,6 +47,9 @@ class AutoLogoutTimeout
                     ]
                 );
 
+                // Saat sesi berakhir otomatis, selalu arahkan ke login OPD (/login)
+                $targetLogin = route('login');
+
                 // Logout dan batalkan sesi
                 Auth::logout();
                 $request->session()->invalidate();
@@ -53,13 +57,13 @@ class AutoLogoutTimeout
 
                 if ($request->expectsJson()) {
                     return response()->json([
-                        'message' => 'Sesi Anda telah berakhir karena tidak ada aktivitas selama 5 menit.',
-                        'redirect' => route('login')
+                        'message' => "Sesi Anda telah berakhir karena tidak ada aktivitas selama {$minutes} menit.",
+                        'redirect' => $targetLogin
                     ], 401);
                 }
 
-                // Sesuai permintaan: selalu kembalikan ke login page secara bersih tanpa notifikasi
-                return redirect()->route('login');
+                // Sesuai permintaan: selalu kembalikan ke login OPD secara langsung
+                return redirect()->to($targetLogin);
             }
 
             // Perbarui waktu aktivitas terakhir

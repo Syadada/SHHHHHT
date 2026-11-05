@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Profil Administrator — Admin Panel')
+@section('title', 'Profil Walidata — Panel Walidata')
 
 @section('content')
 <div class="ticket-stack-container">
@@ -19,11 +19,9 @@
         <div>
             <h1 class="page-top-title">
                 <i class="fi fi-rr-user" style="color: #0b57d0;"></i>
-                <span>Profil Administrator</span>
+                <span>Profil Walidata</span>
             </h1>
-            <p class="page-top-subtitle">
-                Kelola identitas akun Anda, preferensi keamanan, dan pantau jejak perangkat laptop yang sedang digunakan.
-            </p>
+            
         </div>
         <div>
             <a href="{{ route('admin.dashboard') }}" class="btn-pill-secondary">
@@ -77,7 +75,7 @@
                     <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px;">Peran & Wewenang</div>
                     <span class="role-badge-super" style="font-size: 13px; padding: 6px 14px; background: #fef3c7; color: #b45309; border-color: #fde68a;">
                         <i class="fi fi-rr-shield-check"></i>
-                        {{ $user->roleRelation ? $user->roleRelation->name : ($user->role === 'superadmin' ? 'Walidata' : 'Administrator') }}
+                        {{ $user->roleRelation ? $user->roleRelation->name : 'Walidata' }}
                     </span>
                     @if($user->roleRelation && $user->roleRelation->privileges)
                         <div style="display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; max-width: 380px; margin-top: 8px;">
@@ -127,10 +125,7 @@
                     <div style="padding: 12px 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;">
                         <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Kebijakan Masa Aktif Sesi (Timeout)</div>
                         <div style="font-size: 14px; font-weight: 700; color: #166534; margin-top: 4px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fi fi-rr-clock"></i> 5 Menit Idle Logout Otomatis
-                        </div>
-                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
-                            Sistem otomatis mengamankan sesi dan menampilkan peringatan jika tidak ada interaksi selama 5 menit.
+                            <i class="fi fi-rr-clock"></i> {{ $sessionLifetime ?? 5 }} Menit Idle Logout Otomatis
                         </div>
                     </div>
 
@@ -178,6 +173,20 @@
                         <label class="admin-form-label">Nomor Kontak / WhatsApp</label>
                         <input type="text" name="nomor_kontak" class="form-input" value="{{ old('nomor_kontak', $user->nomor_kontak) }}">
                     </div>
+
+                    @if($user->isSuperAdmin())
+                        <div class="admin-form-group" style="margin-bottom: 14px;">
+                            <label class="admin-form-label">Masa Aktif Sesi Idle (Timeout)</label>
+                            <select name="session_lifetime" class="form-input" style="height: 42px;">
+                                <option value="5" {{ ($sessionLifetime ?? 5) == 5 ? 'selected' : '' }}>5 Menit</option>
+                                <option value="10" {{ ($sessionLifetime ?? 5) == 10 ? 'selected' : '' }}>10 Menit</option>
+                                <option value="15" {{ ($sessionLifetime ?? 5) == 15 ? 'selected' : '' }}>15 Menit</option>
+                                <option value="30" {{ ($sessionLifetime ?? 5) == 30 ? 'selected' : '' }}>30 Menit</option>
+                                <option value="60" {{ ($sessionLifetime ?? 5) == 60 ? 'selected' : '' }}>60 Menit (1 Jam)</option>
+                                <option value="120" {{ ($sessionLifetime ?? 5) == 120 ? 'selected' : '' }}>120 Menit (2 Jam)</option>
+                            </select>
+                        </div>
+                    @endif
 
                     <div style="margin: 18px 0 12px; border-top: 1px solid #e2e8f0; padding-top: 14px;">
                         <div style="font-size: 12.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px;">

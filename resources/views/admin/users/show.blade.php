@@ -21,9 +21,7 @@
                 <i class="fi fi-rr-user"></i>
                 <span>Detail Akun Pengguna</span>
             </h1>
-            <p class="page-top-subtitle">
-                Rincian lengkap profil instansi, hak akses, jejak digital perangkat, dan riwayat permohonan.
-            </p>
+            
         </div>
         <div style="display: flex; gap: 10px;">
             <a href="{{ route('admin.users.edit-access', $user->id) }}" class="btn-pill-primary" style="background: #f59e0b; border-color: #d97706; display: inline-flex; align-items: center; gap: 6px;" title="Atur hak akses & wewenang akun ini">
@@ -212,9 +210,7 @@
                     <span>Riwayat Tiket Permohonan dari Instansi Ini</span>
                 </h2>
             </div>
-            <div class="admin-card-header-sub">
-                Total {{ count($userTikets ?? []) }} tiket diajukan
-            </div>
+            
         </div>
 
         <div class="table-responsive">
@@ -283,9 +279,7 @@
                     <span>Jejak Audit Aktivitas Login Laptop Akun Ini</span>
                 </h2>
             </div>
-            <div class="admin-card-header-sub">
-                Mencatat 15 aktivitas sesi terakhir
-            </div>
+            
         </div>
 
         <div class="table-responsive">
