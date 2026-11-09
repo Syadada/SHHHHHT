@@ -20,7 +20,21 @@ class UserController extends Controller
     {
         $activeTab = $request->query('tab', 'users');
 
-        $users = User::latest()->paginate(15, ['*'], 'users_page')->appends(['tab' => 'users']);
+        $userQuery = User::query();
+        if ($request->filled('role')) {
+            $userQuery->where('role', $request->role);
+        }
+        if ($request->filled('search')) {
+            $search = '%' . trim($request->search) . '%';
+            $userQuery->where(function($q) use ($search) {
+                $q->where('name', 'like', $search)
+                  ->orWhere('username', 'like', $search)
+                  ->orWhere('email', 'like', $search)
+                  ->orWhere('nama_instansi', 'like', $search);
+            });
+        }
+
+        $users = $userQuery->latest()->paginate(15, ['*'], 'users_page')->withQueryString();
         
         // Data Riwayat Bagi Data DTSEN Resmi
         $riwayatBagiDatas = RiwayatBagiDataDtsen::latest()->paginate(15, ['*'], 'riwayat_page')->appends(['tab' => 'riwayat-terbit']);

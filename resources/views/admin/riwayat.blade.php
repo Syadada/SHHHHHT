@@ -19,6 +19,25 @@
         color: #0842a0;
         text-decoration: underline;
     }
+    .wp-table-row:hover {
+        background-color: #f8fafc !important;
+    }
+    .wp-row-actions {
+        visibility: hidden;
+        opacity: 0;
+        transition: opacity 0.12s ease-in-out, visibility 0.12s ease-in-out;
+        font-size: 12px;
+        margin-top: 4px;
+        line-height: 1.2;
+    }
+    .wp-table-row:hover .wp-row-actions {
+        visibility: visible;
+        opacity: 1;
+    }
+    .wp-row-actions a:hover,
+    .wp-row-actions button:hover {
+        text-decoration: underline !important;
+    }
 </style>
 @endsection
 
@@ -70,34 +89,46 @@
                 </div>
 
                 <!-- 1. Permintaan Layanan Terbaru (5 Item) -->
-                <div class="dash-card">
-                    <div class="dash-card-header">
-                        <div>
-                            <h2 class="dash-card-title">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue-primary)" stroke-width="2">
-                                    <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path>
-                                </svg>
-                                <span>Permintaan Layanan Terbaru (5 Item)</span>
+                <div class="card" style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fi fi-rr-share" style="color: #2563eb; font-size: 20px; display: flex; align-items: center;"></i>
+                            <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0; letter-spacing: -0.2px;">
+                                Permintaan Layanan Terbaru
                             </h2>
-                            
+                            <span style="background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 9999px; border: 1px solid #bfdbfe;">
+                                5 Item Teratas
+                            </span>
                         </div>
                         <div>
-                            <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
-                                Semua Permintaan
+                            <a href="{{ route('admin.bagi-pakai-dtsen.index') }}" 
+                               style="background: #0f172a; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s ease;"
+                               onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'">
+                                <span>Semua Permintaan</span>
+                                <i class="fi fi-rr-arrow-right" style="font-size: 11px;"></i>
                             </a>
                         </div>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table" style="width: 100%; table-layout: auto;">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
                             <thead>
-                                <tr>
-                                    <th style="width: 130px;">No. Tiket</th>
-                                    <th>Nama Instansi</th>
-                                    <th style="width: 150px;">Surat Edaran</th>
-                                    <th style="width: 130px;">Variabel DTSEN</th>
-                                    <th style="width: 130px;">Status & Progress</th>
-                                    <th style="text-align: center; width: 60px;">Aksi</th>
+                                <tr style="border-bottom: 2px solid #e2e8f0; background: #ffffff;">
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 170px;">
+                                        ID PEKERJAAN
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        OPD
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 180px;">
+                                        SURAT EDARAN
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 150px;">
+                                        VARIABEL DTSEN
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 150px;">
+                                        STATUS & PROGRESS
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -108,114 +139,118 @@
                                 @endphp
                                 @forelse($itemsToShow as $item)
                                     @php
-                                        // Cari step aktif saat ini yang belum OK
                                         $activeStepNum = 1;
                                         if (!$item->step1_done) $activeStepNum = 1;
                                         elseif (!$item->step2_done) $activeStepNum = 2;
                                         elseif (!$item->step3_done) $activeStepNum = 3;
                                         elseif (!$item->step4_done) $activeStepNum = 4;
                                         elseif (!$item->step5_done) $activeStepNum = 5;
-                                        else $activeStepNum = 6; // Selesai
+                                        else $activeStepNum = 5;
                                     @endphp
-                                    <tr>
-                                        <!-- 1. No Tiket -->
-                                        <td>
+                                    <tr class="wp-table-row" style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.15s ease;">
+                                        <!-- 1. ID PEKERJAAN & Baris Aksi Hover -->
+                                        <td style="padding: 14px 16px; vertical-align: top;">
                                             <div>
-                                                <a href="{{ route('admin.tiket.show', $item->id) }}" style="font-family: var(--font-mono); font-weight: 700; color: var(--blue-primary); font-size: 13px; text-decoration: none;" title="Buka Detail Tiket">
+                                                <a href="{{ route('admin.tiket.show', $item->id) }}" style="font-family: var(--font-mono); font-weight: 700; color: #2563eb; font-size: 13px; text-decoration: none;" title="Buka Detail Tiket">
                                                     {{ $item->nomor_tiket }}
                                                 </a>
                                             </div>
-                                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 3px;">
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
                                                 {{ $item->created_at->format('d/m/Y H:i') }} WIB
+                                            </div>
+
+                                            <!-- Baris Aksi: Muncul saat mouse hover baris ini -->
+                                            <div class="wp-row-actions">
+                                                <a href="{{ route('admin.tiket.show', $item->id) }}" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                                    Detail
+                                                </a>
+                                                <span style="color: #cbd5e1; margin: 0 4px;">|</span>
+                                                @if(!$item->isCompleted())
+                                                    <a href="{{ route('admin.bagi-pakai-dtsen.edit', $item->id) }}" style="color: #2563eb; text-decoration: none; font-weight: 500;">
+                                                        Edit
+                                                    </a>
+                                                    <span style="color: #cbd5e1; margin: 0 4px;">|</span>
+                                                    <form action="{{ route('admin.riwayat.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus tiket [{{ $item->nomor_tiket }}] milik {{ $item->nama_instansi }}? Tindakan ini tidak dapat dibatalkan.');" style="display: inline; margin: 0;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" style="color: #dc2626; background: none; border: none; padding: 0; font-size: 12px; font-weight: 500; cursor: pointer; text-decoration: none;">
+                                                            Hapus
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <a href="{{ route('admin.bagi-pakai-dtsen.formulir', $item->id) }}" target="_blank" style="color: #166534; text-decoration: none; font-weight: 600;">
+                                                        Formulir Bukti
+                                                    </a>
+                                                @endif
                                             </div>
                                         </td>
 
                                         <!-- 2. Nama Instansi & PIC -->
-                                        <td>
+                                        <td style="padding: 14px 16px; vertical-align: top;">
                                             <div>
-                                                <a href="{{ route('admin.tiket.show', $item->id) }}" class="instansi-title-link" title="Klik untuk membuka informasi selengkapnya">
-                                                    <span>{{ $item->nama_instansi }}</span>
+                                                <a href="{{ route('admin.tiket.show', $item->id) }}" style="font-weight: 700; color: #2563eb; text-decoration: none; font-size: 13px;" title="Klik untuk membuka informasi selengkapnya">
+                                                    {{ $item->nama_instansi }}
                                                 </a>
                                             </div>
                                             @if($item->nama_pemohon)
-                                                <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
-                                                    PIC: <strong>{{ $item->nama_pemohon }}</strong> ({{ $item->kontak_pemohon ?: '-' }})
+                                                <div style="font-size: 11px; color: #64748b; margin-top: 3px;">
+                                                    PIC: {{ $item->nama_pemohon }} ({{ $item->kontak_pemohon ?: '-' }})
                                                 </div>
                                             @endif
                                         </td>
 
                                         <!-- 3. Surat Edaran -->
-                                        <td>
-                                            <div style="font-weight: 600; color: var(--text-primary); font-size: 13px;">
+                                        <td style="padding: 14px 16px; vertical-align: top;">
+                                            <div style="font-weight: 600; color: #1e293b; font-size: 13px;">
                                                 {{ $item->no_surat_edaran }}
                                             </div>
                                             @if($item->file_surat)
                                                 <div style="margin-top: 4px;">
-                                                    <a href="{{ route('admin.riwayat.download', $item->id) }}" class="btn-pill-outline" style="font-size: 11px; padding: 2px 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Unduh Berkas Surat Edaran">
-                                                        <i class="fi fi-rr-download"></i> Berkas SE
+                                                    <a href="{{ route('admin.riwayat.download', $item->id) }}" style="font-size: 11px; color: #2563eb; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 4px;" title="Unduh Berkas Surat Edaran">
+                                                        <i class="fi fi-rr-download" style="font-size: 10px;"></i> Berkas SE
                                                     </a>
                                                 </div>
                                             @endif
                                         </td>
 
                                         <!-- 4. Variabel DTSEN & Status Verifikasi -->
-                                        <td>
-                                            <div style="margin-bottom: 5px;">
-                                                <span class="dtsen-chip" style="font-size: 11px; font-weight: 700; color: var(--blue-primary); background: var(--blue-light); padding: 3px 8px; border-radius: 6px;">
-                                                    {{ count($item->variabel_dtsen ?? []) }} Variabel Diminta
-                                                </span>
-                                            </div>
+                                        <td style="padding: 14px 16px; vertical-align: top;">
+                                            <span style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 9999px; display: inline-block;">
+                                                {{ count($item->variabel_dtsen ?? []) }} Variabel
+                                            </span>
                                             @if($item->status === 'PERLU_PERBAIKAN')
-                                                <span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block;">
-                                                    ⚠️ Perlu Perbaikan
-                                                </span>
-                                            @elseif($item->step1_done)
-                                                <span style="background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block;">
-                                                    ✓ Sesuai SE
-                                                </span>
-                                            @else
-                                                <span style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block;">
-                                                    ⏳ Menunggu Cek
-                                                </span>
+                                                <div style="margin-top: 5px;">
+                                                    <span style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; display: inline-block;">
+                                                        Perlu Perbaikan
+                                                    </span>
+                                                </div>
                                             @endif
                                         </td>
 
                                         <!-- 5. Status & Progress -->
-                                        <td>
+                                        <td style="padding: 14px 16px; vertical-align: top;">
                                             <div style="display: flex; align-items: center; gap: 8px;">
-                                                <div class="progress-track" style="height: 8px; width: 75px;">
-                                                    <div class="progress-fill" style="width: {{ $item->progress_percent }}%;"></div>
+                                                <div style="background: #e2e8f0; border-radius: 9999px; height: 6px; width: 60px; overflow: hidden;">
+                                                    <div style="background: {{ $item->step5_done ? '#16a34a' : '#0284c7' }}; width: {{ $item->progress_percent }}%; height: 100%; border-radius: 9999px;"></div>
                                                 </div>
-                                                <span style="font-size: 12px; font-weight: 700; color: {{ $item->step5_done ? '#1e8e3e' : '#0b57d0' }};">
+                                                <span style="font-size: 12px; font-weight: 600; color: {{ $item->step5_done ? '#16a34a' : '#0284c7' }};">
                                                     {{ $item->progress_percent }}%
                                                 </span>
                                             </div>
-                                            <div style="font-size: 11px; margin-top: 4px; font-weight: 600; color: {{ $item->step5_done ? '#1e8e3e' : '#444746' }};">
+                                            <div style="font-size: 11px; margin-top: 4px; font-weight: 500; color: #64748b;">
                                                 @if($item->step5_done)
-                                                    <span style="color: #1e8e3e;">✓ Selesai 100%</span>
+                                                    <span style="color: #16a34a; font-weight: 600;">Selesai 100%</span>
                                                 @else
                                                     Progress {{ $activeStepNum }}/5
                                                 @endif
                                             </div>
                                         </td>
-
-                                        <!-- 6. Aksi (Hapus) -->
-                                        <td style="text-align: center;">
-                                            <form action="{{ route('admin.riwayat.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Hapus tiket {{ $item->nomor_tiket }} milik {{ $item->nama_instansi }}?');" style="display: inline; margin: 0;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn-row-action delete" style="padding: 5px 8px;" title="Hapus Tiket">
-                                                    <i class="fi fi-rr-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
-                                            <div style="font-size: 32px; margin-bottom: 8px; color: #10b981;"><i class="fi fi-rr-check-circle"></i></div>
-                                            <div style="font-weight: 700; font-size: 14px; color: var(--text-primary);">Tidak ada permintaan layanan yang belum selesai</div>
-                                            
+                                        <td colspan="5" style="text-align: center; padding: 40px 20px; color: #94a3b8;">
+                                            <div style="font-size: 32px; margin-bottom: 8px; color: #16a34a;"><i class="fi fi-rr-check-circle"></i></div>
+                                            <div style="font-weight: 700; font-size: 14px; color: #334155;">Tidak ada permintaan layanan yang sedang aktif</div>
                                         </td>
                                     </tr>
                                 @endforelse
@@ -225,34 +260,49 @@
                 </div>
 
                 <!-- 2. Aktivitas Terbaru (10 Entri) -->
-                <div class="dash-card" style="margin-top: 24px;">
-                    <div class="dash-card-header">
-                        <div>
-                            <h2 class="dash-card-title">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue-primary)" stroke-width="2">
-                                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-                                </svg>
-                                <span>Aktivitas Terbaru (10 Entri)</span>
+                <div class="card" style="background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fi fi-rr-time-past" style="color: #2563eb; font-size: 20px; display: flex; align-items: center;"></i>
+                            <h2 style="font-size: 16px; font-weight: 700; color: #0f172a; margin: 0; letter-spacing: -0.2px;">
+                                Aktivitas Terbaru
                             </h2>
-                            
+                            <span style="background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 9999px;">
+                                10 Log Terakhir
+                            </span>
                         </div>
                         <div>
-                            <a href="{{ route('admin.logs.index') }}" class="btn-pill-outline" style="font-size: 12px; padding: 6px 14px; text-decoration: none;">
-                                Semua Log
+                            <a href="{{ route('admin.logs.index') }}" 
+                               style="background: #0f172a; color: #ffffff; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: background 0.15s ease;"
+                               onmouseover="this.style.background='#1e293b'" onmouseout="this.style.background='#0f172a'">
+                                <span>Semua Log</span>
+                                <i class="fi fi-rr-arrow-right" style="font-size: 11px;"></i>
                             </a>
                         </div>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="data-table" style="width: 100%; table-layout: auto;">
+                    <div class="table-responsive" style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;">
                             <thead>
-                                <tr>
-                                    <th style="width: 140px;">Waktu Kejadian</th>
-                                    <th style="width: 120px;">Aksi / Event</th>
-                                    <th style="width: 150px;">Pengguna & Peran</th>
-                                    <th>Keterangan Aktivitas</th>
-                                    <th style="width: 140px;">IP & Perangkat</th>
-                                    <th style="width: 90px; text-align: center;">Status</th>
+                                <tr style="border-bottom: 2px solid #e2e8f0; background: #ffffff;">
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 150px;">
+                                        WAKTU KEJADIAN
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 140px;">
+                                        AKSI / EVENT
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 160px;">
+                                        PENGGUNA & PERAN
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        KETERANGAN AKTIVITAS
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 140px;">
+                                        IP & PERANGKAT
+                                    </th>
+                                    <th style="padding: 12px 16px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px; width: 100px; text-align: center;">
+                                        STATUS
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -262,43 +312,43 @@
                                         : ((isset($auditLogs) && is_iterable($auditLogs)) ? collect($auditLogs)->take(10) : collect());
                                 @endphp
                                 @forelse($logsToShow as $log)
-                                    <tr>
+                                    <tr class="wp-table-row" style="border-bottom: 1px solid #f1f5f9; transition: background-color 0.15s ease;">
                                         <!-- 1. Waktu -->
-                                        <td>
+                                        <td style="padding: 14px 16px; vertical-align: top;">
                                             <div style="font-weight: 600; color: #1e293b; font-size: 12px;">
                                                 {{ $log->created_at ? $log->created_at->format('d/m/Y H:i:s') : '-' }} WIB
                                             </div>
-                                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
                                                 {{ $log->created_at ? $log->created_at->diffForHumans() : '' }}
                                             </div>
                                         </td>
 
                                         <!-- 2. Event / Aksi -->
-                                        <td>
-                                            <span style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 6px; font-family: var(--font-mono); display: inline-block;">
+                                        <td style="padding: 14px 16px; vertical-align: top;">
+                                            <span style="background: #f1f5f9; color: #334155; border: 1px solid #e2e8f0; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; font-family: var(--font-mono); display: inline-block;">
                                                 {{ $log->action }}
                                             </span>
                                         </td>
 
                                         <!-- 3. Pengguna & Peran -->
-                                        <td>
+                                        <td style="padding: 14px 16px; vertical-align: top;">
                                             <div style="font-weight: 600; color: #1e293b; font-size: 13px;">
                                                 {{ $log->user_name ?: ($log->user ? $log->user->name : 'Sistem / Tamu') }}
                                             </div>
-                                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                                            <div style="font-size: 11px; color: #64748b; margin-top: 2px;">
                                                 {{ $log->role ?: ($log->user ? $log->user->role : 'system') }}
                                             </div>
                                         </td>
 
                                         <!-- 4. Keterangan -->
-                                        <td>
+                                        <td style="padding: 14px 16px; vertical-align: top;">
                                             <div style="font-size: 13px; color: #334155; line-height: 1.45;">
                                                 {{ $log->description ?: '-' }}
                                             </div>
                                         </td>
 
                                         <!-- 5. IP & Perangkat -->
-                                        <td>
+                                        <td style="padding: 14px 16px; vertical-align: top;">
                                             <div style="font-family: var(--font-mono); font-size: 12px; color: #475569;">
                                                 {{ $log->ip_address ?: '-' }}
                                             </div>
@@ -306,14 +356,14 @@
                                                 $devId = $log->device_id ?: ($log->details['device_id'] ?? null);
                                             @endphp
                                             @if($devId)
-                                                <div style="font-size: 11px; color: var(--blue-primary); font-weight: 600; margin-top: 2px;">
+                                                <div style="font-size: 11px; color: #2563eb; font-weight: 600; margin-top: 2px;">
                                                     💻 {{ $devId }}
                                                 </div>
                                             @endif
                                         </td>
 
                                         <!-- 6. Status -->
-                                        <td style="text-align: center;">
+                                        <td style="padding: 14px 16px; vertical-align: top; text-align: center;">
                                             @if(strtoupper($log->status ?? '') === 'SUCCESS')
                                                 <span style="background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 4px; display: inline-block;">
                                                     ✓ SUCCESS
@@ -331,10 +381,9 @@
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                                        <td colspan="6" style="text-align: center; padding: 40px 20px; color: #94a3b8;">
                                             <div style="font-size: 30px; margin-bottom: 8px; color: #94a3b8;"><i class="fi fi-rr-time-past"></i></div>
-                                            <div style="font-weight: 700; font-size: 14px; color: var(--text-primary);">Belum ada rekaman aktivitas</div>
-                                            
+                                            <div style="font-weight: 700; font-size: 14px; color: #334155;">Belum ada rekaman aktivitas</div>
                                         </td>
                                     </tr>
                                 @endforelse

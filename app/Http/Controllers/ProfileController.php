@@ -39,10 +39,18 @@ class ProfileController extends Controller
         $user = Auth::user();
         $namaInstansi = $user->nama_instansi ?: $user->name;
 
-        $query = TiketDtsen::where(function ($q) use ($user, $namaInstansi) {
+        $baseQuery = TiketDtsen::where(function ($q) use ($user, $namaInstansi) {
                 $q->where('nama_instansi', 'like', '%' . $namaInstansi . '%')
                   ->orWhere('email_pemohon', $user->email);
             });
+
+        // Statistik Status (WordPress Subsubsub)
+        $totalAll = (clone $baseQuery)->count();
+        $totalProses = (clone $baseQuery)->where('step5_done', false)->where('status', '!=', 'PERLU_PERBAIKAN')->count();
+        $totalSelesai = (clone $baseQuery)->where('step5_done', true)->count();
+        $totalRevisi = (clone $baseQuery)->where('status', 'PERLU_PERBAIKAN')->count();
+
+        $query = clone $baseQuery;
 
         // Filter Pencarian
         if ($request->filled('search')) {
@@ -106,7 +114,7 @@ class ProfileController extends Controller
 
         $tikets = $query->paginate(10)->withQueryString();
 
-        return view('opd.tiket.index', compact('user', 'tikets', 'sortBy'));
+        return view('opd.tiket.index', compact('user', 'tikets', 'sortBy', 'totalAll', 'totalProses', 'totalSelesai', 'totalRevisi'));
     }
 
     /**
