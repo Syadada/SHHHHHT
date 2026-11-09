@@ -5038,8 +5038,8 @@ nav[role="navigation"] svg,
 }
 .dtsen-var-grid {
     display: grid;
-    grid-template-columns: 360px 1fr;
-    gap: 20px;
+    grid-template-columns: 300px 1fr;
+    gap: 16px;
     align-items: stretch;
 }
 @media (max-width: 960px) {
@@ -5410,24 +5410,37 @@ nav[role="navigation"] svg,
     border-radius: 20px;
 }
 .dtsen-checklist-list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 8px;
-    max-height: 520px;
+    max-height: 540px;
     overflow-y: auto;
     padding-right: 6px;
+    align-content: start;
+}
+@media (min-width: 1360px) {
+    .dtsen-checklist-list {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+@media (max-width: 600px) {
+    .dtsen-checklist-list {
+        grid-template-columns: 1fr;
+    }
 }
 .dtsen-var-card {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
-    padding: 12px 14px;
+    gap: 10px;
+    padding: 10px 12px;
     background: #ffffff;
     border: 1.5px solid #e2e8f0;
     border-radius: 11px;
     cursor: pointer;
     transition: all 0.15s ease-in-out;
     user-select: none;
+    box-sizing: border-box;
+    height: 100%;
 }
 .dtsen-var-card:hover {
     border-color: #93c5fd;
@@ -5439,11 +5452,12 @@ nav[role="navigation"] svg,
     box-shadow: 0 0 0 1px #0b57d0 inset;
 }
 .dtsen-check-input {
-    margin-top: 3px;
-    width: 18px;
-    height: 18px;
+    margin-top: 2px;
+    width: 17px;
+    height: 17px;
     accent-color: #0b57d0;
     cursor: pointer;
+    flex-shrink: 0;
 }
 .dtsen-var-info {
     flex: 1;

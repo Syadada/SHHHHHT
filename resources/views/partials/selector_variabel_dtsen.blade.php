@@ -11,6 +11,99 @@
     $initialSelected = array_values(array_filter(array_map('trim', $initialSelected)));
 @endphp
 
+<style>
+    /* Penyesuaian Lebar Grid Dua Kotak */
+    .dtsen-var-grid {
+        display: grid !important;
+        grid-template-columns: 300px 1fr !important;
+        gap: 16px !important;
+    }
+    @media (max-width: 900px) {
+        .dtsen-var-grid {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    /* Layout Grid Multi-Kolom Checklist Variabel DTSEN (Mengalir ke samping kanan, 2 Kolom pasti) */
+    .dtsen-checklist-list {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        max-height: 540px !important;
+        overflow-y: auto !important;
+        padding-right: 6px !important;
+        align-content: start !important;
+    }
+    @media (min-width: 1360px) {
+        .dtsen-checklist-list {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        }
+    }
+    @media (max-width: 600px) {
+        .dtsen-checklist-list {
+            grid-template-columns: 1fr !important;
+        }
+    }
+
+    .dtsen-var-card {
+        display: flex !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 8px 10px !important;
+        border-radius: 9px !important;
+        box-sizing: border-box !important;
+        height: 100% !important;
+        min-height: 56px !important;
+    }
+    .dtsen-check-input {
+        margin-top: 2px !important;
+        flex-shrink: 0 !important;
+        width: 16px !important;
+        height: 16px !important;
+    }
+    .dtsen-var-info {
+        flex: 1 !important;
+        min-width: 0 !important;
+    }
+    .dtsen-var-topline {
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: 5px !important;
+        margin-bottom: 2px !important;
+    }
+    .dtsen-var-num {
+        font-size: 10px !important;
+        padding: 1px 4px !important;
+        font-weight: 700 !important;
+    }
+    .dtsen-badge-tema {
+        font-size: 9.5px !important;
+        padding: 1px 5px !important;
+    }
+    .dtsen-var-label {
+        font-size: 12.5px !important;
+        font-weight: 700 !important;
+        line-height: 1.3 !important;
+        word-break: break-word !important;
+    }
+    .dtsen-var-meta-row {
+        display: flex !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        gap: 5px !important;
+        margin-top: 2px !important;
+    }
+    .dtsen-code-tag {
+        font-size: 10.5px !important;
+        padding: 0 4px !important;
+        word-break: break-all !important;
+    }
+    .dtsen-type-tag {
+        font-size: 10px !important;
+    }
+</style>
+
 <div class="dtsen-var-component">
     <!-- Grid Dua Kotak (Kiri: Filter Checkbox Tema & Terpilih | Kanan: Daftar Variabel Checklist) -->
     <div class="dtsen-var-grid">
